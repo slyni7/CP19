@@ -1,0 +1,61 @@
+--일반 소환이 일반적인 세상
+local m=18452814
+local cm=_G["c"..m]
+function cm.initial_effect(c)
+	Duel.EnableGlobalFlag(GLOBALFLAG_SPSUMMON_COUNT)
+	local e1=MakeEff(c,"A")
+	e1:SetCode(EVENT_FREE_CHAIN)
+	WriteEff(e1,1,"N")
+	c:RegisterEffect(e1)
+	local e2=MakeEff(c,"F","F")
+	e2:SetCode(EFFECT_SPSUMMON_COUNT_LIMIT)
+	e2:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e2:SetTargetRange(1,1)
+	e2:SetValue(1)
+	c:RegisterEffect(e2)
+	local e3=e2:Clone()
+	e3:SetCode(EFFECT_SET_SUMMON_COUNT_LIMIT)
+	e3:SetValue(2147483647)
+	c:RegisterEffect(e3)
+	local e4=MakeEff(c,"FC","F")
+	e4:SetCode(EVENT_SUMMON_SUCCESS)
+	WriteEff(e4,4,"O")
+	c:RegisterEffect(e4)
+	local e5=MakeEff(c,"S","F")
+	e5:SetCode(EFFECT_IMMUNE_EFFECT)
+	e5:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e5:SetCondition(cm.con5)
+	e5:SetValue(cm.val5)
+	c:RegisterEffect(e5)
+end
+function cm.con1(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.GetActivityCount(tp,ACTIVITY_SPSUMMON)<1
+end
+function cm.op4(e,tp,eg,ep,ev,re,r,rp)
+	local tc=eg:GetFirst()
+	local p=tc:GetSummonPlayer()
+	local cd=tc:GetCode()
+	local c=e:GetHandler()
+	local e1=MakeEff(c,"F")
+	e1:SetCode(EFFECT_CANNOT_SUMMON)
+	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e1:SetReset(RESET_PHASE+PHASE_END)
+	e1:SetTargetRange(1,0)
+	e1:SetLabel(cd)
+	e1:SetTarget(cm.otar41)
+	Duel.RegisterEffect(e1,p)
+end
+function cm.otar41(e,c)
+	return c:GetCode()==e:GetLabel() and c:IsLoc("H")
+end
+function cm.nfil5(c,st)
+	return c:IsSummonType(st)
+end
+function cm.con5(e)
+	local tp=e:GetHandlerPlayer()
+	return Duel.IEMCard(cm.nfil5,tp,"M",0,1,nil,SUMMON_TYPE_NORMAL)
+		and (not Duel.IEMCard(cm.nfil5,tp,0,"M",1,nil,SUMMON_TYPE_NORMAL) or Duel.IEMCard(cm.nfil5,tp,0,"M",1,nil,SUMMON_TYPE_SPECIAL))
+end
+function cm.val5(e,te)
+	return te:GetOwnerPlayer()~=e:GetHandlerPlayer()
+end

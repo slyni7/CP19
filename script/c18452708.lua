@@ -20,9 +20,9 @@ function c18452708.tar1(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
 		local chkf=tp
 		local mg1=Duel.GetFusionMaterial(tp)
-		local mg2=Duel.GetMatchingGroup(Card.IsCanBeFusionMaterial,tp,LOCATION_HAND+LOCATION_ONFIELD,0,nil)
+		local mg2=Duel.GetMatchingGroup(Card.IsType,tp,LOCATION_HAND+LOCATION_ONFIELD,0,nil,TYPE_SPELL+TYPE_TRAP)
 		SatoneFusionFilter=function(c,e,tp)
-			return c==e:GetHandler() and c:IsRelateToEffect(e)
+			return c==e:GetHandler()
 		end
 		SatoneFusionEffect=e
 		SatoneFusionPlayer=tp
@@ -48,7 +48,7 @@ end
 function c18452708.op1(e,tp,eg,ep,ev,re,r,rp)
 	local chkf=tp
 	local mg1=Duel.GetFusionMaterial(tp):Filter(c18452708.ofil1,nil,e)
-	local mg2=Duel.GetMatchingGroup(Card.IsCanBeFusionMaterial,tp,LOCATION_HAND+LOCATION_ONFIELD,0,nil):Filter(c18452708.ofil1,nil,e)
+	local mg2=Duel.GetMatchingGroup(Card.IsType,tp,LOCATION_HAND+LOCATION_ONFIELD,0,nil,TYPE_SPELL+TYPE_TRAP):Filter(c18452708.ofil1,nil,e)
 	SatoneFusionFilter=function(c,e,tp)
 		return c==e:GetHandler() and c:IsRelateToEffect(e)
 	end

@@ -19,13 +19,21 @@ function cm.initial_effect(c)
 	e3:SetCode(EVENT_CHAINING)
 	e3:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
 	e3:SetCategory(CATEGORY_NEGATE+CATEGORY_DESTROY)
-	e3:SetSpeed(3)
+	if IREDO_COMES_TRUE then
+		e3:SetSpeed(3)
+	else
+		e3:SetSpellSpeed(3)
+	end
 	WriteEff(e3,3,"NCTO")
 	c:RegisterEffect(e3)
 	local e4=MakeEff(c,"A")
 	e4:SetCode(EVENT_SPSUMMON)
 	e4:SetCategory(CATEGORY_DISABLE_SUMMON)
-	e4:SetSpeed(3)
+	if IREDO_COMES_TRUE then
+		e4:SetSpeed(3)
+	else
+		e4:SetSpellSpeed(3)
+	end
 	WriteEff(e4,3,"C")
 	WriteEff(e4,4,"NTO")
 	c:RegisterEffect(e4)
@@ -37,12 +45,14 @@ function cm.initial_effect(c)
 	c:RegisterEffect(e6)
 	if not cm.global_effect then
 		cm.global_effect=true
-		local ge1=MakeEff(c,"F")
-		ge1:SetCode(EFFECT_CAPABLE_CHANGE_POSITION)
-		ge1:SetProperty(EFFECT_FLAG_SET_AVAILABLE+EFFECT_FLAG_IGNORE_IMMUNE)
-		ge1:SetTR("S","S")
-		ge1:SetTarget(aux.TargetBoolFunction(Card.IsCode,m))
-		Duel.RegisterEffect(ge1,0)
+		if IREDO_COMES_TRUE then
+			local ge1=MakeEff(c,"F")
+			ge1:SetCode(EFFECT_CAPABLE_CHANGE_POSITION)
+			ge1:SetProperty(EFFECT_FLAG_SET_AVAILABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+			ge1:SetTR("S","S")
+			ge1:SetTarget(aux.TargetBoolFunction(Card.IsCode,m))
+			Duel.RegisterEffect(ge1,0)
+		end
 	end
 end
 function cm.pfun1(g,lc)
@@ -57,7 +67,13 @@ function cm.cost2(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
 		return Duel.GetLocCount(tp,"S")>0 and c:IsSSetable(true)
 	end
+	if not IREDO_COMES_TRUE then
+		c:Type(TYPE_MOSNTER+TYPE_EFFECT)
+	end
 	Duel.SSet(tp,c)
+	if not IREDO_COMES_TRUE then
+		c:Type(TYPE_MOSNTER+TYPE_EFFECT+TYPE_LINK)
+	end
 end
 function cm.tfil2(c)
 	return c:IsSetCard(0x2e4) and c:IsFaceup() and c:IsType(TYPE_TUNER)
@@ -120,7 +136,14 @@ function cm.cost3(e,tp,eg,ep,ev,re,r,rp,chk)
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SET)
 	local g=Duel.SMCard(tp,cm.nfil3,tp,"M",0,1,1,nil)
-	Duel.SSet(tp,g)
+	local tc=g:GetFirst()
+	if not IREDO_COMES_TRUE then
+		tc:Type(TYPE_MOSNTER+TYPE_EFFECT)
+	end
+	Duel.SSet(tp,tc)
+	if not IREDO_COMES_TRUE then
+		tc:Type(TYPE_MOSNTER+TYPE_EFFECT+TYPE_LINK)
+	end
 end
 function cm.tar3(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then

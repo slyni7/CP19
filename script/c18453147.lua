@@ -18,17 +18,23 @@ function cm.initial_effect(c)
 	local e3=MakeEff(c,"A")
 	e3:SetCode(EVENT_FREE_CHAIN)
 	e3:SetProperty(EFFECT_FLAG_CARD_TARGET)
-	e3:SetSpeed(2)
+	if IREDO_COMES_TRUE then
+		e3:SetSpeed(2)
+	else
+		e3:SetSpellSpeed(2)
+	end
 	WriteEff(e3,3,"NTO")
 	c:RegisterEffect(e3)
 	if not cm.global_effect then
 		cm.global_effect=true
-		local ge1=MakeEff(c,"F")
-		ge1:SetCode(EFFECT_CAPABLE_CHANGE_POSITION)
-		ge1:SetProperty(EFFECT_FLAG_SET_AVAILABLE+EFFECT_FLAG_IGNORE_IMMUNE)
-		ge1:SetTR("S","S")
-		ge1:SetTarget(aux.TargetBoolFunction(Card.IsCode,m))
-		Duel.RegisterEffect(ge1,0)
+		if IREDO_COMES_TRUE then
+			local ge1=MakeEff(c,"F")
+			ge1:SetCode(EFFECT_CAPABLE_CHANGE_POSITION)
+			ge1:SetProperty(EFFECT_FLAG_SET_AVAILABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+			ge1:SetTR("S","S")
+			ge1:SetTarget(aux.TargetBoolFunction(Card.IsCode,m))
+			Duel.RegisterEffect(ge1,0)
+		end
 	end
 end
 function cm.pfun1(g,lc)
@@ -43,7 +49,13 @@ function cm.cost2(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
 		return Duel.GetLocCount(tp,"S")>0 and c:IsSSetable(true)
 	end
+	if not IREDO_COMES_TRUE then
+		c:Type(TYPE_MOSNTER+TYPE_EFFECT)
+	end
 	Duel.SSet(tp,c)
+	if not IREDO_COMES_TRUE then
+		c:Type(TYPE_MOSNTER+TYPE_EFFECT+TYPE_LINK)
+	end
 end
 function cm.tfil2(c,e,tp)
 	return c:IsSetCard(0x2e4) and c:IsCanBeSpecialSummoned(e,0,tp,false,false) and not c:IsCode(m)
@@ -105,5 +117,19 @@ function cm.op3(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SET)
 		g=g:Select(tp,ft,ft,nil)
 	end
-	Duel.SSet(tp,g)
+	if not IREDO_COMES_TRUE then
+		local tc=g:GetFirst()
+		while tc do
+			tc:Type(TYPE_MOSNTER+TYPE_EFFECT)
+			tc=g:GetNext()
+		end
+	end
+	Duel.SSet(tp,tc)
+	if not IREDO_COMES_TRUE then
+		local tc=g:GetFirst()
+		while tc do
+			tc:Type(TYPE_MOSNTER+TYPE_EFFECT+TYPE_LINK)
+			tc=g:GetNext()
+		end
+	end
 end

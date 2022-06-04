@@ -1,3 +1,8 @@
+dofile("expansions/script/proc_fusion.lua")
+dofile("expansions/script/proc_link.lua")
+dofile("expansions/script/proc_ritual.lua")
+dofile("expansions/script/proc_synchro.lua")
+dofile("expansions/script/proc_xyz.lua")
 dofile("expansions/convert-from-core-constant.lua")
 dofile("expansions/convert-from-core-proc_fusion.lua")
 dofile("expansions/convert-from-core-proc_link.lua")

@@ -281,11 +281,7 @@ function Fusion.OperationMix(insf,sub,...)
 					if mfm>1 then
 						for i=1,mfm-1 do
 							local token=GlobalMultipleFusionTokens[tp][#mfg+1]
-							if IREDO_COMES_TRUE then
-								token:SetEntityCode(mc:GetCode())
-							else
-								token:Recreate(mc:GetCode())
-							end
+							token:SetEntityCode(mc:GetCode())
 							GlobalMultipleFusionTable[token]=mc
 							mfg:AddCard(token)
 						end

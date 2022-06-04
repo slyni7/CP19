@@ -29,6 +29,12 @@ function c18452907.initial_effect(c)
 	e3:SetTarget(c18452907.sptg)
 	e3:SetOperation(c18452907.spop)
 	c:RegisterEffect(e3)
+	--EDOPro
+	local e4=Effect.CreateEffect(c)
+	e4:SetType(EFFECT_TYPE_SINGLE)
+	e4:SetCode(EFFECT_SSET_COST)
+	e4:SetOperation(c18452907.op4)
+	c:RegisterEffect(e4)
 end
 function c18452907.thtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local c=e:GetHandler()
@@ -113,4 +119,21 @@ function c18452907.spop(e,tp,eg,ep,ev,re,r,rp)
 	if g:GetCount()>0 then
 		Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP)
 	end
+end
+function c18452907.op4(e,tp,eg,ep,ev,re,r,rp)
+	if not IREDO_COMES_TRUE then
+		local c=e:GetHandler()
+		c:Type(TYPE_SPELL+TYPE_FIELD)
+		local e1=Effect.CreateEffect(c)
+		e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+		e1:SetCode(EVENT_SSET)
+		e1:SetProperty(EFFECT_FLAG_SET_AVAILABLE+EFFECT_FLAG_CANNOT_DISABLE)
+		e1:SetOperation(c18452907.oop41)
+		Duel.RegisterEffect(e1,tp)
+	end
+end
+function c18452907.oop41(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	c:Type(TYPE_TRAP+TYPE_FIELD)
+	e:Reset()
 end

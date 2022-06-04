@@ -49,7 +49,7 @@ function c18452718.tar1(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
 		local chkf=tp
 		local mg1=Duel.GetFusionMaterial(tp)
-		local mg2=Duel.GetMatchingGroup(Card.IsCanBeFusionMaterial,tp,LOCATION_HAND+LOCATION_ONFIELD,0,nil)
+		local mg2=Duel.GetMatchingGroup(Card.IsType,tp,LOCATION_HAND+LOCATION_ONFIELD,0,nil,TYPE_SPELL+TYPE_TRAP)
 		local res=Duel.IsExistingMatchingCard(c18452718.tfil11,tp,LOCATION_EXTRA,0,1,nil,e,tp,mg1,mg2,nil,chkf)
 		if not res then
 			local ce=Duel.GetChainMaterial(tp)
@@ -74,7 +74,7 @@ function c18452718.op1(e,tp,eg,ep,ev,re,r,rp)
 	end
 	local chkf=tp
 	local mg1=Duel.GetFusionMaterial(tp):Filter(c18452718.ofil1,nil,e)
-	local mg2=Duel.GetMatchingGroup(Card.IsCanBeFusionMaterial,tp,LOCATION_HAND+LOCATION_ONFIELD,0,nil):Filter(c18452718.ofil1,nil,e)
+	local mg2=Duel.GetMatchingGroup(Card.IsType,tp,LOCATION_HAND+LOCATION_ONFIELD,0,nil,TYPE_SPELL+TYPE_TRAP):Filter(c18452718.ofil1,nil,e)
 	local sg1=Duel.GetMatchingGroup(c18452718.tfil11,tp,LOCATION_EXTRA,0,nil,e,tp,mg1,mg2,nil,chkf)
 	local mg3=nil
 	local sg2=nil

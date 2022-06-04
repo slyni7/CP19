@@ -33,7 +33,7 @@ if IREDO_COMES_TRUE then
 	OPCODE_ISRACE			=0x40000103
 	OPCODE_ISATTRIBUTE		=0x40000104
 else
-	dofile("expansions/script/init.lua")
+	dofile("expansions/script/inits.lua")
 end
 
 local ct=Duel.GetFieldGroupCount(1,LOCATION_DECK,0)

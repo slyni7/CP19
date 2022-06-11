@@ -118,7 +118,7 @@ function cm.ocon31(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GMGroup(nil,tp,"O","O",c)
 	return #g~=e:GetLabel()
 end
-function cm.op31(e,tp,eg,ep,ev,re,r,rp)
+function cm.oop31(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	for i=1,64 do
 		local g=Duel.GMGroup(nil,tp,"O","O",c)

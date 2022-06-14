@@ -113,15 +113,31 @@ function cm.op3(e,tp,eg,ep,ev,re,r,rp)
 		c:RegisterEffect(e1)
 	end
 end
+function cm.onfil31(c,e)
+	if c:IsImmuneToEffect(e) then
+		return false
+	end
+	local eset={c:IsHasEffect(EFFECT_INDESTRUCTABLE_FFECT)}
+	for _,te in pairs(eset) do
+		local val=te:GetValue()
+		if type(val)=="number" and val==1 then
+			return false
+		end
+		if type(val)=="function" and val(te,e) then
+			return false
+		end
+	end
+	return true
+end
 function cm.ocon31(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local g=Duel.GMGroup(nil,tp,"O","O",c)
+	local g=Duel.GMGroup(cm.onfil31,tp,"O","O",c,e)
 	return #g~=e:GetLabel()
 end
 function cm.oop31(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	for i=1,64 do
-		local g=Duel.GMGroup(nil,tp,"O","O",c)
+		local g=Duel.GMGroup(cm.onfil31,tp,"O","O",c,e)
 		if #g>0 then
 			Duel.Hint(HINT_CARD,0,m)
 			Duel.Destroy(g,REASON_EFFECT)
@@ -129,7 +145,7 @@ function cm.oop31(e,tp,eg,ep,ev,re,r,rp)
 			return
 		end
 	end
-	local g=Duel.GMGroup(nil,tp,"O","O",c)
+	local g=Duel.GMGroup(cm.onfil31,tp,"O","O",c,e)
 	e:SetLabel(#g)
 	Duel.Readjust()
 end

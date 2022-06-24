@@ -265,5 +265,5 @@ function c18452715.op6(e,tp,eg,ep,ev,re,r,rp)
 		op(e,tp,eg,ep,ev,re,r,rp)
 	end
 	Duel.BreakEffect()
-	Duel.SendtoDeck(tc,nil,2,REASON_EFFETC)
+	Duel.SendtoDeck(tc,nil,2,REASON_EFFECT)
 end

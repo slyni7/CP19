@@ -117,7 +117,7 @@ function cm.onfil31(c,e)
 	if c:IsImmuneToEffect(e) then
 		return false
 	end
-	local eset={c:IsHasEffect(EFFECT_INDESTRUCTABLE_FFECT)}
+	local eset={c:IsHasEffect(EFFECT_INDESTRUCTABLE_EFFECT)}
 	for _,te in pairs(eset) do
 		local val=te:GetValue()
 		if type(val)=="number" and val==1 then

@@ -82,7 +82,7 @@ function s.splimit(e,se,sp,st)
 	return e:GetHandler():GetLocation()~=LOCATION_EXTRA or (st&SUMMON_TYPE_FUSION)==SUMMON_TYPE_FUSION
 end
 function s.condition2(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetCurrentChain()==0
+	return tp==1-ep and Duel.GetCurrentChain()==0
 end
 function s.cfilter2(c)
 	return c:IsFacedown() and c:IsAbleToGraveAsCost()

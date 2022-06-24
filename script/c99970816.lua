@@ -3,7 +3,6 @@ local s,id=GetID()
 function s.initial_effect(c)
 	--Activate
 	local e1=Fusion.CreateSummonEff(c,aux.FilterBoolFunction(Card.IsSetCard,0x3d6e),nil,s.fextra,nil,nil,s.stage2)
-	e1:SetCountLimit(1,id,EFFECT_COUNT_CODE_OATH)
 	c:RegisterEffect(e1)
 	if not AshBlossomTable then AshBlossomTable={} end
 	table.insert(AshBlossomTable,e1)
@@ -65,7 +64,7 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 	local e1=Effect.CreateEffect(e:GetHandler())
 	e1:SetType(EFFECT_TYPE_FIELD)
 	e1:SetCode(EFFECT_IMMUNE_EFFECT)
-	e1:SetTargetRange(LOCATION_MZONE,0)
+	e1:SetTargetRange(LOCATION_MZONE+LOCATION_GRAVE+LOCATION_REMOVED,0)
 	e1:SetTarget(s.tgfilter)
 	e1:SetValue(s.efilter)
 	e1:SetReset(RESET_PHASE+PHASE_END)
@@ -73,7 +72,7 @@ function s.spop(e,tp,eg,ep,ev,re,r,rp)
 end
 
 function s.tgfilter(e,c)
-	return c:IsSetCard(0x3d6e)
+	return c:IsSetCard(0x3d6e) and (c:IsLocation(LOCATION_GRAVE) or c:IsFaceup())
 end
 function s.efilter(e,re)
 	return e:GetOwnerPlayer()~=re:GetOwnerPlayer()

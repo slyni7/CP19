@@ -373,7 +373,7 @@ function Duel.SFaceupTarget(sp,f,p,s,o,mi,ma,ex,...)
 		end
 	end
 	local sloc,oloc=LSTN(s),LSTN(o)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
+	Duel.Hint(HINT_SELECTMSG,sp,HINTMSG_FACEUP)
 	return Duel.SelectTarget(sp,filter(exc),p,sloc,oloc,mi,ma,exg,...)
 end
 function Duel.IEMFaceupCard(f,p,s,o,n,ex,...)
@@ -398,7 +398,7 @@ function Duel.SMFaceupCard(sp,f,p,s,o,mi,ma,ex,...)
 		end
 	end
 	local sloc,oloc=LSTN(s),LSTN(o)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
+	Duel.Hint(HINT_SELECTMSG,sp,HINTMSG_FACEUP)
 	return Duel.SelectMatchingCard(sp,filter(exc),p,sloc,oloc,mi,ma,exg,...)
 end
 function Duel.IEToHandTarget(f,p,s,o,n,ex,...)
@@ -427,7 +427,7 @@ function Duel.SAToHandTarget(sp,f,p,s,o,mi,ma,ex,...)
 		end
 	end
 	local sloc,oloc=LSTN(s),LSTN(o)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+	Duel.Hint(HINT_SELECTMSG,sp,HINTMSG_ATOHAND)
 	return Duel.SelectTarget(sp,filter(exc),p,sloc,oloc,mi,ma,exg,...)
 end
 function Duel.IEMToHandCard(f,p,s,o,n,ex,...)
@@ -456,7 +456,7 @@ function Duel.SMAToHandCard(sp,f,p,s,o,mi,ma,ex,...)
 		end
 	end
 	local sloc,oloc=LSTN(s),LSTN(o)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+	Duel.Hint(HINT_SELECTMSG,sp,HINTMSG_ATOHAND)
 	return Duel.SelectMatchingCard(sp,filter(exc),p,sloc,oloc,mi,ma,exg,...)
 end
 function Duel.IEMToHandMon(f,p,s,o,n,ex,...)
@@ -485,7 +485,7 @@ function Duel.SMAToHandMon(sp,f,p,s,o,mi,ma,ex,...)
 		end
 	end
 	local sloc,oloc=LSTN(s),LSTN(o)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+	Duel.Hint(HINT_SELECTMSG,sp,HINTMSG_ATOHAND)
 	return Duel.SelectMatchingCard(sp,filter(exc),p,sloc,oloc,mi,ma,exg,...)
 end
 function Duel.IEMToHandST(f,p,s,o,n,ex,...)
@@ -514,7 +514,7 @@ function Duel.SMAToHandST(sp,f,p,s,o,mi,ma,ex,...)
 		end
 	end
 	local sloc,oloc=LSTN(s),LSTN(o)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+	Duel.Hint(HINT_SELECTMSG,sp,HINTMSG_ATOHAND)
 	return Duel.SelectMatchingCard(sp,filter(exc),p,sloc,oloc,mi,ma,exg,...)
 end
 Auxiliary.IreinaSpSumParam={}
@@ -606,7 +606,7 @@ function Duel.SMSpSumCard(sp,f,p,s,o,mi,ma,ex,t,...)
 		end
 	end
 	local sloc,oloc=LSTN(s),LSTN(o)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+	Duel.Hint(HINT_SELECTMSG,sp,HINTMSG_SPSUMMON)
 	return Duel.SelectMatchingCard(sp,filter(exc),p,sloc,oloc,mi,ma,exg,...)
 end
 function Duel.IESpSumTarget(f,p,s,o,n,ex,t,...)
@@ -637,7 +637,7 @@ function Duel.SSpSumTarget(sp,f,p,s,o,mi,ma,ex,t,...)
 		end
 	end
 	local sloc,oloc=LSTN(s),LSTN(o)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+	Duel.Hint(HINT_SELECTMSG,sp,HINTMSG_SPSUMMON)
 	return Duel.SelectTarget(sp,filter(exc),p,sloc,oloc,mi,ma,exg,...)
 end
 function Duel.IEMToGraveCard(f,p,s,o,n,ex,...)
@@ -666,7 +666,7 @@ function Duel.SMToGraveCard(sp,f,p,s,o,mi,ma,ex,...)
 		end
 	end
 	local sloc,oloc=LSTN(s),LSTN(o)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
+	Duel.Hint(HINT_SELECTMSG,sp,HINTMSG_TOGRAVE)
 	return Duel.SelectMatchingCard(sp,filter(exc),p,sloc,oloc,mi,ma,exg,...)
 end
 function Duel.IEToDeckTarget(f,p,s,o,n,ex,...)
@@ -695,7 +695,7 @@ function Duel.SToDeckTarget(sp,f,p,s,o,mi,ma,ex,...)
 		end
 	end
 	local sloc,oloc=LSTN(s),LSTN(o)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
+	Duel.Hint(HINT_SELECTMSG,sp,HINTMSG_TODECK)
 	return Duel.SelectTarget(sp,filter(exc),p,sloc,oloc,mi,ma,exg,...)
 end
 function Duel.IEMRemoveACCard(f,p,s,o,n,ex,...)
@@ -724,7 +724,7 @@ function Duel.SMRemoveACCard(sp,f,p,s,o,mi,ma,ex,...)
 		end
 	end
 	local sloc,oloc=LSTN(s),LSTN(o)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
+	Duel.Hint(HINT_SELECTMSG,sp,HINTMSG_REMOVE)
 	return Duel.SelectMatchingCard(sp,filter(exc),p,sloc,oloc,mi,ma,exg,...)
 end
 function Duel.IEMRemoveCard(f,p,s,o,n,ex,...)
@@ -753,7 +753,7 @@ function Duel.SMRemoveCard(sp,f,p,s,o,mi,ma,ex,...)
 		end
 	end
 	local sloc,oloc=LSTN(s),LSTN(o)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
+	Duel.Hint(HINT_SELECTMSG,sp,HINTMSG_REMOVE)
 	return Duel.SelectMatchingCard(sp,filter(exc),p,sloc,oloc,mi,ma,exg,...)
 end
 

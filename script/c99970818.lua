@@ -42,7 +42,7 @@ function s.negtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
 		return (rc:IsAbleToRemove(tp,LOCATION_FACEDOWN)
 			or (not relation and Duel.IsPlayerCanRemove(tp)))
-			and Duel.IsExistingMatchingCard(s.negfilter,tp,LOCATION_ONFIELD,0,1,nil)
+			and Duel.IsExistingMatchingCard(s.negfilter,tp,LOCATION_ONFIELD,0,1,e:GetHandler())
 	end
 	Duel.SetOperationInfo(0,CATEGORY_NEGATE,eg,0,0,0)
 	if relation then
@@ -60,10 +60,10 @@ function s.negop(e,tp,eg,ep,ev,re,r,rp)
 		if tc:IsSetCard(0x3d6e) then
 			Duel.NegateActivation(ev)
 		end
-	end
-	if re:GetHandler():IsRelateToEffect(re) then
-		Duel.Remove(eg,POS_FACEDOWN,REASON_EFFECT)
-	end
+	    if re:GetHandler():IsRelateToEffect(re) then
+	    	Duel.Remove(eg,POS_FACEDOWN,REASON_EFFECT)
+    	end
+    end
 end
 function s.spr(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()

@@ -1049,7 +1049,7 @@ function Auxiliary.SilentMajorityLinkOperation1(e,tp,eg,ep,ev,re,r,rp,c,sg,og)
 	Duel.SendtoGrave(tg,REASON_MATERIAL+REASON_LINK)
 end
 
-if IREDO_COMES_TRUE or (YGOPRO_VERSION~="Percy/EDO" and YGOPRO_VERSION~="Core") then
+if IREDO_COMES_TRUE or (YGOPRO_VERSION~="Core") then
 	Auxiliary.RegisterSilentMajority()
 end
 

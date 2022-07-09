@@ -47,9 +47,15 @@ function cm.tar2(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
 		local mg=Duel.GMGroup(cm.tfil21,tp,"HD",0,nil,e,tp)
 		Auxiliary.FCheckAdditional=cm.fcheck
+		if Fusion then
+			Fusion.CheckAdditional=cm.fcheck
+		end
 		Auxiliary.GCheckAdditional=cm.gcheck
 		local res=SilentMajorityGroups[tp]:IsExists(cm.tfil22,1,nil,mg)
 		Auxiliary.FCheckAdditional=nil
+		if Fusion then
+			Fusion.CheckAdditional=nil
+		end
 		Auxiliary.GCheckAdditional=nil
 		return res and Duel.GetLocCount(tp,"M")>1
 	end
@@ -61,6 +67,9 @@ function cm.op2(e,tp,eg,ep,ev,re,r,rp)
 	end
 	local mg=Duel.GMGroup(cm.tfil21,tp,"HD",0,nil,e,tp)
 	Auxiliary.FCheckAdditional=cm.fcheck
+	if Fusion then
+		Fusion.CheckAdditional=cm.fcheck
+	end
 	Auxiliary.GCheckAdditional=cm.gcheck
 	local sg=SilentMajorityGroups[tp]:Filter(cm.tfil22,nil,mg)
 	if #sg>0 then
@@ -72,5 +81,8 @@ function cm.op2(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SpecialSummon(mat,0,tp,tp,false,false,POS_FACEUP_DEFENSE)
 	end
 	Auxiliary.FCheckAdditional=nil
+	if Fusion then
+		Fusion.CheckAdditional=nil
+	end
 	Auxiliary.GCheckAdditional=nil
 end

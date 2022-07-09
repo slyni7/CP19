@@ -74,10 +74,10 @@ function cm.tar3(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 		return chkc:IsLoc("M") and cm.tfil3(chkc)
 	end
 	if chk==0 then
-		return Duel.IsExistingTarget(cm.tfil3,tp,"M","M",1,nil)
+		return Duel.IETarget(cm.tfil3,tp,"M","M",1,nil)
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_POSCHANGE)
-	local g=Duel.SelectTarget(tp,cm.tfil3,tp,"M","M",1,1,nil)
+	local g=Duel.STarget(tp,cm.tfil3,tp,"M","M",1,1,nil)
 	Duel.SOI(0,CATEGORY_POSITION,g,1,0,0)
 end
 function cm.op3(e,tp,eg,ep,ev,re,r,rp)

@@ -433,6 +433,9 @@ function Xyz.Condition(f,lv,minc,maxc,mustbemat,exchk)
 				if not mustbemat then
 					mg:Merge(Duel.GetMatchingGroup(Card.IsHasEffect,tp,LOCATION_HAND+LOCATION_ONFIELD+LOCATION_GRAVE+LOCATION_REMOVED,0,nil,511002116))
 				end
+				local emt,tg=aux.GetExtraMaterials(tp,mustg+mg,c,SUMMON_TYPE_XYZ)
+				tg:Match(Xyz.MatFilter,nil,f,lv,c,tp)
+				mg:Merge(tg)
 				if min and min~=99 then
 					return mg:IsExists(Xyz.RecursionChk1,1,nil,mg,c,tp,min,max,minc,maxc,Group.CreateGroup(),Group.CreateGroup(),0,0,mustbemat,exchk,f,mustg,lv)
 				else
@@ -464,6 +467,9 @@ function Xyz.Target(f,lv,minc,maxc,mustbemat,exchk)
 						local sg=Group.CreateGroup()
 						local mg=og:Clone()
 						mg:Merge(Duel.GetMatchingGroup(Card.IsHasEffect,tp,LOCATION_HAND+LOCATION_ONFIELD+LOCATION_GRAVE+LOCATION_REMOVED,0,nil,511002116))
+						local emt,tg=aux.GetExtraMaterials(tp,mustg+mg,c,SUMMON_TYPE_XYZ)
+						tg:Match(Xyz.MatFilter,nil,f,lv,c,tp)
+						mg:Merge(tg)
 						local finish=false
 						while ct<max and matct<maxc do
 							local selg=mg:Filter(Xyz.RecursionChk1,sg,mg,c,tp,min,max,minc,maxc,sg,matg,ct,matct,mustbemat,exchk,f,mustg,lv)
@@ -567,6 +573,9 @@ function Xyz.Target(f,lv,minc,maxc,mustbemat,exchk)
 					if not mustbemat then
 						mg:Merge(Duel.GetMatchingGroup(Card.IsHasEffect,tp,LOCATION_HAND+LOCATION_ONFIELD+LOCATION_GRAVE+LOCATION_REMOVED,0,nil,511002116))
 					end
+					local emt,tg=aux.GetExtraMaterials(tp,mustg+mg,c,SUMMON_TYPE_XYZ)
+					tg:Match(Xyz.MatFilter,nil,f,lv,c,tp)
+					mg:Merge(tg)
 					local finish=false
 					if not og or max==99 then
 						local ct=0

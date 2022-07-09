@@ -321,6 +321,8 @@ if not IREDO_COMES_TRUE then
 	function Card.IsAttackable(c)
 		return c:CanAttack()
 	end
+	Card.IsCanOverlay=aux.TRUE
+	Card.IsDualState=Card.IsGeminiState
 end
 
 function Auxiliary.linklimit(e,se,sp,st)

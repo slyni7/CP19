@@ -105,7 +105,9 @@ function Effect.SetCountLimit(e,max,code,flag,...)
 			code=code+flag
 		end
 	else
-		if type(code)=="number" then
+		if type(flag)=="number" then
+			flag=(flag>>28)
+		elseif type(code)=="number" then
 			local ccode=code&0x8fffffff
 			local cflag=code&0x70000000
 			if cflag>0 then

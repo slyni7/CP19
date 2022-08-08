@@ -51,7 +51,7 @@ function s.op1(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function s.tfil2(c)
-	return c:IsSetCard(0x2ea) and c:IsFaceup()
+	return c:IsSetCard(0x2ea) and c:IsFaceup() and not c:IsType(TYPE_TOKEN)
 end
 function s.tar2(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then

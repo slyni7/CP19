@@ -39,6 +39,7 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 		local sg=g:Filter(aux.NOT(Card.IsPublic),nil)
 		if #g>0 and #g==#sg and not sg:IsExists(Card.IsCode,1,nil,ac) and Duel.SelectYesNo(1-tp,aux.Stringid(m,0)) then
 			Duel.ConfirmCards(1-tp,sg)
+			Duel.ShuffleHand(1-tp)
 			Duel.NegateEffect(0)
 			return
 		end

@@ -10,7 +10,7 @@ function cm.initial_effect(c)
 end
 function cm.con1(e,tp,eg,ep,ev,re,r,rp)
 	local rc=re:GetHandler()
-	return Duel.IsChainDisablable(ev) and (rc:IsLoc("G") or re:IsHasCategory(CATEGORY_SEARCH+CATEGORY_DRAW))
+	return Duel.IsChainDisablable(ev) and (rc:IsLoc("G") or re:IsHasCategory(CATEGORY_SEARCH+CATEGORY_DRAW)) and rp~=tp
 end
 function cm.cost1(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()

@@ -104,6 +104,20 @@ function Effect.SetCountLimit(e,max,code,flag,...)
 		if flag then
 			code=code+flag
 		end
+	else
+		if type(flag)=="number" then
+			flag=(flag>>28)
+		elseif type(code)=="number" then
+			local ccode=code&0x8fffffff
+			local cflag=code&0x70000000
+			if cflag>0 then
+				code=ccode
+				flag=(cflag>>28)
+			elseif ccode==1 then
+				code=0
+				flag=4
+			end
+		end
 	end
 	global_eff_count_limit_max[e]=max
 	global_eff_count_limit_code[e]=code

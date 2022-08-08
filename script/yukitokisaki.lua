@@ -12,6 +12,9 @@ function Duel.SpecialSummon(...)
 	if res>0 then
 		local og=Duel.GetOperatedGroup()
 		local cp=Duel.GetChainInfo(0,CHAININFO_TRIGGERING_PLAYER)
+		if cp==nil then
+			return res
+		end
 		local eset={Duel.IsPlayerAffectedByEffect(cp,EFFECT_YUKITOKISAKI)}
 		for _,te in pairs(eset) do
 			local se=te:GetLabelObject()

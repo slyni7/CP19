@@ -142,7 +142,7 @@ function cm.oop15(e,tp,eg,ep,ev,re,r,rp)
 			local sg=Duel.SelectFusionMaterial(tp,tc,mg,nil,PLAYER_NONE)
 			Duel.SendtoGrave(sg,REASON_EFFECT)
 		elseif op==2 then
-			Duel.SendtoDeck(dg,nil,REASON_RULE)
+			Duel.SendtoDeck(dg,nil,2,REASON_RULE)
 		end
 	end
 	e:Reset()

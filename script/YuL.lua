@@ -477,8 +477,8 @@ function Effect.SetD(e,code,number)
 end
 
 --SetCL
-function Effect.SetCL(e,count,code)
-	e:SetCountLimit(count,code)
+function Effect.SetCL(e,...)
+	e:SetCountLimit(...)
 end
 
 --LP 코스트 (-1 : 절반)

@@ -373,7 +373,7 @@ function Duel.SFaceupTarget(sp,f,p,s,o,mi,ma,ex,...)
 		end
 	end
 	local sloc,oloc=LSTN(s),LSTN(o)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
+	Duel.Hint(HINT_SELECTMSG,sp,HINTMSG_FACEUP)
 	return Duel.SelectTarget(sp,filter(exc),p,sloc,oloc,mi,ma,exg,...)
 end
 function Duel.IEMFaceupCard(f,p,s,o,n,ex,...)
@@ -398,7 +398,7 @@ function Duel.SMFaceupCard(sp,f,p,s,o,mi,ma,ex,...)
 		end
 	end
 	local sloc,oloc=LSTN(s),LSTN(o)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
+	Duel.Hint(HINT_SELECTMSG,sp,HINTMSG_FACEUP)
 	return Duel.SelectMatchingCard(sp,filter(exc),p,sloc,oloc,mi,ma,exg,...)
 end
 function Duel.IEToHandTarget(f,p,s,o,n,ex,...)
@@ -427,7 +427,7 @@ function Duel.SAToHandTarget(sp,f,p,s,o,mi,ma,ex,...)
 		end
 	end
 	local sloc,oloc=LSTN(s),LSTN(o)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+	Duel.Hint(HINT_SELECTMSG,sp,HINTMSG_ATOHAND)
 	return Duel.SelectTarget(sp,filter(exc),p,sloc,oloc,mi,ma,exg,...)
 end
 function Duel.IEMToHandCard(f,p,s,o,n,ex,...)
@@ -456,7 +456,7 @@ function Duel.SMAToHandCard(sp,f,p,s,o,mi,ma,ex,...)
 		end
 	end
 	local sloc,oloc=LSTN(s),LSTN(o)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+	Duel.Hint(HINT_SELECTMSG,sp,HINTMSG_ATOHAND)
 	return Duel.SelectMatchingCard(sp,filter(exc),p,sloc,oloc,mi,ma,exg,...)
 end
 function Duel.IEMToHandMon(f,p,s,o,n,ex,...)
@@ -485,7 +485,7 @@ function Duel.SMAToHandMon(sp,f,p,s,o,mi,ma,ex,...)
 		end
 	end
 	local sloc,oloc=LSTN(s),LSTN(o)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+	Duel.Hint(HINT_SELECTMSG,sp,HINTMSG_ATOHAND)
 	return Duel.SelectMatchingCard(sp,filter(exc),p,sloc,oloc,mi,ma,exg,...)
 end
 function Duel.IEMToHandST(f,p,s,o,n,ex,...)
@@ -514,7 +514,7 @@ function Duel.SMAToHandST(sp,f,p,s,o,mi,ma,ex,...)
 		end
 	end
 	local sloc,oloc=LSTN(s),LSTN(o)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+	Duel.Hint(HINT_SELECTMSG,sp,HINTMSG_ATOHAND)
 	return Duel.SelectMatchingCard(sp,filter(exc),p,sloc,oloc,mi,ma,exg,...)
 end
 Auxiliary.IreinaSpSumParam={}
@@ -606,7 +606,7 @@ function Duel.SMSpSumCard(sp,f,p,s,o,mi,ma,ex,t,...)
 		end
 	end
 	local sloc,oloc=LSTN(s),LSTN(o)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+	Duel.Hint(HINT_SELECTMSG,sp,HINTMSG_SPSUMMON)
 	return Duel.SelectMatchingCard(sp,filter(exc),p,sloc,oloc,mi,ma,exg,...)
 end
 function Duel.IESpSumTarget(f,p,s,o,n,ex,t,...)
@@ -637,7 +637,7 @@ function Duel.SSpSumTarget(sp,f,p,s,o,mi,ma,ex,t,...)
 		end
 	end
 	local sloc,oloc=LSTN(s),LSTN(o)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+	Duel.Hint(HINT_SELECTMSG,sp,HINTMSG_SPSUMMON)
 	return Duel.SelectTarget(sp,filter(exc),p,sloc,oloc,mi,ma,exg,...)
 end
 function Duel.IEMToGraveCard(f,p,s,o,n,ex,...)
@@ -666,7 +666,7 @@ function Duel.SMToGraveCard(sp,f,p,s,o,mi,ma,ex,...)
 		end
 	end
 	local sloc,oloc=LSTN(s),LSTN(o)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
+	Duel.Hint(HINT_SELECTMSG,sp,HINTMSG_TOGRAVE)
 	return Duel.SelectMatchingCard(sp,filter(exc),p,sloc,oloc,mi,ma,exg,...)
 end
 function Duel.IEToDeckTarget(f,p,s,o,n,ex,...)
@@ -695,7 +695,7 @@ function Duel.SToDeckTarget(sp,f,p,s,o,mi,ma,ex,...)
 		end
 	end
 	local sloc,oloc=LSTN(s),LSTN(o)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
+	Duel.Hint(HINT_SELECTMSG,sp,HINTMSG_TODECK)
 	return Duel.SelectTarget(sp,filter(exc),p,sloc,oloc,mi,ma,exg,...)
 end
 function Duel.IEMRemoveACCard(f,p,s,o,n,ex,...)
@@ -724,7 +724,7 @@ function Duel.SMRemoveACCard(sp,f,p,s,o,mi,ma,ex,...)
 		end
 	end
 	local sloc,oloc=LSTN(s),LSTN(o)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
+	Duel.Hint(HINT_SELECTMSG,sp,HINTMSG_REMOVE)
 	return Duel.SelectMatchingCard(sp,filter(exc),p,sloc,oloc,mi,ma,exg,...)
 end
 function Duel.IEMRemoveCard(f,p,s,o,n,ex,...)
@@ -753,7 +753,7 @@ function Duel.SMRemoveCard(sp,f,p,s,o,mi,ma,ex,...)
 		end
 	end
 	local sloc,oloc=LSTN(s),LSTN(o)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
+	Duel.Hint(HINT_SELECTMSG,sp,HINTMSG_REMOVE)
 	return Duel.SelectMatchingCard(sp,filter(exc),p,sloc,oloc,mi,ma,exg,...)
 end
 
@@ -1049,7 +1049,7 @@ function Auxiliary.SilentMajorityLinkOperation1(e,tp,eg,ep,ev,re,r,rp,c,sg,og)
 	Duel.SendtoGrave(tg,REASON_MATERIAL+REASON_LINK)
 end
 
-if IREDO_COMES_TRUE or (YGOPRO_VERSION~="Percy/EDO" and YGOPRO_VERSION~="Core") then
+if IREDO_COMES_TRUE or (YGOPRO_VERSION~="Core") then
 	Auxiliary.RegisterSilentMajority()
 end
 
@@ -1937,14 +1937,172 @@ function Card.RegisterEffect(c,e,forced,...)
 		e:SetProperty(prop|EFFECT_FLAG_CANNOT_DISABLE)
 	end
 end
+if not Duel.Exile then
+	function Duel.Exile(g,r)
+		return Duel.SendtoDeck(g,nil,2,r)
+	end
+end
 
+
+EFFECT_UNPUBLIC=18453549
 local cregeff=Card.RegisterEffect
 function Card.RegisterEffect(c,e,forced,...)
+	local code=c:GetOriginalCode()
+	local mt=_G["c"..code]
 	cregeff(c,e,forced,...)
+	if e:GetCode()==EFFECT_PUBLIC then
+		if e:IsHasType(EFFECT_TYPE_SINGLE) then
+			local con=e:GetCondition()
+			e:SetCondition(function(e)
+				local c=e:GetHandler()
+				local eset={c:IsHasEffect(EFFECT_UNPUBLIC)}
+				for _,te in pairs(eset) do
+					local fid=e:GetFieldID()
+					local val=te:GetValue()(te,fid)
+					if val then
+						return false
+					end
+				end
+				return not con or con(e)
+			end)
+		elseif e:IsHasType(EFFECT_TYPE_FIELD) then
+			local tg=e:GetTarget()
+			e:SetTarget(function(e,c)
+				local eset={c:IsHasEffect(EFFECT_UNPUBLIC)}
+				for _,te in pairs(eset) do
+					local fid=e:GetFieldID()
+					local val=te:GetValue()(te,fid)
+					if val then
+						return false
+					end
+				end
+				return not tg or tg(e,c)
+			end)
+		end
+	end
 end
 local dregeff=Duel.RegisterEffect
 function Duel.RegisterEffect(e,p,...)
 	dregeff(e,p,...)
+	if e:GetCode()==EFFECT_PUBLIC then
+		if e:IsHasType(EFFECT_TYPE_SINGLE) then
+			local con=e:GetCondition()
+			e:SetCondition(function(e)
+				local c=e:GetHandler()
+				local eset={c:IsHasEffect(EFFECT_UNPUBLIC)}
+				for _,te in pairs(eset) do
+					local fid=e:GetFieldID()
+					local val=te:GetValue()(te,fid)
+					if val then
+						return false
+					end
+				end
+				return not con or con(e)
+			end)
+		elseif e:IsHasType(EFFECT_TYPE_FIELD) then
+			local tg=e:GetTarget()
+			e:SetTarget(function(e,c)
+				local eset={c:IsHasEffect(EFFECT_UNPUBLIC)}
+				for _,te in pairs(eset) do
+					local fid=e:GetFieldID()
+					local val=te:GetValue()(te,fid)
+					if val then
+						return false
+					end
+				end
+				return not tg or tg(e,c)
+			end)
+		end
+	end
 end
 
---dofile("expansions/script/proc_bakuado.lua")
+function Auxiliary.RegisterUnpublic(e,c)
+	local eset={c:IsHasEffect(EFFECT_PUBLIC)}
+	local t={}
+	for _,te in pairs(eset) do
+		local fid=te:GetFieldID()
+		t[fid]=true
+	end
+	local e1=Effect.CreateEffect(e:GetHandler())
+	e1:SetType(EFFECT_TYPE_SINGLE)
+	e1:SetCode(EFFECT_UNPUBLIC)
+	e1:SetReset(RESET_EVENT+RESETS_STANDARD)
+	e1:SetLabelObject(t)
+	e1:SetValue(function(e,fid)
+		local t=e:GetLabelObject()
+		return t[fid]
+	end)
+	c:RegisterEffect(e1)
+end
+
+Auxiliary.FractionDrawTable={}
+Auxiliary.FractionDrawTable[0]={}
+Auxiliary.FractionDrawTable[1]={}
+Auxiliary.FractionDrawn={}
+Auxiliary.FractionDrawn[0]=0
+Auxiliary.FractionDrawn[1]=0
+function gcd(m,n)
+	while n~=0 do
+		local q=m
+		m=n
+		n=q%n
+	end
+	return m
+end
+function divide(m,n)
+	if n==0 then
+		return 99999999
+	end
+	local d=0
+	while m>=n do
+		m=m-n
+		d=d+1
+	end
+	return d
+end
+function lcm(m,n)
+	return (m~=0 and n~=0) and divide(m*n,gcd(m,n)) or 0
+end
+function Duel.FractionDraw(player,amount,reason)
+	table.insert(Auxiliary.FractionDrawTable[player],amount)
+	local numera=0
+	local denomi=0
+	for i=1,#Auxiliary.FractionDrawTable[player] do
+		local t=Auxiliary.FractionDrawTable[player][i]
+		if denomi==0 then
+			denomi=t[2]
+		else
+			denomi=lcm(denomi,t[2])
+		end
+	end
+	for i=1,#Auxiliary.FractionDrawTable[player] do
+		local t=Auxiliary.FractionDrawTable[player][i]
+		local dd=divide(denomi,t[2])
+		numera=numera+t[1]*dd
+	end
+	local proper=divide(numera,denomi)
+	--Debug.Message(proper.." and "..(numera-proper*denomi).."/"..denomi)
+	if proper>Auxiliary.FractionDrawn[player] then
+		local drawn=Duel.Draw(player,proper-Auxiliary.FractionDrawn[player],reason)
+		Auxiliary.FractionDrawn[player]=proper
+		return drawn
+	else
+		return true
+	end
+end
+
+local cisc=Card.IsSetCard
+Auxiliary.ChopinEtudeSetCode=nil
+function Card.IsSetCard(c,...)
+	local setcode=Auxiliary.ChopinEtudeSetCode
+	if setcode then
+		return cisc(c,setcode)
+	end
+	return cisc(c,...)
+end
+
+function Duel.SPOI(cc,cat,eg,ev,ep,loc)
+	Duel.SetPossibleOperationInfo(cc,cat,eg,ev,ep,LSTN(loc))
+end
+
+--dofile("expansions/script/RDD.lua")

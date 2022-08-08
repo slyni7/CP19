@@ -88,7 +88,7 @@ function cm.tar4(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function cm.op4(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-	local g=Duel.SMCard(tp,cm.tfil3,tp,"DG",0,1,1,nil,e,tp)
+	local g=Duel.SMCard(tp,cm.tfil4,tp,"DG",0,1,1,nil,e,tp)
 	if #g>0 then
 		Duel.SendtoHand(g,nil,REASON_EFFECT)
 		Duel.ConfirmCards(1-tp,g)

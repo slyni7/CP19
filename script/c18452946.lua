@@ -106,7 +106,7 @@ function cm.tar2(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 		return Duel.IETarget(Card.IsAbleToRemove,tp,0,"O",1,nil)
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
-	local g=Duel.STarget(tp,Card.IsAbleToRemove,tp,O,"O",1,1,nil)
+	local g=Duel.STarget(tp,Card.IsAbleToRemove,tp,0,"O",1,1,nil)
 	Duel.SOI(0,CATEGORY_REMOVE,g,1,0,0)
 end
 function cm.op2(e,tp,eg,ep,ev,re,r,rp)

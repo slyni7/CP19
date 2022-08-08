@@ -144,16 +144,18 @@ function cm.op5(e,tp,eg,ep,ev,re,r,rp)
 	end
 	local sg=Duel.GMGroup(Card.IsSummonType,tp,0,"M",nil,SUMMON_TYPE_SPECIAL)
 	local tc=sg:GetFirst()
+	local sg2=Group.CreateGroup()
 	while tc do
 		local seq=tc:GetSequence()
 		if seq>4 then
 			seq=seq-5
 		end
 		if ((1<<seq)&v)>0 then
-			sg:RemoveCard(tc)
+			sg2:AddCard(tc)
 		end
 		tc=sg:GetNext()
 	end
+	sg:Sub(sg2)
 	local og=Duel.GMGroup(aux.TRUE,tp,0,"M",nil)
 	local oc=og:GetFirst()
 	while oc do

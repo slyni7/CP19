@@ -130,17 +130,17 @@ function s.op2(e,tp,eg,ep,ev,re,r,rp)
 		local op=ae:GetOperation()
 		e:SetProperty(ae:GetProperty())
 		local res,teg,tep,tev,tre,tr,trp
-		if te:GetCode()==EVENT_CHAINING then
+		if ae:GetCode()==EVENT_CHAINING then
 			local chain=Duel.GetCurrentChain()-1
 			local ce=Duel.GetChainInfo(chain,CHAININFO_TRIGGERING_EFFECT)
 			local cc=ce:GetHandler()
 			local cg=Group.FromCards(cc)
 			local cp=Duel.GetChainInfo(chain,CHAININFO_TRIGGERING_PLAYER)
 			teg,tep,tev,tre,tr,trp=cg,cp,chain,ce,REASON_EFFECT,cp
-		elseif te:GetCode()==EVENT_FREE_CHAIN then
+		elseif ae:GetCode()==EVENT_FREE_CHAIN then
 			teg,tep,tev,tre,tr,trp=eg,ep,ev,re,r,rp
 		else
-			res,teg,tep,tev,tre,tr,trp=Duel.CheckEvent(te:GetCode(),true)
+			res,teg,tep,tev,tre,tr,trp=Duel.CheckEvent(ae:GetCode(),true)
 		end
 		if tar then
 			tar(e,tp,teg,tep,tev,tre,tr,trp,1)

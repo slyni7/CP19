@@ -29,7 +29,9 @@ function cm.con2(e,tp,eg,ep,ev,re,r,rp)
 end
 function cm.op2(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_CARD,0,m)
-	Duel.Recover(tp,500,REASON_EFFECT)
+	local g=Duel.GMGroup(Card.IsFaceup,tp,0,"M",nil)
+	local sum=g:GetSum(cm.oval2)
+	Duel.Recover(tp,sum*100,REASON_EFFECT)
 end
 function cm.nfil3(c)
 	return c:IsSetCard(0x2e6) and c:IsType(TYPE_MONSTER) and c:IsAbleToHand()

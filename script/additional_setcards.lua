@@ -12,22 +12,17 @@ Auxiliary.AdditionalSetcardsList={
 }
 pcall(dofile,"expansions/expand.lua")
 local cisc=Card.IsSetCard
-function Card.IsSetCard(c,...)
-	for _,set in ipairs({...}) do
-		if Auxiliary.AdditionalSetcardsList[set]
-			and c:IsCode(table.unpack(Auxiliary.AdditionalSetcardsList[set])) then
-			return true
-		end
-		if type(set)=="string" and data_setname[c:GetCode()] then
-			for _,str in ipairs(data_setname[c:GetCode()]) do
-				if set==str then
-					return true
-				end
+function Card.IsSetCard(c,set,...)
+	if Auxiliary.AdditionalSetcardsList[set]
+		and c:IsCode(table.unpack(Auxiliary.AdditionalSetcardsList[set])) then
+		return true
+	end
+	if type(set)=="string" and data_setname[c:GetCode()] then
+		for _,str in ipairs(data_setname[c:GetCode()]) do
+			if set==str then
+				return true
 			end
 		end
-		if type(set)=="number" and cisc(c,set) then
-			return true
-		end
 	end
-	return false
+	return cisc(c,set,...)
 end

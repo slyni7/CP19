@@ -23,7 +23,7 @@ function cm.tfil2(c)
 		local te=c.eff_ct[c][i]
 		if te:GetCode()==EFFECT_QP_ACT_IN_NTPHAND and te:IsHasType(EFFECT_TYPE_SINGLE) then
 			local con=te:GetCondition()
-			if not con then
+			if not con or con(te) then
 				res=true
 				break
 			end

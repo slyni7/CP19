@@ -1,7 +1,7 @@
 --메카쿠시단 단원 08 아마미야 히비야
 function c95480208.initial_effect(c)
 	--xyz summon
-	aux.AddXyzProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0xd4c),4,2)
+	aux.AddXyzProcedure(c,aux.FilterBoolFunction(Card.IsSetCard,0xd4c),4,2)
 	c:EnableReviveLimit()
 	--double
 	local e1=Effect.CreateEffect(c)

@@ -81,6 +81,7 @@ end
 function cm.xyzop(e,tp,chk)
 	if chk==0 then return Duel.GetFlagEffect(tp,m)==0 end
 	Duel.RegisterFlagEffect(tp,m,RESET_PHASE+PHASE_END,0,1)
+	return true
 end
 
 --special summon

@@ -1,6 +1,5 @@
 --3
 function c112600113.initial_effect(c)
-	c:SetSPSummonOnce(112600113)
 	--summon
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(112600113,1))

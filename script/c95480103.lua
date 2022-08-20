@@ -32,7 +32,7 @@ function c95480103.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function c95480103.tfilter(c,att,e,tp)
 	return c:IsSetCard(0xd5a) and c:IsAttribute(att) and c:IsType(TYPE_FUSION) 
-		and c:IsLevelBelow(10) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_FUSION,tp,true,false)
+		and c:IsLevelBelow(10) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_FUSION,tp,false,false)
 end
 function c95480103.filter(c,e,tp,ec)
 	return c:IsFaceup() and c:IsSetCard(0xd5f)
@@ -60,7 +60,7 @@ function c95480103.operation(e,tp,eg,ep,ev,re,r,rp)
 	local sg=Duel.SelectMatchingCard(tp,c95480103.tfilter,tp,LOCATION_EXTRA,0,1,1,nil,att,e,tp)
 	if sg:GetCount()>0 then
 		Duel.BreakEffect()
-		Duel.SpecialSummon(sg,SUMMON_TYPE_FUSION,tp,tp,true,false,POS_FACEUP)
+		Duel.SpecialSummon(sg,SUMMON_TYPE_FUSION,tp,tp,false,false,POS_FACEUP)
 		sg:GetFirst():CompleteProcedure()
 	end
 end

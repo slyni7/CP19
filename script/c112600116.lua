@@ -1,6 +1,5 @@
 --6
 function c112600116.initial_effect(c)
-	c:SetSPSummonOnce(112600116)
 	--summon limit
 	local e0=Effect.CreateEffect(c)
 	e0:SetType(EFFECT_TYPE_SINGLE)

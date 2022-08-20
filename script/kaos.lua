@@ -1,4 +1,4 @@
---코믹 걸즈랑 D4DJ 많이 봐주세요
+--블루아카이브
 
 kaos={}
 Kaos=kaos
@@ -222,7 +222,7 @@ function kaos.milkgamestart(c)
 	local e1=Effect.CreateEffect(c)
 	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_DISABLE_CHAIN)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
-	e1:SetCode(EVENT_PREDRAW)
+	e1:SetCode(EVENT_STARTUP)
 	e1:SetCountLimit(3,c:GetOriginalCode()+EFFECT_COUNT_CODE_DUEL)
 	e1:SetRange(LOCATION_HAND+LOCATION_DECK)
 	e1:SetTarget(kaos.milktg)
@@ -727,6 +727,122 @@ function kaos.psopLink(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 
+--LSD: Dream Emulator.
+--놓는다
+function kaos.LSD(c)
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(c:GetOriginalCode(),0))
+	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e1:SetCode(EVENT_PREDRAW+EVENT_PHASE_START)
+	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+	e1:SetRange(LOCATION_DECK+LOCATION_HAND+LOCATION_GRAVE+LOCATION_EXTRA+LOCATION_REMOVED+LOCATION_OVERLAY)
+	e1:SetOperation(kaos.LSDstartop)
+	c:RegisterEffect(e1)
+end
+function kaos.LSDstartop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	if c then
+		Duel.MoveToField(c,tp,tp,LOCATION_ONFIELD,POS_FACEUP,true)
+	end
+end
+
+--immume
+function kaos.chaosimmume(c)
+local e10=Effect.CreateEffect(c)
+	e10:SetType(EFFECT_TYPE_SINGLE)
+	e10:SetCode(EFFECT_IMMUNE_EFFECT)
+	e10:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e10:SetRange(LOCATION_ALL)
+	e10:SetValue(kaos.chaosimmumefilter)
+	c:RegisterEffect(e10)
+end
+function kaos.chaosimmumefilter(e,re)
+	return e:GetHandlerPlayer()~=re:GetOwnerPlayer()
+end
+
+--negate
+function kaos.chaosnegate(c)
+	--actlimit
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_FIELD)
+	e1:SetCode(EFFECT_CANNOT_ACTIVATE)
+	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e1:SetRange(LOCATION_ONFIELD)
+	e1:SetTargetRange(1,1)
+	e1:SetValue(kaos.chaosactlimit)
+	c:RegisterEffect(e1)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_FIELD)
+	e2:SetCode(EFFECT_DISABLE)
+	e2:SetRange(LOCATION_ONFIELD)
+	e2:SetTargetRange(LOCATION_ALL,LOCATION_ALL)
+	e2:SetTarget(kaos.chaosdistarget)
+	c:RegisterEffect(e2)
+	--Negate effects
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e3:SetCode(EVENT_CHAIN_SOLVING)
+	e3:SetRange(LOCATION_ONFIELD)
+	e3:SetOperation(kaos.chaosdisop)
+	c:RegisterEffect(e3)
+	--Disable trap monster
+	local e4=Effect.CreateEffect(c)
+	e4:SetType(EFFECT_TYPE_FIELD)
+	e4:SetCode(EFFECT_DISABLE_TRAPMONSTER)
+	e4:SetRange(LOCATION_ONFIELD)
+	e4:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
+	e4:SetTarget(kaos.chaosdistarget)
+	c:RegisterEffect(e4)
+end
+function kaos.chaosactlimit(e,re,tp)
+	return not re:GetHandler():IsSetCard(0xe71)
+end
+function kaos.chaosdistarget(e,c)
+	return not c:IsSetCard(0xe71)
+end
+function kaos.chaosdisop(e,tp,eg,ep,ev,re,r,rp)
+	local tl=Duel.GetChainInfo(ev,CHAININFO_TRIGGERING_LOCATION)
+	if tl==LOCATION_ALL and re:GetHandler()~=e:GetHandler() and not re:GetHandler():IsSetCard(0xe71) then
+		Duel.NegateEffect(ev)
+	end
+end
+
+--making
+function kaos.chaosmaking(c)
+local e3=Effect.CreateEffect(c)
+	e3:SetDescription(aux.Stringid(c:GetOriginalCode(),0))
+	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
+	e3:SetRange(LOCATION_ALL)
+	e3:SetCode(EVENT_PREDRAW+EVENT_PHASE_START)
+	e3:SetCountLimit(1)
+	e3:SetOperation(kaos.chaosmakeop)
+	c:RegisterEffect(e3)
+end
+
+function kaos.chaosmakeop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	local p=Duel.GetTurnPlayer()
+	local token=Duel.CreateToken(tp,c:GetOriginalCode())
+		Duel.SendtoHand(token,nil,REASON_RULE)
+		Duel.ConfirmCards(1-p,token)
+end
+
+--atk/def increase
+function kaos.chaosatkdef(c)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_FIELD)
+	e2:SetCode(EFFECT_UPDATE_ATTACK)
+	e2:SetRange(LOCATION_ALL)
+	e2:SetTargetRange(LOCATION_ONFIELD,0)
+	e2:SetTarget(aux.TargetBoolFunction(Card.IsSetCard,0xe71))
+	e2:SetValue(1000)
+	c:RegisterEffect(e2)
+	--DEF increase
+	local e3=e2:Clone()
+	e3:SetCode(EFFECT_UPDATE_DEFENSE)
+	c:RegisterEffect(e3)
+end
+
 --none
 --페이탈에러
 --DATA : COMPLEX NUMBER
@@ -1023,6 +1139,62 @@ end
 			return false
 		end
 		return iftype(c,bit.bor(t,TYPE_FUSION)-TYPE_FUSION)
+	end
+	return iftype(c,t)
+end
+
+--"그거"
+--this is not xyz monster
+	local type=Card.GetType
+	Card.GetType=function(c)
+	if c.CardType_kiniro then
+		return bit.bor(type(c),TYPE_XYZ)-TYPE_XYZ
+	end
+	return type(c)
+end
+--
+	local otype=Card.GetOriginalType
+	Card.GetOriginalType=function(c)
+	if c.CardType_kiniro then
+		return bit.bor(otype(c),TYPE_XYZ)-TYPE_XYZ
+	end
+	return otype(c)
+end
+--
+	local ftype=Card.GetFusionType
+	Card.GetFusionType=function(c)
+	if c.CardType_kiniro then
+		return bit.bor(ftype(c),TYPE_XYZ)-TYPE_XYZ
+	end
+	return ftype(c)
+end
+--
+	local ptype=Card.GetPreviousTypeOnField
+	Card.GetPreviousTypeOnField=function(c)
+	if c.CardType_kiniro then
+		return bit.bor(ptype(c),TYPE_XYZ)-TYPE_XYZ
+	end
+	return ptype(c)
+end
+--
+	local itype=Card.IsType
+	Card.IsType=function(c,t)
+	if c.CardType_kiniro then
+		if t==TYPE_XYZ then
+			return false
+		end
+		return itype(c,bit.bor(t,TYPE_XYZ)-TYPE_XYZ)
+	end
+	return itype(c,t)
+end
+--
+	local iftype=Card.IsFusionType
+	Card.IsFusionType=function(c,t)
+	if c.CardType_kiniro then
+		if t==TYPE_XYZ then
+			return false
+		end
+		return iftype(c,bit.bor(t,TYPE_XYZ)-TYPE_XYZ)
 	end
 	return iftype(c,t)
 end

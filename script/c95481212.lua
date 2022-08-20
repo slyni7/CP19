@@ -70,7 +70,9 @@ end
 function c95481212.tdop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
 	local g=Duel.SelectMatchingCard(tp,c95481212.tdfilter,tp,LOCATION_HAND+LOCATION_DECK+LOCATION_REMOVED,0,1,1,nil)
-	if g:GetCount()>0 then
-		Duel.SendtoDeck(g,1-tp,2,REASON_EFFECT)
+	local tc=g:GetFirst()
+	if tc and Duel.SendtoDeck(tc,1-tp,2,REASON_EFFECT)~=0 then
+		Duel.ShuffleDeck(1-tp)
+		tc:ReverseInDeck()
 	end
 end

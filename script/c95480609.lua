@@ -1,7 +1,7 @@
 --이레귤러: 서스펜션
 function c95480609.initial_effect(c)
 	--synchro summon
-	aux.AddSynchroProcedure(c,aux.FilterBoolFunctionEx(Card.IsRace,RACE_PSYCHO),1,1,aux.NonTuner(nil),1,99)
+	aux.AddSynchroProcedure(c,aux.FilterBoolFunction(Card.IsRace,RACE_PSYCHO),aux.NonTuner(nil),1)
 	c:EnableReviveLimit()
 	--battle indes
 	local e1=Effect.CreateEffect(c)

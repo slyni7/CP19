@@ -1,6 +1,5 @@
 --4
 function c112600114.initial_effect(c)
-	c:SetSPSummonOnce(112600114)
 	--extra summon
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)

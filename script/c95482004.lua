@@ -13,7 +13,7 @@ function c95482004.initial_effect(c)
 	Duel.AddCustomActivityCounter(95482004,ACTIVITY_CHAIN,c95482004.chainfilter)
 end
 function c95482004.chainfilter(re,tp,cid)
-	return not (re:GetHandler():IsSetCard(0xd40) and re:IsHasType(EFFECT_TYPE_ACTIVATE))
+	return not (re:GetHandler():IsSetCard(0xd40) and re:IsHasType(EFFECT_TYPE_ACTIVATE) and re:GetActiveType()==TYPE_SPELL+TYPE_QUICKPLAY)
 end
 function c95482004.cost(e,tp,eg,ep,ev,re,r,rp,chk)
    if chk==0 then return Duel.GetCustomActivityCount(95482004,tp,ACTIVITY_CHAIN)<3 end

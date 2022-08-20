@@ -15,12 +15,11 @@ function c112600041.initial_effect(c)
 	c:RegisterEffect(e3)
 	--special summon
 	local e4=Effect.CreateEffect(c)
-	e4:SetDescription(aux.Stringid(112600041,0))
+	e4:SetDescription(aux.Stringid(112600041,1))
 	e4:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e4:SetType(EFFECT_TYPE_IGNITION)
 	e4:SetRange(LOCATION_REMOVED+LOCATION_GRAVE)
 	e4:SetCountLimit(1,112600041)
-	e4:SetCondition(c112600041.spcon2)
 	e4:SetTarget(c112600041.sptg2)
 	e4:SetOperation(c112600041.spop2)
 	c:RegisterEffect(e4)
@@ -38,9 +37,6 @@ function c112600041.tgop(e,tp,eg,ep,ev,re,r,rp)
 	if g:GetCount()>0 then
 		Duel.SendtoGrave(g,REASON_EFFECT)
 	end
-end
-function c112600041.spcon2(e,tp,eg,ep,ev,re,r,rp)
-	return bit.band(r,REASON_EFFECT+REASON_BATTLE)~=0
 end
 function c112600041.spfilter2(c,e,tp)
 	return c:IsSetCard(0x1e7e) and not c:IsCode(112600041) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)

@@ -73,13 +73,14 @@ function cm.rmop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if tc:IsRelateToEffect(e) then
 		Duel.Remove(tc,POS_FACEUP,REASON_EFFECT)
+		Duel.BreakEffect()
 		Duel.Destroy(e:GetHandler(),REASON_EFFECT)
 	end
 end
 
 --tohand
 function cm.thfilter(c)
-	return c:IsSetCard(0xe90) and c:IsAbleToHand()
+	return c:IsSetCard(0xe90) or c:IsSetCard(0xe70) and c:IsAbleToHand()
 end
 function cm.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(cm.thfilter,tp,LOCATION_DECK,0,1,nil) end

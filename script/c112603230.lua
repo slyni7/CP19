@@ -2,7 +2,14 @@
 local m=112603230
 local cm=_G["c"..m]
 function cm.initial_effect(c)
-
+	c:EnableReviveLimit()
+	--Special summon limit
+	local e0=Effect.CreateEffect(c)
+	e0:SetType(EFFECT_TYPE_SINGLE)
+	e0:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+	e0:SetCode(EFFECT_SPSUMMON_CONDITION)
+	e0:SetValue(aux.FALSE)
+	c:RegisterEffect(e0)
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE)
 	e2:SetCode(EFFECT_CANNOT_DISABLE_SPSUMMON)

@@ -11,6 +11,9 @@ function cm.initial_effect(c)
 	e1:SetTarget(cm.sptg)
 	e1:SetOperation(cm.spop)
 	c:RegisterEffect(e1)
+	local e3=e1:Clone()
+	e3:SetCode(EVENT_SPSUMMON_SUCCESS)
+	c:RegisterEffect(e3)
 	--destroy
 	kaos.neverworld(c)
 	--Search

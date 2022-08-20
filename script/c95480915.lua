@@ -31,9 +31,9 @@ function c95480915.initial_effect(c)
 	--remove
 	local e1=Effect.CreateEffect(c)
 	e1:SetCategory(CATEGORY_REMOVE)
-	e1:SetCode(EVENT_BATTLE_DAMAGE)
-	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
-	e1:SetCondition(c95480915.damcon)
+	e1:SetCode(EVENT_SPSUMMON_SUCCESS)
+	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+	e1:SetRange(LOCATION_MZONE)
 	e1:SetTarget(c95480915.damtg)
 	e1:SetOperation(c95480915.damop)
 	c:RegisterEffect(e1)
@@ -45,24 +45,24 @@ function c95480915.initial_effect(c)
 	e4:SetValue(aux.ritlimit)
 	c:RegisterEffect(e4)
 end
-function c95480915.damcon(e,tp,eg,ep,ev,re,r,rp)
-	return ep~=tp
+function c95480915.filter(c,tp)
+	return c:IsSummonPlayer(1-tp) and c:IsSummonLocation(LOCATION_EXTRA)
+		and c:IsAbleToRemove(tp,POS_FACEDOWN) and c:IsLocation(LOCATION_MZONE)
 end
 function c95480915.damtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then
-		return Duel.IsExistingMatchingCard(Card.IsAbleToRemove,tp,0,LOCATION_EXTRA,1,nil)
-	end
-	Duel.SetOperationInfo(0,CATEGORY_REMOVE,nil,1,tp,LOCATION_EXTRA)
+	local g=eg:Filter(c95480915.filter,nil,tp)
+	local ct=g:GetCount()
+	if chk==0 then return ct>0 end
+	Duel.SetTargetCard(eg)
+	Duel.SetOperationInfo(0,CATEGORY_REMOVE,g,ct,0,0)
 end
 function c95480915.damop(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(Card.IsAbleToRemove,tp,0,LOCATION_EXTRA,nil)
-	if #g>0 then
-		Duel.ConfirmCards(tp,g)
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
-		local rg=g:Select(tp,1,1,nil)
-		Duel.Remove(rg,POS_FACEDOWN,REASON_EFFECT)
+	local g=eg:Filter(c95480915.filter,nil,tp):Filter(Card.IsRelateToEffect,nil,e)
+	if g:GetCount()>0 then
+		Duel.Remove(g,POS_FACEDOWN,REASON_EFFECT)
 	end
 end
+
 function c95480915.pcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IsExistingMatchingCard(Card.IsSetCard,tp,LOCATION_PZONE,0,1,e:GetHandler(),0xd42)
 end

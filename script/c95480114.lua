@@ -8,19 +8,10 @@ function c95480114.initial_effect(c)
 	e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e1:SetCountLimit(1,95480114+EFFECT_COUNT_CODE_OATH)
 	e1:SetHintTiming(0,TIMINGS_CHECK_MONSTER+TIMING_END_PHASE)
+	e1:SetCost(c95480114.cost)
 	e1:SetTarget(c95480114.target)
 	e1:SetOperation(c95480114.activate)
 	c:RegisterEffect(e1)
-	--search
-	local e2=Effect.CreateEffect(c)
-	e2:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
-	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
-	e2:SetCode(EVENT_DESTROYED)
-	e2:SetProperty(EFFECT_FLAG_DELAY)
-	e2:SetCondition(c95480114.thcon)
-	e2:SetTarget(c95480114.thtg)
-	e2:SetOperation(c95480114.thop)
-	c:RegisterEffect(e2)
 	if not c95480114.global_check then
 		c95480114.global_check=true
 		local ge1=Effect.CreateEffect(c)
@@ -60,42 +51,76 @@ function c95480114.valcheck(e,c)
 		c:RegisterFlagEffect(95480000,RESET_EVENT+0x4fe0000,0,1)
 	end
 end
-
-function c95480114.filter(c)
+function c95480114.cfilter(c)
+	return c:IsType(TYPE_MONSTER) and c:IsAbleToRemoveAsCost() and c:IsSetCard(0xd5f) 
+end
+function c95480114.cost(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(c95480114.cfilter,tp,LOCATION_GRAVE,0,1,nil) end
+	if e:GetHandler():IsStatus(STATUS_ACT_FROM_HAND) then
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
+		local g=Duel.SelectMatchingCard(tp,c95480114.cfilter,tp,LOCATION_GRAVE,0,1,1,nil)
+		Duel.Remove(g,POS_FACEUP,REASON_COST)
+	end
+end
+function c95480114.actfilter(c)
 	return c:IsFaceup() and c:GetFlagEffect(95480000)~=0
 end
-function c95480114.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	local ct=Duel.GetMatchingGroupCount(c95480114.filter,tp,LOCATION_MZONE,0,nil)
-	if chk==0 then return Duel.IsExistingMatchingCard(aux.TRUE,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,nil) and ct>0 end
-	local g=Duel.GetMatchingGroup(aux.TRUE,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil)
-	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,1,0,0)
+function c95480114.condition(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.IsExistingMatchingCard(c95480114.actfilter,e:GetHandlerPlayer(),LOCATION_MZONE,0,1,nil)
+end
+function c95480114.target(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(aux.NegateEffectMonsterFilter,tp,0,LOCATION_MZONE,1,nil) end
+	Duel.SetOperationInfo(0,CATEGORY_DISABLE,nil,1,0,0)
+	Duel.SetOperationInfo(0,CATEGORY_DESTROY,nil,1,0,0)
 end
 function c95480114.activate(e,tp,eg,ep,ev,re,r,rp)
-	local ct=Duel.GetMatchingGroupCount(c95480114.filter,tp,LOCATION_MZONE,0,nil)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
-	local g=Duel.SelectMatchingCard(tp,aux.TRUE,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,ct,nil)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DISABLE)
+	local g=Duel.SelectMatchingCard(tp,aux.NegateEffectMonsterFilter,tp,0,LOCATION_MZONE,1,1,nil)
 	if g:GetCount()>0 then
-		Duel.HintSelection(g)
-		Duel.Destroy(g,REASON_EFFECT)
+		local tc=g:GetFirst()
+		local e1=Effect.CreateEffect(e:GetHandler())
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+		e1:SetCode(EFFECT_DISABLE)
+		e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
+		tc:RegisterEffect(e1)
+		local e2=Effect.CreateEffect(e:GetHandler())
+		e2:SetType(EFFECT_TYPE_SINGLE)
+		e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+		e2:SetCode(EFFECT_DISABLE_EFFECT)
+		e2:SetValue(RESET_TURN_SET)
+		e2:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
+		tc:RegisterEffect(e2)
+		Duel.AdjustInstantly()
+		Duel.NegateRelatedChain(tc,RESET_TURN_SET)
+		if Duel.Destroy(tc,REASON_EFFECT)~=0 then
+			local e3=Effect.CreateEffect(e:GetHandler())
+			e3:SetType(EFFECT_TYPE_FIELD)
+			e3:SetCode(EFFECT_DISABLE)
+			e3:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
+			e3:SetTarget(c95480114.distg)
+			e3:SetLabelObject(tc)
+			e3:SetReset(RESET_PHASE+PHASE_END)
+			Duel.RegisterEffect(e3,tp)
+			local e4=Effect.CreateEffect(e:GetHandler())
+			e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+			e4:SetCode(EVENT_CHAIN_SOLVING)
+			e4:SetCondition(c95480114.discon)
+			e4:SetOperation(c95480114.disop)
+			e4:SetLabelObject(tc)
+			e4:SetReset(RESET_PHASE+PHASE_END)
+			Duel.RegisterEffect(e4,tp)
+		end
 	end
 end
-function c95480114.thcon(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	return c:IsReason(REASON_EFFECT) and c:IsPreviousLocation(LOCATION_ONFIELD) and c:IsPreviousPosition(POS_FACEDOWN)
+function c95480114.distg(e,c)
+	local tc=e:GetLabelObject()
+	return c:IsOriginalCodeRule(tc:GetOriginalCodeRule())
 end
-function c95480114.thfilter(c)
-	return c:IsSetCard(0xd5f) and c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsAbleToHand() and not c:IsCode(95480114)
+function c95480114.discon(e,tp,eg,ep,ev,re,r,rp)
+	local tc=e:GetLabelObject()
+	return re:IsActiveType(TYPE_MONSTER) and re:GetHandler():IsOriginalCodeRule(tc:GetOriginalCodeRule())
 end
-function c95480114.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(c95480114.thfilter,tp,LOCATION_DECK,0,1,nil) end
-	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
+function c95480114.disop(e,tp,eg,ep,ev,re,r,rp)
+	Duel.NegateEffect(ev)
 end
-function c95480114.thop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-	local g=Duel.SelectMatchingCard(tp,c95480114.thfilter,tp,LOCATION_DECK,0,1,1,nil)
-	if g:GetCount()>0 then
-		Duel.SendtoHand(g,nil,REASON_EFFECT)
-		Duel.ConfirmCards(1-tp,g)
-	end
-end
-

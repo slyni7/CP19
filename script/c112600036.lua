@@ -84,11 +84,14 @@ function c112600036.op(e,tp,eg,ep,ev,re,r,rp)
 			Duel.ClearTargetCard()
 			e:SetCategory(te:GetCategory())
 			e:SetProperty(te:GetProperty())
+			local aaa=LOCATION_SZONE
+			if tc:IsType(TYPE_FIELD) then
+				aaa=LOCATION_FZONE end
 			if bit.band(tpe,TYPE_FIELD)~=0 then
-				local of=Duel.GetFieldCard(tp,LOCATION_SZONE,5)
+				local of=Duel.GetFieldCard(tp,aaa,5)
 				if of and Duel.Destroy(of,REASON_RULE)==0 then Duel.SendtoGrave(tc,REASON_RULE) end
 			end
-			Duel.MoveToField(tc,tp,tp,LOCATION_SZONE,POS_FACEUP,true)
+			Duel.MoveToField(tc,tp,tp,aaa,POS_FACEUP,true)
 		    Duel.Hint(HINT_CARD,0,tc:GetCode())
 			tc:CreateEffectRelation(te)
 			if bit.band(tpe,TYPE_EQUIP+TYPE_CONTINUOUS+TYPE_FIELD)==0 then

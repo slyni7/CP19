@@ -37,7 +37,7 @@ function c112600040.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function c112600040.ssfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0xe7e) and c:IsType(TYPE_MONSTER) and not c:IsCode(112600039)
+	return c:IsFaceup() and c:IsSetCard(0xe7e) and c:IsType(TYPE_MONSTER) and not c:IsCode(112600040)
 end
 function c112600040.sscon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IsExistingMatchingCard(c112600040.ssfilter,tp,LOCATION_MZONE,0,1,nil)

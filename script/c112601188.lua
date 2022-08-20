@@ -2,42 +2,43 @@
 local m=112601188
 local cm=_G["c"..m]
 function cm.initial_effect(c)
-	--atk
-	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringid(m,0))
-	e1:SetCategory(CATEGORY_ATKCHANGE)
-	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
-	e1:SetCode(EVENT_BATTLE_CONFIRM)
-	e1:SetRange(LOCATION_MZONE)
-	e1:SetCountLimit(1)
-	e1:SetCondition(cm.atkcon1)
-	e1:SetOperation(cm.atkop1)
-	c:RegisterEffect(e1)
+	--negate
+	local e3=Effect.CreateEffect(c)
+	e3:SetCategory(CATEGORY_NEGATE+CATEGORY_REMOVE+CATEGORY_TOGRAVE)
+	e3:SetDescription(aux.Stringid(m,0))
+	e3:SetType(EFFECT_TYPE_QUICK_O)
+	e3:SetCode(EVENT_CHAINING)
+	e3:SetRange(LOCATION_MZONE)
+	e3:SetCountLimit(1,m)
+	e3:SetCondition(cm.negcon)
+	e3:SetTarget(cm.negtg)
+	e3:SetOperation(cm.negop)
+	c:RegisterEffect(e3)
 	--destroy
 	kaos.neverworld(c)
 end
 
---atk
-function cm.atkcon1(e,tp,eg,ep,ev,re,r,rp)
-	local a=Duel.GetAttacker()
-	local d=a:GetBattleTarget()
-	if a:IsControler(1-tp) then a,d=d,a end
-	return a and d and a:IsFaceup() and a:IsRelateToBattle() and a:IsSetCard(0xe90)
-		and d:IsFaceup() and d:IsRelateToBattle() and d:GetAttack()>0 and a:GetControler()~=d:GetControler()
+--negate
+function cm.negcon(e,tp,eg,ep,ev,re,r,rp)
+	return rp~=tp and Duel.IsChainNegatable(ev)
 end
-function cm.atkop1(e,tp,ep,ev,re,r,rp)
-	local a=Duel.GetAttacker()
-	local d=a:GetBattleTarget()
-	if a:IsControler(1-tp) then a,d=d,a end
-	if e:GetHandler():IsRelateToEffect(e)
-		and d:IsFaceup() and d:IsRelateToBattle() then
-		local e1=Effect.CreateEffect(e:GetHandler())
-		e1:SetType(EFFECT_TYPE_SINGLE)
-		e1:SetCode(EFFECT_UPDATE_ATTACK)
-		e1:SetValue(-1500)
-		e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
-		d:RegisterEffect(e1)
-		Duel.BreakEffect()
-		Duel.Destroy(c,REASON_EFFECT)
+function cm.filter(c,e,tp)
+	return c:IsSetCard(0xe90) and not c:IsCode(m) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+end
+function cm.negtg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
+		and Duel.IsExistingMatchingCard(cm.filter,tp,LOCATION_GRAVE,0,1,nil,e,tp) end
+	Duel.SetOperationInfo(0,CATEGORY_NEGATE,eg,1,0,0)
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_GRAVE)
+end
+function cm.negop(e,tp,eg,ep,ev,re,r,rp)
+	if Duel.NegateActivation(ev) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 then
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+		local g=Duel.SelectMatchingCard(tp,aux.NecroValleyFilter(cm.filter),tp,LOCATION_GRAVE,0,1,1,nil,e,tp)
+		if #g>0 then
+			Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP)
+			Duel.BreakEffect()
+			Duel.Destroy(e:GetHandler(),REASON_EFFECT)
+		end
 	end
 end

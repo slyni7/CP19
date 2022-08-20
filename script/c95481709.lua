@@ -31,16 +31,16 @@ function c95481709.initial_effect(c)
 end
 
 function c95481709.fil1(c)
-	return c:IsSetCard(0xd5f) and c:IsType(TYPE_MONSTER) and c:IsAbleToHand()
+	return c:IsSetCard(0xd50) and c:IsAbleToHand()
 end
 function c95481709.tg1(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(c95481709.filter,tp,LOCATION_DECK,0,3,nil) end
+	if chk==0 then return Duel.IsExistingMatchingCard(c95481709.fil1,tp,LOCATION_DECK,0,3,nil) end
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
 end
 function c95481709.op1(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsRelateToEffect(e) then return end
-	local g=Duel.GetMatchingGroup(c95481709.filter,tp,LOCATION_DECK,0,nil)
+	local g=Duel.GetMatchingGroup(c95481709.fil1,tp,LOCATION_DECK,0,nil)
 	if g:GetCount()>=3 then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
 		local sg=g:Select(tp,3,3,nil)
@@ -52,13 +52,13 @@ function c95481709.op1(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 
-function c95481709.plcfilter(c,tp)
-	return c:IsPreviousSetCard(0x2034) and c:IsPreviousControler(tp)
-		and c:IsPreviousPosition(POS_FACEUP) and c:GetReasonPlayer()==1-tp
-		and c:IsReason(REASON_EFFECT+REASON_BATTLE) and c:IsPreviousLocation(LOCATION_MZONE)
+function c95481709.plcfilter(c,tp,rp)
+	return c:IsPreviousSetCard(0xd50) and c:IsPreviousControler(tp)
+		and c:IsPreviousPosition(POS_FACEUP) and c:IsPreviousLocation(LOCATION_MZONE)
+		and (c:IsReason(REASON_BATTLE) or (rp==1-tp and c:IsReason(REASON_EFFECT)))
 end
 function c95481709.con3(e,tp,eg,ep,ev,re,r,rp)
-	return eg:IsExists(c95481709.plcfilter,1,nil,tp)
+	return eg:IsExists(c95481709.plcfilter,1,nil,tp,rp)
 end
 function c95481709.fil3(c,e,tp)
 	return c:IsSetCard(0xd50) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)

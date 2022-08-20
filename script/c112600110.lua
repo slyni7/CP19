@@ -1,6 +1,5 @@
 --0
 function c112600110.initial_effect(c)
-	c:SetSPSummonOnce(112600110)
 	--damage
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(112600110,0))

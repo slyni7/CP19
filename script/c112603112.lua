@@ -54,7 +54,6 @@ function cm.initial_effect(c)
 	e2:SetRange(LOCATION_MZONE)
 	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e2:SetCountLimit(1,m+2)
-	e2:SetCost(cm.lvcost)
 	e2:SetTarget(cm.lvtg)
 	e2:SetOperation(cm.lvop)
 	c:RegisterEffect(e2)
@@ -99,7 +98,7 @@ function cm.hspcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_SYNCHRO)
 end
 function cm.hspfilter(c,e,tp)
-	return (c:IsType(TYPE_PENDULUM) and c:IsLevelBelow(3)) or (c:IsLevelAbove(4) and c:IsLevelBelow(7) and c:IsType(TYPE_TUNER)) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP_DEFENSE)
+	return (c:IsType(TYPE_TUNER) and c:IsLevelBelow(3)) or (c:IsLevelAbove(4) and c:IsLevelBelow(7) and not c:IsType(TYPE_TUNER)) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP_DEFENSE)
 end
 function cm.hsptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0

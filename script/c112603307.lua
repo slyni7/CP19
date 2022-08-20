@@ -18,15 +18,60 @@ function cm.initial_effect(c)
 	c:RegisterEffect(e1)
 	--spsummon
 	local e2=Effect.CreateEffect(c)
-	e2:SetDescription(aux.Stringid(m,1))
+	e2:SetDescription(aux.Stringid(m,6))
 	e2:SetCategory(CATEGORY_SPECIAL_SUMMON)
-	e2:SetType(EFFECT_TYPE_IGNITION)
+	e2:SetType(EFFECT_TYPE_QUICK_O)
 	e2:SetRange(LOCATION_MZONE)
-	e2:SetCountLimit(1,m)
-	e2:SetCost(cm.spcost)
+	e2:SetCode(EVENT_FREE_CHAIN)
+	e2:SetCost(cm.spcost1)
 	e2:SetTarget(cm.sptg)
 	e2:SetOperation(cm.spop)
+	e2:SetHintTiming(0,TIMING_END_PHASE)
 	c:RegisterEffect(e2)
+	local e7=Effect.CreateEffect(c)
+	e7:SetDescription(aux.Stringid(m,7))
+	e7:SetCategory(CATEGORY_SPECIAL_SUMMON)
+	e7:SetType(EFFECT_TYPE_QUICK_O)
+	e7:SetRange(LOCATION_MZONE)
+	e7:SetCode(EVENT_FREE_CHAIN)
+	e7:SetCost(cm.spcost2)
+	e7:SetTarget(cm.sptg2)
+	e7:SetOperation(cm.spop2)
+	e7:SetHintTiming(0,TIMING_END_PHASE)
+	c:RegisterEffect(e7)
+	local e8=Effect.CreateEffect(c)
+	e8:SetDescription(aux.Stringid(m,8))
+	e8:SetCategory(CATEGORY_SPECIAL_SUMMON)
+	e8:SetType(EFFECT_TYPE_QUICK_O)
+	e8:SetRange(LOCATION_MZONE)
+	e8:SetCode(EVENT_FREE_CHAIN)
+	e8:SetCost(cm.spcost3)
+	e8:SetTarget(cm.sptg3)
+	e8:SetOperation(cm.spop3)
+	e8:SetHintTiming(0,TIMING_END_PHASE)
+	c:RegisterEffect(e8)
+	local e9=Effect.CreateEffect(c)
+	e9:SetDescription(aux.Stringid(m,9))
+	e9:SetCategory(CATEGORY_SPECIAL_SUMMON)
+	e9:SetType(EFFECT_TYPE_QUICK_O)
+	e9:SetRange(LOCATION_MZONE)
+	e9:SetCode(EVENT_FREE_CHAIN)
+	e9:SetCost(cm.spcost4)
+	e9:SetTarget(cm.sptg4)
+	e9:SetOperation(cm.spop4)
+	e9:SetHintTiming(0,TIMING_END_PHASE)
+	c:RegisterEffect(e9)
+	local e10=Effect.CreateEffect(c)
+	e10:SetDescription(aux.Stringid(m,10))
+	e10:SetCategory(CATEGORY_SPECIAL_SUMMON)
+	e10:SetType(EFFECT_TYPE_QUICK_O)
+	e10:SetRange(LOCATION_MZONE)
+	e10:SetCode(EVENT_FREE_CHAIN)
+	e10:SetCost(cm.spcost5)
+	e10:SetTarget(cm.sptg5)
+	e10:SetOperation(cm.spop5)
+	e10:SetHintTiming(0,TIMING_END_PHASE)
+	c:RegisterEffect(e10)
 	--material
 	local e3=Effect.CreateEffect(c)
 	e3:SetDescription(aux.Stringid(m,2))
@@ -57,81 +102,167 @@ function cm.drop(e,tp,eg,ep,ev,re,r,rp)
 end
 
 --spsummon
-function cm.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	e:SetLabel(10000)
-	return true
+
+function cm.spcost1(e,tp,eg,ep,ev,re,r,rp,chk)
+	local c=e:GetHandler()
+	if chk==0 then return c:CheckRemoveOverlayCard(tp,1,REASON_COST) and c:GetFlagEffect(m)==0 end
+	c:RemoveOverlayCard(tp,1,1,REASON_COST)
+	c:RegisterFlagEffect(m,RESET_CHAIN,0,1)
 end
-function cm.spfilter(c,e,tp,mc,rk)
-	if c:IsType(TYPE_XYZ) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_XYZ,tp,false,false)
-		and Duel.GetLocationCountFromEx(tp,tp,mc,c)>0 then
-		if rk then
-			return c:IsRank(rk)
-		else
-			local ct=c:GetRank()-mc:GetRank()
-			return ct>0 and ct<6 and mc:CheckRemoveOverlayCard(tp,ct,REASON_COST)
-		end
-	end
-	return false
+function cm.spcost2(e,tp,eg,ep,ev,re,r,rp,chk)
+	local c=e:GetHandler()
+	if chk==0 then return c:CheckRemoveOverlayCard(tp,2,REASON_COST) and c:GetFlagEffect(m)==0 end
+	c:RemoveOverlayCard(tp,2,2,REASON_COST)
+	c:RegisterFlagEffect(m,RESET_CHAIN,0,2)
+end
+function cm.spcost3(e,tp,eg,ep,ev,re,r,rp,chk)
+	local c=e:GetHandler()
+	if chk==0 then return c:CheckRemoveOverlayCard(tp,3,REASON_COST) and c:GetFlagEffect(m)==0 end
+	c:RemoveOverlayCard(tp,3,3,REASON_COST)
+	c:RegisterFlagEffect(m,RESET_CHAIN,0,3)
+end
+function cm.spcost4(e,tp,eg,ep,ev,re,r,rp,chk)
+	local c=e:GetHandler()
+	if chk==0 then return c:CheckRemoveOverlayCard(tp,4,REASON_COST) and c:GetFlagEffect(m)==0 end
+	c:RemoveOverlayCard(tp,4,4,REASON_COST)
+	c:RegisterFlagEffect(m,RESET_CHAIN,0,4)
+end
+function cm.spcost5(e,tp,eg,ep,ev,re,r,rp,chk)
+	local c=e:GetHandler()
+	if chk==0 then return c:CheckRemoveOverlayCard(tp,5,REASON_COST) and c:GetFlagEffect(m)==0 end
+	c:RemoveOverlayCard(tp,5,5,REASON_COST)
+	c:RegisterFlagEffect(m,RESET_CHAIN,0,5)
+end
+function cm.filter(c,e,tp,rk,pg)
+	return c:IsRank(rk+1) and e:GetHandler():IsCanBeXyzMaterial(c,tp)
+		and (#pg<=0 or pg:IsContains(e:GetHandler())) and Duel.GetLocationCountFromEx(tp,tp,e:GetHandler(),c)>0
+		and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_XYZ,tp,false,false)
 end
 function cm.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
-	local c=e:GetHandler()
 	if chk==0 then
-		if e:GetLabel()~=10000 then
-			return false
-		end
-		e:SetLabel(0)
-		return aux.MustMaterialCheck(c,tp,EFFECT_MUST_BE_XMATERIAL)
-			and Duel.IsExistingMatchingCard(cm.spfilter,tp,LOCATION_EXTRA,0,1,nil,e,tp,c)
+		local pg=aux.GetMustBeMaterialGroup(tp,Group.FromCards(e:GetHandler()),tp,nil,nil,REASON_XYZ)
+		return #pg<=1 and Duel.IsExistingMatchingCard(cm.filter,tp,LOCATION_EXTRA,0,1,nil,e,tp,e:GetHandler():GetRank(),pg)
 	end
-	local g=Duel.GetMatchingGroup(cm.spfilter,tp,LOCATION_EXTRA,0,nil,e,tp,c)
-	local rkt={}
-	local tc=g:GetFirst()
-	while tc do
-		local trk=tc:GetRank()-c:GetRank()
-		rkt[trk]=trk
-		tc=g:GetNext()
-	end
-	local pc=1
-	for i=1,5 do
-		if rkt[i] then
-			rkt[i]=nil
-			rkt[pc]=i
-			pc=pc+1
-		end
-	end
-	rkt[pc]=nil
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_XMATERIAL)
-	local ct=Duel.AnnounceNumber(tp,table.unpack(rkt))
-	c:RemoveOverlayCard(tp,ct,ct,REASON_COST)
-	local og=Duel.GetOperatedGroup()
-	og:KeepAlive()
-	e:SetLabelObject(og)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_EXTRA)
 end
 function cm.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if not aux.MustMaterialCheck(c,tp,EFFECT_MUST_BE_XMATERIAL) then
-		return
-	end
-	if c:IsFacedown() or not c:IsRelateToEffect(e) or c:IsControler(1-tp) or c:IsImmuneToEffect(e) then
-		return
-	end
+	if c:IsFacedown() or not c:IsRelateToEffect(e) or c:IsControler(1-tp) or c:IsImmuneToEffect(e) then return end
+	local pg=aux.GetMustBeMaterialGroup(tp,Group.FromCards(c),tp,nil,nil,REASON_XYZ)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local og=e:GetLabelObject()
-	local g=Duel.SelectMatchingCard(tp,cm.spfilter,tp,LOCATION_EXTRA,0,1,1,nil,e,tp,c,c:GetRank()+#og)
-	local tc=g:GetFirst()
-	if tc then
-		local mg=c:GetOverlayGroup()
-		if mg:GetCount()>0 then
-			Duel.Overlay(tc,mg)
-		end
-		tc:SetMaterial(Group.FromCards(c))
-		Duel.Overlay(tc,Group.FromCards(c))
-		Duel.SpecialSummon(tc,SUMMON_TYPE_XYZ,tp,tp,false,false,POS_FACEUP)
-		tc:CompleteProcedure()
+	local g=Duel.SelectMatchingCard(tp,cm.filter,tp,LOCATION_EXTRA,0,1,1,nil,e,tp,c:GetRank(),pg)
+	local sc=g:GetFirst()
+	if sc then
+		sc:SetMaterial(c)
+		Duel.Overlay(sc,c)
+		Duel.SpecialSummon(sc,SUMMON_TYPE_XYZ,tp,tp,false,false,POS_FACEUP)
+		sc:CompleteProcedure()
 	end
 end
-
+function cm.filter2(c,e,tp,rk,pg)
+	return c:IsRank(rk+2) and e:GetHandler():IsCanBeXyzMaterial(c,tp)
+		and (#pg<=0 or pg:IsContains(e:GetHandler())) and Duel.GetLocationCountFromEx(tp,tp,e:GetHandler(),c)>0
+		and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_XYZ,tp,false,false)
+end
+function cm.sptg2(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then
+		local pg=aux.GetMustBeMaterialGroup(tp,Group.FromCards(e:GetHandler()),tp,nil,nil,REASON_XYZ)
+		return #pg<=1 and Duel.IsExistingMatchingCard(cm.filter2,tp,LOCATION_EXTRA,0,1,nil,e,tp,e:GetHandler():GetRank(),pg)
+	end
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_EXTRA)
+end
+function cm.spop2(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	if c:IsFacedown() or not c:IsRelateToEffect(e) or c:IsControler(1-tp) or c:IsImmuneToEffect(e) then return end
+	local pg=aux.GetMustBeMaterialGroup(tp,Group.FromCards(c),tp,nil,nil,REASON_XYZ)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+	local g=Duel.SelectMatchingCard(tp,cm.filter2,tp,LOCATION_EXTRA,0,1,1,nil,e,tp,c:GetRank(),pg)
+	local sc=g:GetFirst()
+	if sc then
+		sc:SetMaterial(c)
+		Duel.Overlay(sc,c)
+		Duel.SpecialSummon(sc,SUMMON_TYPE_XYZ,tp,tp,false,false,POS_FACEUP)
+		sc:CompleteProcedure()
+	end
+end
+function cm.filter3(c,e,tp,rk,pg)
+	return c:IsRank(rk+3) and e:GetHandler():IsCanBeXyzMaterial(c,tp)
+		and (#pg<=0 or pg:IsContains(e:GetHandler())) and Duel.GetLocationCountFromEx(tp,tp,e:GetHandler(),c)>0
+		and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_XYZ,tp,false,false)
+end
+function cm.sptg3(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then
+		local pg=aux.GetMustBeMaterialGroup(tp,Group.FromCards(e:GetHandler()),tp,nil,nil,REASON_XYZ)
+		return #pg<=1 and Duel.IsExistingMatchingCard(cm.filter3,tp,LOCATION_EXTRA,0,1,nil,e,tp,e:GetHandler():GetRank(),pg)
+	end
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_EXTRA)
+end
+function cm.spop3(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	if c:IsFacedown() or not c:IsRelateToEffect(e) or c:IsControler(1-tp) or c:IsImmuneToEffect(e) then return end
+	local pg=aux.GetMustBeMaterialGroup(tp,Group.FromCards(c),tp,nil,nil,REASON_XYZ)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+	local g=Duel.SelectMatchingCard(tp,cm.filter3,tp,LOCATION_EXTRA,0,1,1,nil,e,tp,c:GetRank(),pg)
+	local sc=g:GetFirst()
+	if sc then
+		sc:SetMaterial(c)
+		Duel.Overlay(sc,c)
+		Duel.SpecialSummon(sc,SUMMON_TYPE_XYZ,tp,tp,false,false,POS_FACEUP)
+		sc:CompleteProcedure()
+	end
+end
+function cm.filter4(c,e,tp,rk,pg)
+	return c:IsRank(rk+4) and e:GetHandler():IsCanBeXyzMaterial(c,tp)
+		and (#pg<=0 or pg:IsContains(e:GetHandler())) and Duel.GetLocationCountFromEx(tp,tp,e:GetHandler(),c)>0
+		and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_XYZ,tp,false,false)
+end
+function cm.sptg4(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then
+		local pg=aux.GetMustBeMaterialGroup(tp,Group.FromCards(e:GetHandler()),tp,nil,nil,REASON_XYZ)
+		return #pg<=1 and Duel.IsExistingMatchingCard(cm.filter4,tp,LOCATION_EXTRA,0,1,nil,e,tp,e:GetHandler():GetRank(),pg)
+	end
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_EXTRA)
+end
+function cm.spop4(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	if c:IsFacedown() or not c:IsRelateToEffect(e) or c:IsControler(1-tp) or c:IsImmuneToEffect(e) then return end
+	local pg=aux.GetMustBeMaterialGroup(tp,Group.FromCards(c),tp,nil,nil,REASON_XYZ)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+	local g=Duel.SelectMatchingCard(tp,cm.filter4,tp,LOCATION_EXTRA,0,1,1,nil,e,tp,c:GetRank(),pg)
+	local sc=g:GetFirst()
+	if sc then
+		sc:SetMaterial(c)
+		Duel.Overlay(sc,c)
+		Duel.SpecialSummon(sc,SUMMON_TYPE_XYZ,tp,tp,false,false,POS_FACEUP)
+		sc:CompleteProcedure()
+	end
+end
+function cm.filter5(c,e,tp,rk,pg)
+	return c:IsRank(rk+5) and e:GetHandler():IsCanBeXyzMaterial(c,tp)
+		and (#pg<=0 or pg:IsContains(e:GetHandler())) and Duel.GetLocationCountFromEx(tp,tp,e:GetHandler(),c)>0
+		and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_XYZ,tp,false,false)
+end
+function cm.sptg5(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then
+		local pg=aux.GetMustBeMaterialGroup(tp,Group.FromCards(e:GetHandler()),tp,nil,nil,REASON_XYZ)
+		return #pg<=1 and Duel.IsExistingMatchingCard(cm.filter5,tp,LOCATION_EXTRA,0,1,nil,e,tp,e:GetHandler():GetRank(),pg)
+	end
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_EXTRA)
+end
+function cm.spop5(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	if c:IsFacedown() or not c:IsRelateToEffect(e) or c:IsControler(1-tp) or c:IsImmuneToEffect(e) then return end
+	local pg=aux.GetMustBeMaterialGroup(tp,Group.FromCards(c),tp,nil,nil,REASON_XYZ)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+	local g=Duel.SelectMatchingCard(tp,cm.filter5,tp,LOCATION_EXTRA,0,1,1,nil,e,tp,c:GetRank(),pg)
+	local sc=g:GetFirst()
+	if sc then
+		sc:SetMaterial(c)
+		Duel.Overlay(sc,c)
+		Duel.SpecialSummon(sc,SUMMON_TYPE_XYZ,tp,tp,false,false,POS_FACEUP)
+		sc:CompleteProcedure()
+	end
+end
 --material
 function cm.filter(c)
 	return c:IsSetCard(0x1e97) and c:IsCanOverlay() and not c:IsCode(m)

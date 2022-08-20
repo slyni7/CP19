@@ -12,16 +12,19 @@ function c112600192.initial_effect(c)
 	e3:SetCountLimit(1,112600192)
 	e3:SetOperation(c112600192.operation)
 	c:RegisterEffect(e3)
+	local e4=e3:Clone()
+	e4:SetCode(EVENT_SPSUMMON_SUCCESS)
+	c:RegisterEffect(e4)
 end
 function c112600192.filter(c,e,tp)
-	return c:IsSetCard(0xe8b) and not c:IsCode(112600192) and c:IsFaceup() and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return c:IsSetCard(0xe8b) and not c:IsCode(112600192) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function c112600192.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_GRAVE+LOCATION_EXTRA) and chkc:IsControler(tp) and c112600192.filter(chkc,e,tp) end
+	if chkc then return chkc:IsLocation(LOCATION_PZONE+LOCATION_GRAVE) and chkc:IsControler(tp) and c112600192.filter(chkc,e,tp) end
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and Duel.IsExistingTarget(c112600192.filter,tp,LOCATION_GRAVE+LOCATION_EXTRA,0,1,nil,e,tp) end
+		and Duel.IsExistingTarget(c112600192.filter,tp,LOCATION_PZONE+LOCATION_GRAVE,0,1,nil,e,tp) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectTarget(tp,c112600192.filter,tp,LOCATION_GRAVE+LOCATION_EXTRA,0,1,1,nil,e,tp)
+	local g=Duel.SelectTarget(tp,c112600192.filter,tp,LOCATION_PZONE+LOCATION_GRAVE,0,1,1,nil,e,tp)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g,1,0,0)
 end
 function c112600192.operation(e,tp,eg,ep,ev,re,r,rp)

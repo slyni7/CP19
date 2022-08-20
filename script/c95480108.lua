@@ -20,7 +20,6 @@ function c95480108.initial_effect(c)
 	--to hand
 	local e4=Effect.CreateEffect(c)
 	e4:SetDescription(aux.Stringid(95480101,0))
-	e4:SetCategory(CATEGORY_TOHAND)
 	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e4:SetProperty(EFFECT_FLAG_DELAY+EFFECT_FLAG_CARD_TARGET)
 	e4:SetCode(EVENT_SUMMON_SUCCESS)
@@ -36,26 +35,33 @@ end
 function c95480108.atkcon(e)
 	return e:GetHandler():IsLinkState()
 end
+
 function c95480108.thcon(e,tp,eg,ep,ev,re,r,rp)
 	local lg1=Duel.GetLinkedGroup(tp,1,1)
 	local lg2=Duel.GetLinkedGroup(1-tp,1,1)
 	lg1:Merge(lg2)
 	return lg1 and lg1:IsContains(e:GetHandler())
 end
-function c95480108.thfilter(c)
-	return (c:IsSetCard(0xd5a) or c:IsSetCard(0xd5f)) and not c:IsCode(95480108) 
-		and c:IsFaceup() and c:IsAbleToHand()
+function c95480108.setfilter(c,e,tp,mft,sft)
+	return (sft>0 and c:IsSSetable(true) or mft>0 and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEDOWN_DEFENSE))
+		and (c:IsFaceup() or c:IsLocation(LOCATION_DECK+LOCATION_GRAVE))
 end
 function c95480108.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chkc then return chkc:IsLocation(LOCATION_REMOVED) and chkc:IsControler(tp) and c95480108.thfilter(chkc) end
-	if chk==0 then return Duel.IsExistingTarget(c95480108.thfilter,tp,LOCATION_REMOVED,0,1,nil) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-	local sg=Duel.SelectTarget(tp,c95480108.thfilter,tp,LOCATION_REMOVED,0,1,1,nil)
-	Duel.SetOperationInfo(0,CATEGORY_TOHAND,sg,sg:GetCount(),0,0)
+	if chk==0 then
+		local mft=Duel.GetLocationCount(tp,LOCATION_MZONE)
+		local sft=Duel.GetLocationCount(tp,LOCATION_SZONE)
+		return Duel.IsExistingMatchingCard(c95480108.setfilter,tp,LOCATION_DECK+LOCATION_GRAVE+LOCATION_REMOVED,0,1,nil,e,tp,mft,sft)
+	end
 end
 function c95480108.thop(e,tp,eg,ep,ev,re,r,rp)
-	local tc=Duel.GetFirstTarget()
-	if tc and tc:IsRelateToEffect(e) then
-		Duel.SendtoHand(tc,nil,REASON_EFFECT)
+	local mft=Duel.GetLocationCount(tp,LOCATION_MZONE)
+	local sft=Duel.GetLocationCount(tp,LOCATION_SZONE)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SET)
+	local tc=Duel.SelectMatchingCard(tp,c95480108.setfilter,tp,LOCATION_DECK+LOCATION_GRAVE+LOCATION_REMOVED,0,1,1,tc1,e,tp,mft,sft):GetFirst()
+	if tc:IsType(TYPE_MONSTER) then
+		Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEDOWN_DEFENSE)
+	else
+		Duel.SSet(tp,tc,tp,false)
 	end
+	Duel.ConfirmCards(1-tp,tc)
 end

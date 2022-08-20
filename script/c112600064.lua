@@ -18,7 +18,7 @@ end
 --Activate
 function cm.filter(c,e,tp,lp)
 	if bit.band(c:GetType(),0x81)~=0x81 or not c:IsSetCard(0xe82) 
-		or not c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_RITUAL,tp,true,false) then return false end
+		or not c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_RITUAL,tp,true,true) then return false end
 	return lp>c:GetLevel()*300
 end
 function cm.target(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -38,7 +38,7 @@ function cm.activate(e,tp,eg,ep,ev,re,r,rp)
 	if tc then
 		Duel.PayLPCost(tp,tc:GetLevel()*300)
 		tc:SetMaterial(nil)
-		Duel.SpecialSummon(tc,SUMMON_TYPE_RITUAL,tp,tp,true,false,POS_FACEUP)
+		Duel.SpecialSummon(tc,SUMMON_TYPE_RITUAL,tp,tp,true,true,POS_FACEUP)
 		tc:CompleteProcedure()
 	end
 end

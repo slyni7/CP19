@@ -61,6 +61,7 @@ function c95481209.tdop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SendtoDeck(c,1-tp,2,REASON_EFFECT)
 	if not c:IsLocation(LOCATION_DECK) then return end
 	Duel.ShuffleDeck(1-tp)
+	c:ReverseInDeck()
 end
 
 function c95481209.spcon(e,tp,eg,ep,ev,re,r,rp)
@@ -74,15 +75,35 @@ function c95481209.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
 	if chk==0 then return true end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,c,1,0,0)
-	Duel.SetOperationInfo(0,CATEGORY_DRAW,nil,0,1-tp,2)
+	Duel.SetOperationInfo(0,CATEGORY_DRAW,nil,0,1-tp,1)
 end
 function c95481209.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsRelateToEffect(e) then return end
-	if Duel.SpecialSummon(c,0,tp,1-tp,false,false,POS_FACEUP_DEFENSE)~=0 then
-		Duel.Draw(1-tp,2,REASON_EFFECT)
+	if Duel.Draw(1-tp,1,REASON_EFFECT)~=0 then
+		Duel.SpecialSummon(c,0,tp,1-tp,false,false,POS_FACEUP_DEFENSE)
+	end
+	local e1=Effect.CreateEffect(e:GetHandler())
+	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e1:SetCode(EVENT_PHASE+PHASE_END)
+	e1:SetRange(LOCATION_HAND)
+	e1:SetCountLimit(1)
+	e1:SetCondition(c95481209.tgcon)
+	e1:SetOperation(c95481209.tgop)
+	e1:SetReset(RESET_PHASE+PHASE_END)
+	Duel.RegisterEffect(e1,tp)
+end
+function c95481209.tgcon(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	return c:GetControler()~=c:GetOwner()
+end
+function c95481209.tgop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	if c:IsRelateToEffect(e) then
+		Duel.SendtoGrave(c,REASON_EFFECT)
 	end
 end
+
 
 function c95481209.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetFieldGroupCount(tp,0,LOCATION_DECK)>0 end

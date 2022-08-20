@@ -53,14 +53,14 @@ function c112600206.initial_effect(c)
 	e1:SetOperation(c112600206.drop)
 	c:RegisterEffect(e1)
 	--destroy replace
-	local e9=Effect.CreateEffect(c)
-	e9:SetType(EFFECT_TYPE_CONTINUOUS+EFFECT_TYPE_FIELD)
-	e9:SetCode(EFFECT_DESTROY_REPLACE)
-	e9:SetRange(LOCATION_MZONE)
-	e9:SetTarget(c112600206.desreptg)
-	e9:SetValue(c112600206.desrepval)
-	e9:SetOperation(c112600206.desrepop)
-	c:RegisterEffect(e9)
+	local e20=Effect.CreateEffect(c)
+	e20:SetType(EFFECT_TYPE_CONTINUOUS+EFFECT_TYPE_SINGLE)
+	e20:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e20:SetCode(EFFECT_DESTROY_REPLACE)
+	e20:SetRange(LOCATION_MZONE)
+	e20:SetTarget(c112600206.desreptg)
+	e20:SetOperation(c112600206.desrepop)
+	c:RegisterEffect(e20)
 end
 c112600206.pendulum_level=1
 function c112600206.matfilter(c)
@@ -105,32 +105,26 @@ function c112600206.drop(e,tp,eg,ep,ev,re,r,rp)
 	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
 	Duel.Draw(p,d,REASON_EFFECT)
 end
-function c112600206.repfilter(c,tp)
-	return c:IsControler(tp) and c:IsLocation(LOCATION_ONFIELD)
-		and c:IsReason(REASON_BATTLE+REASON_EFFECT) and not c:IsReason(REASON_REPLACE)
-end
-function c112600206.desfilter(c,e,tp)
-	return c:IsControler(tp) and c:IsType(TYPE_MONSTER)
-		and c:IsDestructable(e) and not c:IsStatus(STATUS_DESTROY_CONFIRMED+STATUS_BATTLE_DESTROYED)
+function c112600206.repfilter(c,e,tp)
+	return c:IsControler(tp) and c:IsLocation(LOCATION_MZONE)
+		and c:IsDestructable(e) and not c:IsStatus(STATUS_DESTROY_CONFIRMED)
 end
 function c112600206.desreptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
-	local g=c:GetLinkedGroup()
-	if chk==0 then return eg:IsExists(c112600206.repfilter,1,nil,tp)
-		and g:IsExists(c112600206.desfilter,1,nil,e,tp) end
+	if chk==0 then
+		local g=c:GetLinkedGroup()
+		return c:IsReason(REASON_EFFECT+REASON_BATTLE) and not c:IsReason(REASON_REPLACE) and g:IsExists(c78437364.repfilter,1,nil,e,tp)
+	end
 	if Duel.SelectEffectYesNo(tp,c,96) then
+		local g=c:GetLinkedGroup()
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESREPLACE)
-		local sg=g:FilterSelect(tp,c112600206.desfilter,1,1,nil,e,tp)
+		local sg=g:FilterSelect(tp,c112600206.repfilter,1,1,nil,e,tp)
 		e:SetLabelObject(sg:GetFirst())
 		sg:GetFirst():SetStatus(STATUS_DESTROY_CONFIRMED,true)
 		return true
 	else return false end
 end
-function c112600206.desrepval(e,c)
-	return c112600206.repfilter(c,e:GetHandlerPlayer())
-end
 function c112600206.desrepop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.Hint(HINT_CARD,1-tp,112600206)
 	local tc=e:GetLabelObject()
 	tc:SetStatus(STATUS_DESTROY_CONFIRMED,false)
 	Duel.Destroy(tc,REASON_EFFECT+REASON_REPLACE)

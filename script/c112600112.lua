@@ -1,6 +1,5 @@
 --2
 function c112600112.initial_effect(c)
-	c:SetSPSummonOnce(112600112)
 	--search
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(112600112,1))

@@ -130,7 +130,7 @@ end
 
 function c95481707.con4(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return c:IsReason(REASON_EFFECT+REASON_BATTLE) and rp==1-tp and c:IsPreviousControler(tp)
+	return (c:IsReason(REASON_BATTLE) or (rp==1-tp and c:IsReason(REASON_EFFECT))) and c:IsPreviousControler(tp)
 		and c:IsPreviousLocation(LOCATION_ONFIELD) and c:IsPreviousPosition(POS_FACEUP)
 end
 function c95481707.fil4(c,e,tp)

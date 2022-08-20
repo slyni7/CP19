@@ -150,7 +150,7 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 		end
 		tc:CompleteProcedure()
 		if mat:FilterCount(Card.IsCanBeSpecialSummoned,nil,e,0,tp,false,false)==#mat
-			and Duel.GetLocationCount(tp,LOCATION_MZONE)>=#mat then
+			and Duel.GetLocationCount(tp,LOCATION_MZONE)>=#mat and Duel.SelectYesNo(tp,aux.Stringid(95481809,2)) then
 			Duel.SpecialSummon(mat,0,tp,tp,false,false,POS_FACEUP)
 			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 			local xc=Duel.SelectMatchingCard(tp,cm.tfil14,tp,LOCATION_EXTRA,0,nil,1,1,mat):GetFirst()

@@ -2,18 +2,18 @@
 local m=112601187
 local cm=_G["c"..m]
 function cm.initial_effect(c)
-	--draw
-	local e4=Effect.CreateEffect(c)
-	e4:SetDescription(aux.Stringid(m,0))
-	e4:SetCategory(CATEGORY_DRAW)
-	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
-	e4:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-	e4:SetCode(EVENT_FREE_CHAIN)
-	e4:SetRange(LOCATION_MZONE)
-	e4:SetCondition(cm.drcon)
-	e4:SetTarget(cm.drtg)
-	e4:SetOperation(cm.drop)
-	c:RegisterEffect(e4)
+	--to grave
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(m,0))
+	e1:SetType(EFFECT_TYPE_QUICK_O)
+	e1:SetCode(EVENT_FREE_CHAIN)
+	e1:SetHintTiming(0,TIMINGS_CHECK_MONSTER+TIMING_END_PHASE)
+	e1:SetRange(LOCATION_MZONE)
+	e1:SetCountLimit(1)
+	e1:SetCondition(cm.condition)
+	e1:SetTarget(cm.target)
+	e1:SetOperation(cm.operation)
+	c:RegisterEffect(e1)
 	--atkup
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_FIELD)
@@ -21,7 +21,7 @@ function cm.initial_effect(c)
 	e2:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
 	e2:SetCode(EFFECT_UPDATE_ATTACK)
 	e2:SetTarget(aux.TargetBoolFunction(Card.IsSetCard,0xe90))
-	e2:SetValue(250)
+	e2:SetValue(500)
 	c:RegisterEffect(e2)
 	local e3=e2:Clone()
 	e3:SetCode(EFFECT_UPDATE_DEFENSE)
@@ -30,20 +30,22 @@ function cm.initial_effect(c)
 	kaos.neverworld(c)
 end
 
---draw
-function cm.drcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetMatchingGroupCount(cm.drfilter,tp,LOCATION_GRAVE,0,nil,nil)>=3
+--to grave
+function cm.condition(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.GetMatchingGroupCount(cm.filter,tp,LOCATION_ONFIELD,0,nil,nil)>=3
 end
-function cm.drtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return true end
-	Duel.SetTargetPlayer(tp)
-	Duel.SetTargetParam(1)
-	Duel.SetOperationInfo(0,CATEGORY_DRAW,nil,0,tp,1)
+function cm.filter(c)
+	return (c:IsSetCard(0xe90) or c:IsSetCard(0xe70)) and c:IsPosition(POS_FACEUP)
 end
-function cm.drop(e,tp,eg,ep,ev,re,r,rp)
-	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
-	Duel.Draw(p,d,REASON_EFFECT)
+function cm.filter2(c)
+	return c:IsSummonType(SUMMON_TYPE_SPECIAL)
 end
-function cm.drfilter(c)
-	return not c:IsSetCard(0xe90)
+function cm.target(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(cm.filter2,tp,0,LOCATION_MZONE,1,nil) end
+	local g=Duel.GetMatchingGroup(cm.filter2,tp,0,LOCATION_MZONE,nil)
+	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,g:GetCount(),0,0)
+end
+function cm.operation(e,tp,eg,ep,ev,re,r,rp)
+	local g=Duel.GetMatchingGroup(cm.filter2,tp,0,LOCATION_MZONE,nil)
+	Duel.SendtoGrave(g,REASON_EFFECT)
 end

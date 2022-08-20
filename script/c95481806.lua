@@ -43,9 +43,10 @@ function cm.ufil1(e,c)
 end
 function cm.op2(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
+	local ph=Duel.GetCurrentPhase()
 	local loc=Duel.GetChainInfo(0,CHAININFO_TRIGGERING_LOCATION)
 	if c:GetEquipTarget()~=nil and loc&LOCATION_ONFIELD>0 and rp~=tp and Duel.IsChainDisablable(ev)
-		and Duel.GetFlagEffect(tp,m)==0 and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+		and Duel.GetFlagEffect(tp,m)==0 and Duel.SelectYesNo(tp,aux.Stringid(m,0)) and (ph>PHASE_MAIN1 and ph<PHASE_MAIN2) then
 		Duel.Hint(HINT_CARD,0,m)
 		Duel.RegisterFlagEffect(tp,m,RESET_PHASE+PHASE_END+RESET_EVENT+0x1ec0000,0,1)
 		Duel.NegateEffect(ev)

@@ -1,7 +1,7 @@
 --아야노
 function c95480200.initial_effect(c)
 	--synchro summon
-	aux.AddSynchroProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0xd4c),1,1,aux.NonTuner(nil),2,99)
+	aux.AddSynchroProcedure(c,aux.FilterBoolFunction(Card.IsSetCard,0xd4c),aux.NonTuner(nil),2)
 	c:EnableReviveLimit()
 	local e0=Effect.CreateEffect(c)
 	e0:SetType(EFFECT_TYPE_SINGLE)

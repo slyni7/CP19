@@ -13,7 +13,7 @@ function c95482007.initial_effect(c)
 	Duel.AddCustomActivityCounter(95482007,ACTIVITY_CHAIN,c95482007.afil1)
 end
 function c95482007.afil1(re,tp,cid)
-	return not (re:GetHandler():IsSetCard(0xd40) and re:IsHasType(EFFECT_TYPE_ACTIVATE))
+	return not (re:GetHandler():IsSetCard(0xd40) and re:IsHasType(EFFECT_TYPE_ACTIVATE) and re:GetActiveType()==TYPE_SPELL+TYPE_QUICKPLAY)
 end
 function c95482007.cost1(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then

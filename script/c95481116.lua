@@ -17,7 +17,8 @@ function c95481116.initial_effect(c)
 	--spsummon
 	local e4=Effect.CreateEffect(c)
 	e4:SetCategory(CATEGORY_SPECIAL_SUMMON+CATEGORY_FUSION_SUMMON+CATEGORY_DECKDES)
-	e4:SetType(EFFECT_TYPE_IGNITION)
+	e4:SetType(EFFECT_TYPE_QUICK_O)
+	e4:SetCode(EVENT_FREE_CHAIN)
 	e4:SetRange(LOCATION_SZONE)
 	e4:SetCost(c95481116.fuscost)
 	e4:SetTarget(c95481116.fustg)
@@ -80,14 +81,15 @@ function c95481116.filter2(c,e,tp,m,f,chkf)
 	return c:IsType(TYPE_FUSION) and c:IsSetCard(0xd5c) and (not f or f(c))
 		and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_FUSION,tp,false,false) and c:CheckFusionMaterial(m,nil,chkf)
 end
-function c95481116.filter3(c)
-	return c:GetSequence()>=5
+function c95481116.dmcon(tp)
+	return not Duel.IsExistingMatchingCard(Card.IsSummonLocation,tp,LOCATION_MZONE,0,1,nil,LOCATION_EXTRA)
+		and Duel.IsExistingMatchingCard(Card.IsSummonLocation,tp,0,LOCATION_MZONE,1,nil,LOCATION_EXTRA)
 end
 function c95481116.fustg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
 		local chkf=tp
 		local mg1=Duel.GetFusionMaterial(tp)
-		if Duel.IsExistingMatchingCard(c95481116.filter3,tp,0,LOCATION_MZONE,1,nil) then
+		if c95481116.dmcon(tp) then
 			local mg2=Duel.GetMatchingGroup(c95481116.filter0,tp,LOCATION_DECK,0,nil)
 			mg1:Merge(mg2)
 		end
@@ -108,7 +110,7 @@ end
 function c95481116.fusop(e,tp,eg,ep,ev,re,r,rp)
 	local chkf=tp
 	local mg1=Duel.GetFusionMaterial(tp):Filter(c95481116.filter1,nil,e)
-	if Duel.IsExistingMatchingCard(c95481116.filter3,tp,0,LOCATION_MZONE,1,nil) then
+	if c95481116.dmcon(tp) then
 		local mg2=Duel.GetMatchingGroup(c95481116.filter0,tp,LOCATION_DECK,0,nil)
 		mg1:Merge(mg2)
 	end

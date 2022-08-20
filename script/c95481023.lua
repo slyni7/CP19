@@ -57,12 +57,12 @@ function c95481023.con3(e)
 	local tp=e:GetHandlerPlayer()
 	return not Duel.IsExistingMatchingCard(c95481023.cfilter,tp,LOCATION_MZONE,0,1,nil)
 end
-function c95481023.cfilter(c)
+function c95481023.cfilter2(c)
 	return c:IsFaceup() and c:IsCode(95481011)
 end
 function c95481023.spcon(e,tp,eg,ep,ev,re,r,rp)
 	local tp=e:GetHandlerPlayer()
-	return Duel.IsExistingMatchingCard(c95481023.cfilter,tp,LOCATION_ONFIELD,0,1,nil)
+	return Duel.IsExistingMatchingCard(c95481023.cfilter2,tp,LOCATION_ONFIELD,0,1,nil)
 end
 function c95481023.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0

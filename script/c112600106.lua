@@ -16,6 +16,9 @@ end
 
 --Activate
 function cm.cfilter(c)
+	return c:IsFaceup() and c:IsSetCard(0xe85)
+end
+function cm.cfilter2(c)
 	return c:IsFaceup() and c:IsSetCard(0xe85) or c:IsSetCard(0xe86) or c:IsSetCard(0xe87)
 end
 function cm.condition(e,tp,eg,ep,ev,re,r,rp)
@@ -27,7 +30,7 @@ function cm.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,1,0,0)
 end
 function cm.activate(e,tp,eg,ep,ev,re,r,rp)
-	local ct=Duel.GetMatchingGroupCount(cm.cfilter,tp,LOCATION_MZONE,0,nil)
+	local ct=Duel.GetMatchingGroupCount(cm.cfilter2,tp,LOCATION_MZONE,0,nil)
 	if ct==0 then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
 	local g=Duel.SelectMatchingCard(tp,aux.TRUE,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,ct,nil)

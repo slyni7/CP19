@@ -29,7 +29,7 @@ function c112500015.initial_effect(c)
 	e3:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e3:SetRange(LOCATION_HAND)
-	e3:SetCode(EVENT_CHAIN_SOLVING)
+	e3:SetCode(EVENT_CHAIN_SOLVED)
 	e3:SetProperty(EFFECT_FLAG_DELAY)
 	e3:SetCondition(c112500015.spcon1)
 	e3:SetTarget(c112500015.sptg1)
@@ -37,7 +37,8 @@ function c112500015.initial_effect(c)
 	c:RegisterEffect(e3)
 end
 function c112500015.spcon1(e,tp,eg,ep,ev,re,r,rp)
-	return rp==tp and re:IsHasType(EFFECT_TYPE_ACTIVATE) and re:IsActiveType(TYPE_SPELL)
+	local c=re:GetHandler()
+	return rp==tp and re:IsHasType(EFFECT_TYPE_ACTIVATE) and re:IsActiveType(TYPE_SPELL) and c:IsSetCard(0xe83)
 end
 function c112500015.sptg1(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0

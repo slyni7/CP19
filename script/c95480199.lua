@@ -26,7 +26,6 @@ function c95480199.initial_effect(c)
 	e3:SetCode(EVENT_SPSUMMON_SUCCESS)
 	e3:SetCountLimit(1,95480199)
 	e3:SetRange(LOCATION_MZONE)
-	e3:SetCost(c95480199.thcost)
 	e3:SetCondition(c95480199.thcon)
 	e3:SetTarget(c95480199.thtg)
 	e3:SetOperation(c95480199.thop)
@@ -34,10 +33,12 @@ function c95480199.initial_effect(c)
 	--destroy
 	local e4=Effect.CreateEffect(c)
 	e4:SetCategory(CATEGORY_DESTROY)
-	e4:SetType(EFFECT_TYPE_IGNITION)
+	e4:SetType(EFFECT_TYPE_QUICK_O)
+	e4:SetCode(EVENT_FREE_CHAIN)
 	e4:SetRange(LOCATION_MZONE)
 	e4:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e4:SetCountLimit(1,95480198)
+	e4:SetCost(c95480199.rmcost)
 	e4:SetTarget(c95480199.rmtg)
 	e4:SetOperation(c95480199.rmop)
 	c:RegisterEffect(e4)
@@ -105,10 +106,6 @@ function c95480199.thcon(e,tp,eg,ep,ev,re,r,rp)
 	local lg=e:GetHandler():GetLinkedGroup()
 	return eg:IsExists(c95480199.cfilter,1,nil,lg)
 end
-function c95480199.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsDiscardable,tp,LOCATION_HAND,0,1,e:GetHandler()) end
-	Duel.DiscardHand(tp,Card.IsDiscardable,1,1,REASON_COST+REASON_DISCARD)
-end
 function c95480199.pfilter(c)
 	return c:IsAbleToHand()
 end
@@ -122,40 +119,45 @@ end
 function c95480199.thop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if tc and tc:IsRelateToEffect(e) then
-		if Duel.SendtoHand(tc,nil,REASON_EFFECT)~=0 and tc:IsLocation(LOCATION_HAND) then
-			local e1=Effect.CreateEffect(e:GetHandler())
-			e1:SetType(EFFECT_TYPE_FIELD)
-			e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-			e1:SetCode(EFFECT_CANNOT_ACTIVATE)
-			e1:SetTargetRange(1,0)
-			e1:SetValue(c95480199.aclimit)
-			e1:SetLabel(g:GetFirst():GetCode())
-			e1:SetReset(RESET_PHASE+PHASE_END)
-			Duel.RegisterEffect(e1,tp)
-		end
+		Duel.SendtoHand(tc,nil,REASON_EFFECT)
 	end
 end
 function c95480199.aclimit(e,re,tp)
 	return re:GetHandler():IsCode(e:GetLabel())
 end
-function c95480199.filter(c,g)
+function c95480199.cfilter(c,g)
 	return g:IsContains(c)
 end
-function c95480199.rmtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return false end
+function c95480199.rmcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local lg=e:GetHandler():GetLinkedGroup()
-	if chk==0 then return Duel.IsExistingTarget(c95480199.filter,tp,LOCATION_MZONE,0,1,nil,lg)
-		and Duel.IsExistingTarget(nil,tp,0,LOCATION_ONFIELD,1,nil) end
+	if chk==0 then return Duel.IsExistingMatchingCard(c95480199.cfilter,tp,LOCATION_MZONE,0,1,nil,lg) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
+	local rc=Duel.SelectMatchingCard(tp,c95480199.cfilter,tp,LOCATION_MZONE,0,1,1,nil,lg):GetFirst()
+	if Duel.Remove(rc,0,REASON_COST+REASON_TEMPORARY)~=0 then
+		local e1=Effect.CreateEffect(e:GetHandler())
+		e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+		e1:SetCode(EVENT_PHASE+PHASE_END)
+		e1:SetReset(RESET_PHASE+PHASE_END)
+		e1:SetLabelObject(rc)
+		e1:SetCountLimit(1)
+		e1:SetOperation(c95480199.retop)
+		Duel.RegisterEffect(e1,tp)
+	end
+end
+function c95480199.retop(e,tp,eg,ep,ev,re,r,rp)
+	Duel.ReturnToField(e:GetLabelObject())
+end
+function c95480199.rmtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	local c=e:GetHandler()
+	if chkc then return chkc:IsOnField() and chkc~=c end
+	if chk==0 then return Duel.IsExistingTarget(nil,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,c) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
-	local g1=Duel.SelectTarget(tp,c95480199.filter,tp,LOCATION_MZONE,0,1,1,nil,lg)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
-	local g2=Duel.SelectTarget(tp,nil,tp,0,LOCATION_ONFIELD,1,1,nil)
-	g1:Merge(g2)
-	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g1,2,0,0)
+	local g=Duel.SelectTarget(tp,nil,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,c)
+	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,1,0,0)
 end
 function c95480199.rmop(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
-	if g:GetCount()>0 then
-		Duel.Destroy(g,REASON_EFFECT)
+	local tc=Duel.GetFirstTarget()
+	if tc:IsRelateToEffect(e) then
+		Duel.Destroy(tc,REASON_EFFECT)
 	end
 end

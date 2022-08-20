@@ -6,22 +6,17 @@ function c95480100.initial_effect(c)
 	--spsummon
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(50588353,0))
-	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
-	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+	e1:SetType(EFFECT_TYPE_IGNITION)
+	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
 	e1:SetCode(EVENT_SPSUMMON_SUCCESS)
-	e1:SetProperty(EFFECT_FLAG_DELAY+EFFECT_FLAG_CARD_TARGET)
+	e1:SetRange(LOCATION_MZONE)
 	e1:SetCountLimit(1,95480100)
-	e1:SetCondition(c95480100.hspcon)
 	e1:SetTarget(c95480100.hsptg)
 	e1:SetOperation(c95480100.hspop)
 	c:RegisterEffect(e1)
 end
 function c95480100.matfilter(c)
 	return c:IsLinkSetCard(0xd5f) and not c:IsCode(95480100)
-end
-
-function c95480100.hspcon(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetHandler():IsSummonType(SUMMON_TYPE_LINK)
 end
 function c95480100.hspfilter(c,e,tp,zone)
 	return c:IsSetCard(0xd5f) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP_DEFENSE,tp,zone)

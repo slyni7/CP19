@@ -1,6 +1,5 @@
 --5
 function c112600115.initial_effect(c)
-	c:SetSPSummonOnce(112600115)
 	--cost
 	local e6=Effect.CreateEffect(c)
 	e6:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)

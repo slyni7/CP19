@@ -70,7 +70,7 @@ function cm.tar4(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 		return chkc:IsControler(tp) and chkc:IsLoc("M") and cm.tfil4(chkc)
 	end
 	if chk==0 then
-		return Duel.IsExistingTarget(cm.tfil4,tp,"M",0,1,nil)
+		return Duel.IETarget(cm.tfil4,tp,"M",0,1,nil)
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
 	Duel.STarget(tp,cm.tfil4,tp,"M",0,1,1,nil)

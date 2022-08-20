@@ -1,7 +1,7 @@
 --단원 9 코노하
 function c95480209.initial_effect(c)
 	--synchro summon
-	aux.AddSynchroProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0xd4c),1,1,aux.NonTuner(nil),1,99)
+	aux.AddSynchroProcedure(c,aux.FilterBoolFunction(Card.IsSetCard,0xd4c),aux.NonTuner(nil),1)
 	c:EnableReviveLimit()
 	--atkup
 	local e1=Effect.CreateEffect(c)

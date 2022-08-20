@@ -1,7 +1,7 @@
 --단원7 신타로
 function c95480207.initial_effect(c)
 	--xyz summon
-	aux.AddXyzProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0xd4c),4,2)
+	aux.AddXyzProcedure(c,nil,4,2)
 	c:EnableReviveLimit()
 	--덱 파괴
 	local e3=Effect.CreateEffect(c)

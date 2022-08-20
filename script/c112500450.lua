@@ -24,7 +24,7 @@ function cm.initial_effect(c)
 	e3:SetType(EFFECT_TYPE_IGNITION)
 	e3:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e3:SetRange(LOCATION_REMOVED)
-	e3:SetCountLimit(1,m+1)
+	e3:SetCountLimit(1)
 	e3:SetCost(cm.descost)
 	e3:SetTarget(cm.destg)
 	e3:SetOperation(cm.desop)
@@ -43,7 +43,7 @@ function cm.ntcon(e,c,minc)
 	return minc==0 and Duel.GetLocationCount(c:GetControler(),LOCATION_MZONE)>0
 end
 function cm.nttg(e,c)
-	return c:IsLevelAbove(5) and c:IsRace(RACE_AQUA)
+	return c:IsLevel(5) and c:IsRace(RACE_AQUA)
 end
 
 --destroy

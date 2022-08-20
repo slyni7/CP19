@@ -2105,4 +2105,63 @@ function Duel.SPOI(cc,cat,eg,ev,ep,loc)
 	Duel.SetPossibleOperationInfo(cc,cat,eg,ev,ep,LSTN(loc))
 end
 
+Auxiliary.DelayedChainInfo={}
+
+local dgci=Duel.GetChainInfo
+function Duel.GetChainInfo(ch,...)
+	if ch==0 then
+		local ce=dgci(0,CHAININFO_TRIGGERING_EFFECT)
+		if Auxiliary.DelayedChainInfo[ce]~=nil then
+			local infos={}
+			for _,ci in pairs({...}) do
+				table.insert(infos,Auxiliary.DelayedChainInfo[ce][ci])
+			end
+			return table.unpack(infos)
+		end
+	end
+	return dgci(ch,...)
+end
+
+function Auxiliary.ChainDelay(effect)
+	local ce=Duel.GetChainInfo(0,CHAININFO_TRIGGERING_EFFECT)
+	local card=ce:GetHandler()
+	if card:IsRelateToEffect(ce) then
+		card:CreateEffectRelation(effect)
+	end
+	Auxiliary.DelayedChainInfo[effect]={}
+	for i=0,23 do
+		local ci=1<<i
+		if ci==CHAININFO_TRIGGERING_EFFECT then
+			Auxiliary.DelayedChainInfo[effect][ci]=effect
+		else
+			if type(Duel.GetChainInfo(0,ci))=="Group" then
+				local g=Duel.GetChainInfo(0,ci):Clone()
+				g:KeepAlive()
+				Auxiliary.DelayedChainInfo[effect][ci]=g
+				local tc=g:GetFirst()
+				while tc do
+					if tc:IsRelateToEffect(ce) then
+						tc:CreateEffectRelation(effect)
+					end
+					tc=g:GetNext()
+				end
+			else
+				Auxiliary.DelayedChainInfo[effect][ci]=Duel.GetChainInfo(0,ci)
+			end
+		end
+	end
+end
+
+local dgft=Duel.GetFirstTarget
+function Duel.GetFirstTarget(...)
+	local ce=dgci(0,CHAININFO_TRIGGERING_EFFECT)
+	if Auxiliary.DelayedChainInfo[ce]~=nil then
+		local tg=Auxiliary.DelayedChainInfo[ce][CHAININFO_TARGET_CARDS]
+		return tg:GetFirst()
+	end
+	return dgft(...)
+end
+
+--dofile("expansions/script/proto.lua")
+
 --dofile("expansions/script/RDD.lua")

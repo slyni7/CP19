@@ -14,7 +14,7 @@ function c95482011.initial_effect(c)
 	Duel.AddCustomActivityCounter(95482011,ACTIVITY_CHAIN,c95482011.chainfilter)
 end
 function c95482011.chainfilter(re,tp,cid)
-	return not (re:GetHandler():IsSetCard(0xd40) and re:IsHasType(EFFECT_TYPE_ACTIVATE))
+	return not (re:GetHandler():IsSetCard(0xd40) and re:IsHasType(EFFECT_TYPE_ACTIVATE) and re:GetActiveType()==TYPE_SPELL+TYPE_QUICKPLAY)
 end
 function c95482011.spcfilter(c,ft,tp)
 	return ft>0 or (c:IsControler(tp) and c:GetSequence()<5) and c:IsRace(RACE_SPELLCASTER)

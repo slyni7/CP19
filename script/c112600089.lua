@@ -17,7 +17,7 @@ function cm.initial_effect(c)
 	e2:SetCategory(CATEGORY_TOHAND)
 	e2:SetProperty(EFFECT_FLAG_DELAY+EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_CARD_TARGET)
 	e2:SetCountLimit(1,m)
-	e2:SetCondition(cm.thcon)
+	e2:SetCondition(kaos.sincos)
 	e2:SetTarget(cm.thtg)
 	e2:SetOperation(cm.thop)
 	c:RegisterEffect(e2)
@@ -34,14 +34,6 @@ function cm.initial_effect(c)
 end
 
 --search
-function cm.thcon(e,tp,eg,ep,ev,re,r,rp)
-	if bit.band(r,REASON_EFFECT)==0 then
-		return false
-	end
-	local c=e:GetHandler()
-	local rc=re:GetHandler()
-	return rc:IsSetCard(0xe86) and c:IsPreviousLocation(LOCATION_MZONE)
-end
 function cm.thfilter(c)
 	return c:IsSetCard(0xe87) and c:IsAbleToHand()
 end

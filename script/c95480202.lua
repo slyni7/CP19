@@ -1,14 +1,13 @@
 --단원2 세토
 function c95480202.initial_effect(c)
 	--xyz summon
-	aux.AddXyzProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0xd4c),4,3)
+	aux.AddXyzProcedure(c,aux.FilterBoolFunction(Card.IsSetCard,0xd4c),4,3)
 	c:EnableReviveLimit()
 	--banish extra
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(95474755,0))
 	e1:SetCategory(CATEGORY_REMOVE)
-	e1:SetType(EFFECT_TYPE_QUICK_O)
-	e1:SetCode(EVENT_FREE_CHAIN)
+	e1:SetType(EFFECT_TYPE_IGNITION)
 	e1:SetCountLimit(1,95480202)
 	e1:SetRange(LOCATION_MZONE)
 	e1:SetCost(c95480202.excost)
@@ -44,7 +43,7 @@ function c95480202.exop(e,tp,eg,ep,ev,re,r,rp)
 		local g2=Duel.GetFieldGroup(tp,0,LOCATION_GRAVE+LOCATION_ONFIELD+LOCATION_DECK+LOCATION_EXTRA)
 		local tg=g2:Filter(Card.IsCode,nil,sg:GetFirst():GetCode())
 		if tg:GetCount()>0 then
-			Duel.Remove(tg,POS_FACEUP,REASON_EFFECT)
+			Duel.Remove(tg,POS_FACEDOWN,REASON_EFFECT)
 		end
 	end
 end

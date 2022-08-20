@@ -29,7 +29,7 @@ function c112600077.initial_effect(c)
 	--grave summon
 	local e3=Effect.CreateEffect(c)
 	e3:SetCategory(CATEGORY_SUMMON)
-	e3:SetType(EFFECT_TYPE_QUICK_O)
+	e3:SetType(EFFECT_TYPE_IGNITION)
 	e3:SetCode(EVENT_FREE_CHAIN)
 	e3:SetRange(LOCATION_GRAVE)
 	e3:SetHintTiming(0,0x1c0+TIMING_MAIN_END)

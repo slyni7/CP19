@@ -58,11 +58,11 @@ function c112600031.spop0(e,tp,eg,ep,ev,re,r,rp)
 end
 function c112600031.thtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local c=e:GetHandler()
-	if chkc then return chkc:IsOnField() and chkc:IsControler(tp) and chkc~=c end
-	if chk==0 then return Duel.IsExistingTarget(nil,tp,LOCATION_ONFIELD,0,1,c)
+	if chkc then return chkc:IsOnField() and chkc:IsControler(tp) end
+	if chk==0 then return Duel.IsExistingTarget(nil,tp,LOCATION_ONFIELD,0,1,nil)
 		and Duel.GetFieldGroupCount(tp,LOCATION_DECK,0)>=5 end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
-	local g=Duel.SelectTarget(tp,nil,tp,LOCATION_ONFIELD,0,1,1,c)
+	local g=Duel.SelectTarget(tp,nil,tp,LOCATION_ONFIELD,0,1,1,nil)
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,0,LOCATION_DECK)
 	Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,g,1,0,0)
 end
@@ -74,7 +74,6 @@ function c112600031.thop(e,tp,eg,ep,ev,re,r,rp)
 	if g:GetCount()>0 then
 		if g:IsExists(Card.IsSetCard,1,nil,0xe7e) then
 			if Duel.SelectYesNo(tp,aux.Stringid(112600031,2)) then
-				Duel.Hint(HINT_SELECTMSG,p,HINTMSG_ATOHAND)
 				local sg=g:FilterSelect(tp,Card.IsSetCard,1,2,nil,0xe7e)
 				if sg:GetFirst():IsAbleToHand() then
 					Duel.SendtoHand(sg,nil,REASON_EFFECT)
@@ -93,25 +92,10 @@ function c112600031.costfilter(c)
 	return c:IsSetCard(0xe7e) and c:IsType(TYPE_MONSTER) and c:IsAbleToGraveAsCost()
 end
 function c112600031.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	local fg=Group.CreateGroup()
-	for i,pe in ipairs({Duel.IsPlayerAffectedByEffect(tp,148244724)}) do
-		fg:AddCard(pe:GetHandler())
-	end
 	local loc=LOCATION_HAND
-	if fg:GetCount()>0 then loc=LOCATION_HAND+LOCATION_DECK end
 	if chk==0 then return Duel.IsExistingMatchingCard(c112600031.costfilter,tp,loc,0,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
 	local tc=Duel.SelectMatchingCard(tp,c112600031.costfilter,tp,loc,0,1,1,nil):GetFirst()
-	if tc:IsLocation(LOCATION_DECK) then
-		local fc=nil
-		if fg:GetCount()==1 then
-			fc=fg:GetFirst()
-		else
-			fc=fg:Select(tp,1,1,nil)
-		end
-		Duel.Hint(HINT_CARD,0,fc:GetCode())
-		fc:RegisterFlagEffect(148244724,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END,0,0)
-	end
 	Duel.SendtoGrave(tc,REASON_COST)
 end
 function c112600031.spfilter(c,e,tp)

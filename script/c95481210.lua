@@ -24,15 +24,6 @@ function c95481210.initial_effect(c)
 	local e2=e1:Clone()
 	e2:SetCode(EVENT_REMOVE)
 	c:RegisterEffect(e2)
-	--spsummon
-	local e3=Effect.CreateEffect(c)
-	e3:SetDescription(aux.Stringid(9156135,1))
-	e3:SetCategory(CATEGORY_SPECIAL_SUMMON)
-	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
-	e3:SetCode(EVENT_BATTLE_DESTROYED)
-	e3:SetTarget(c95481210.tdtg)
-	e3:SetOperation(c95481210.tdop)
-	c:RegisterEffect(e3)
 	--special summon
 	local e4=Effect.CreateEffect(c)
 	e4:SetDescription(aux.Stringid(98700941,0))
@@ -58,29 +49,25 @@ function c95481210.initial_effect(c)
 	c:RegisterEffect(e5)
 end
 
-function c95481210.hspfilter(c,ft,tp)
-	return c:IsSetCard(0xd47)
-		and (ft>0 or (c:IsControler(tp) and c:GetSequence()<5)) and (c:IsControler(tp) or c:IsFaceup())
+function c95481210.hspfilter(c,tp)
+	return c:IsType(TYPE_MONSTER) and c:IsSetCard(0xd47) and Duel.GetMZoneCount(tp,c)>0
 end
 function c95481210.hspcon(e,c)
 	if c==nil then return true end
 	local tp=c:GetControler()
-	local ft=Duel.GetLocationCount(tp,LOCATION_MZONE)
-	return ft>-1 and Duel.CheckReleaseGroup(tp,c95481210.hspfilter,1,nil,ft,tp)
+	return Duel.CheckReleaseGroupEx(tp,c95481210.hspfilter,1,c,tp)
 end
 function c95481210.hspop(e,tp,eg,ep,ev,re,r,rp,c)
-	local ft=Duel.GetLocationCount(tp,LOCATION_MZONE)
-	local g=Duel.SelectReleaseGroup(tp,c95481210.hspfilter,1,1,nil,ft,tp)
-	Duel.Release(g,REASON_COST)
+	local sg=Duel.SelectReleaseGroupEx(tp,c95481210.hspfilter,1,1,c,tp)
+	Duel.Release(sg,REASON_COST)
 end
 
 function c95481210.tdcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return c:IsReason(REASON_EFFECT) and rp==1-tp and c:GetPreviousControler()==tp
-		and c:IsPreviousLocation(LOCATION_ONFIELD)
+	return c:GetPreviousControler()==tp and c:IsPreviousLocation(LOCATION_ONFIELD)
 end
 function c95481210.spfilter(c,e,tp)
-	return c:IsSetCard(0xd47) and c:IsLevelBelow(4) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP_DEFENSE)
+	return c:IsSetCard(0xd47) and c:IsLevelBelow(2) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP_DEFENSE)
 end
 function c95481210.tdtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
@@ -99,6 +86,7 @@ function c95481210.tdop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SendtoDeck(c,1-tp,2,REASON_EFFECT)
 		if not c:IsLocation(LOCATION_DECK) then return end
 		Duel.ShuffleDeck(1-tp)
+		c:ReverseInDeck()
 	end
 end
 
@@ -115,6 +103,25 @@ function c95481210.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsRelateToEffect(e) then return end
 	Duel.SpecialSummon(c,0,tp,1-tp,false,false,POS_FACEUP)
+	local e1=Effect.CreateEffect(e:GetHandler())
+	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e1:SetCode(EVENT_PHASE+PHASE_END)
+	e1:SetRange(LOCATION_HAND)
+	e1:SetCountLimit(1)
+	e1:SetCondition(c95481210.tgcon)
+	e1:SetOperation(c95481210.tgop)
+	e1:SetReset(RESET_PHASE+PHASE_END)
+	Duel.RegisterEffect(e1,tp)
+end
+function c95481210.tgcon(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	return c:GetControler()~=c:GetOwner()
+end
+function c95481210.tgop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	if c:IsRelateToEffect(e) then
+		Duel.SendtoGrave(c,REASON_EFFECT)
+	end
 end
 
 function c95481210.rfilter(c)

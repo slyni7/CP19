@@ -14,15 +14,6 @@ function c95481203.initial_effect(c)
 	local e2=e1:Clone()
 	e2:SetCode(EVENT_REMOVE)
 	c:RegisterEffect(e2)
-	--spsummon
-	local e3=Effect.CreateEffect(c)
-	e3:SetDescription(aux.Stringid(9156135,1))
-	e3:SetCategory(CATEGORY_SPECIAL_SUMMON)
-	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
-	e3:SetCode(EVENT_BATTLE_DESTROYED)
-	e3:SetTarget(c95481203.tdtg)
-	e3:SetOperation(c95481203.tdop)
-	c:RegisterEffect(e3)
 	--special summon
 	local e4=Effect.CreateEffect(c)
 	e4:SetDescription(aux.Stringid(98700941,0))
@@ -48,8 +39,7 @@ end
 
 function c95481203.tdcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return c:IsReason(REASON_EFFECT) and rp==1-tp and c:GetPreviousControler()==tp
-		and c:IsPreviousLocation(LOCATION_ONFIELD)
+	return c:GetPreviousControler()==tp and c:IsPreviousLocation(LOCATION_ONFIELD)
 end
 function c95481203.tdtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
@@ -61,6 +51,7 @@ function c95481203.tdop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SendtoDeck(c,1-tp,2,REASON_EFFECT)
 	if not c:IsLocation(LOCATION_DECK) then return end
 	Duel.ShuffleDeck(1-tp)
+	c:ReverseInDeck()
 end
 
 function c95481203.spcon(e,tp,eg,ep,ev,re,r,rp)
@@ -80,12 +71,28 @@ end
 function c95481203.spop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsRelateToEffect(e) then return end
-	if Duel.SpecialSummon(c,0,tp,1-tp,false,false,POS_FACEUP_DEFENSE)~=0 then
-		local g=Duel.SelectMatchingCard(tp,c95481203.rmfilter,tp,LOCATION_EXTRA,0,1,1,nil)
-		if g:GetCount()>0 then
-			Duel.HintSelection(g)
-			Duel.Remove(g,POS_FACEUP,REASON_EFFECT)
-		end
+	local sg=Duel.SelectMatchingCard(tp,c95481203.rmfilter,tp,LOCATION_EXTRA,0,1,1,nil)
+	if sg and Duel.Remove(sg,POS_FACEUP,REASON_EFFECT)~=0 then
+		Duel.SpecialSummon(c,0,tp,1-tp,false,false,POS_FACEUP_DEFENSE)
+	end
+	local e1=Effect.CreateEffect(e:GetHandler())
+	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e1:SetCode(EVENT_PHASE+PHASE_END)
+	e1:SetRange(LOCATION_HAND)
+	e1:SetCountLimit(1)
+	e1:SetCondition(c95481203.tgcon)
+	e1:SetOperation(c95481203.tgop)
+	e1:SetReset(RESET_PHASE+PHASE_END)
+	Duel.RegisterEffect(e1,tp)
+end
+function c95481203.tgcon(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	return c:GetControler()~=c:GetOwner()
+end
+function c95481203.tgop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	if c:IsRelateToEffect(e) then
+		Duel.SendtoGrave(c,REASON_EFFECT)
 	end
 end
 

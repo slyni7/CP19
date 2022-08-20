@@ -35,7 +35,7 @@ function c95481716.initial_effect(c)
 	e3:SetDescription(aux.Stringid(88264978,0))
 	e3:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
 	e3:SetType(EFFECT_TYPE_IGNITION)
-	e3:SetCountLimit(1)
+	e3:SetCountLimit(1,EFFECT_COUNT_CODE_SINGLE)
 	e3:SetRange(LOCATION_MZONE)
 	e3:SetCondition(c95481716.con3)
 	e3:SetCost(c95481716.cost3)
@@ -50,8 +50,6 @@ function c95481716.initial_effect(c)
 	c:RegisterEffect(e4)
 	if not c95481716.global_check then
 		c95481716.global_check=true
-		c95481716[0]=false
-		c95481716[1]=false
 		local ge1=Effect.CreateEffect(c)
 		ge1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 		ge1:SetCode(EVENT_DISCARD)
@@ -151,18 +149,15 @@ function c95481716.cost3(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.DiscardHand(tp,c95481716.cfil1,1,1,REASON_COST+REASON_DISCARD)
 end
 function c95481716.fil3(c)
-	return c:IsSetCard(0xd50) and c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsAbleToHand()
+	return c:IsSetCard(0xd50) and c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsSSetable()
 end
 function c95481716.tg3(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and Duel.IsExistingMatchingCard(c95481716.fil3,tp,LOCATION_DECK,0,1,nil) end
-	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
+	if chk==0 then return Duel.IsExistingMatchingCard(c95481716.fil3,tp,LOCATION_DECK,0,1,nil) end
 end
 function c95481716.op3(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SET)
 	local g=Duel.SelectMatchingCard(tp,c95481716.fil3,tp,LOCATION_DECK,0,1,1,nil)
 	if g:GetCount()>0 then
-		Duel.SendtoHand(g,nil,REASON_EFFECT)
+		Duel.SSet(tp,g:GetFirst())
 	end
 end

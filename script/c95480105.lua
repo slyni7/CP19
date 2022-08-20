@@ -28,7 +28,7 @@ function c95480105.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function c95480105.pcon(e,tp,eg,ep,ev,re,r,rp)
-	return (Duel.IsExistingMatchingCard(Card.IsSetCard,tp,LOCATION_PZONE,0,1,e:GetHandler(),0xd42) or Duel.IsExistingMatchingCard(Card.IsLinkState,tp,LOCATION_MZONE,0,1,nil))
+	return (Duel.IsExistingMatchingCard(Card.IsSetCard,tp,LOCATION_PZONE,0,1,e:GetHandler(),0xd42) or Duel.IsExistingMatchingCard(Card.IsType,tp,LOCATION_MZONE,0,1,nil,TYPE_LINK))
 end
 function c95480105.pfilter(c,e,tp)
 	return (c:IsSetCard(0xd5f) or c:IsSetCard(0xd42)) and (c:IsLocation(LOCATION_GRAVE) or c:IsFaceup())
@@ -59,19 +59,19 @@ end
 function c95480105.spcon(e,tp,eg,ep,ev,re,r,rp)
 	return bit.band(r,REASON_EFFECT)~=0
 end
-function c95480105.filter(c,e,tp)
-	return (c:IsSetCard(0xd5f) or c:IsSetCard(0xd42)) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+function c95480105.filter(c)
+	return (c:IsSetCard(0xd5f) or c:IsSetCard(0xd42)) and c:IsAbleToHand()
 end
 function c95480105.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and Duel.IsExistingMatchingCard(c95480105.filter,tp,LOCATION_DECK,0,1,nil,e,tp) end
-	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_DECK)
+		and Duel.IsExistingMatchingCard(c95480105.filter,tp,LOCATION_DECK,0,1,nil) end
+	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
 end
 function c95480105.spop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectMatchingCard(tp,c95480105.filter,tp,LOCATION_DECK,0,1,1,nil,e,tp)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+	local g=Duel.SelectMatchingCard(tp,c95480105.filter,tp,LOCATION_DECK,0,1,1,nil)
 	if g:GetCount()>0 then
-		Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP)
+		Duel.SendtoHand(g,nil,REASON_EFFECT)
 	end
 end

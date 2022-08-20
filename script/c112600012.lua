@@ -25,6 +25,19 @@ function c112600012.initial_effect(c)
 	e2:SetTarget(c112600012.rmtg)
 	e2:SetOperation(c112600012.rmop)
 	c:RegisterEffect(e2)
+	--remove
+	local e8=Effect.CreateEffect(c)
+	e8:SetDescription(aux.Stringid(112600012,3))
+	e8:SetCategory(CATEGORY_REMOVE)
+	e8:SetType(EFFECT_TYPE_QUICK_O)
+	e8:SetCode(EVENT_FREE_CHAIN)
+	e8:SetRange(LOCATION_MZONE)
+	e8:SetProperty(EFFECT_FLAG_CARD_TARGET)
+	e8:SetHintTiming(0,TIMINGS_CHECK_MONSTER+TIMING_END_PHASE)
+	e8:SetCost(c112600012.discost)
+	e8:SetTarget(c112600012.rmtg)
+	e8:SetOperation(c112600012.rmop)
+	c:RegisterEffect(e8)
 	--battle indes
 	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE)
@@ -75,6 +88,15 @@ end
 function c112600012.rmcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsDiscardable,tp,LOCATION_HAND,0,1,e:GetHandler()) end
 	Duel.DiscardHand(tp,Card.IsDiscardable,1,1,REASON_COST+REASON_DISCARD)
+end
+function c112600012.cfilter3(c)
+	return c:IsAbleToRemoveAsCost() and aux.SpElimFilter(c)
+end
+function c112600012.discost(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(c112600012.cfilter3,tp,LOCATION_MZONE+LOCATION_GRAVE,0,1,nil) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
+	local g=Duel.SelectMatchingCard(tp,c112600012.cfilter3,tp,LOCATION_MZONE+LOCATION_GRAVE,0,1,1,nil)
+	Duel.Remove(g,POS_FACEUP,REASON_COST)
 end
 function c112600012.rmtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_ONFIELD) and chkc:IsAbleToRemove() end

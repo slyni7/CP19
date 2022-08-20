@@ -1,7 +1,7 @@
 --단원3 카노
 function c95480203.initial_effect(c)
 	--xyz summon
-	aux.AddXyzProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0xd4c),4,3)
+	aux.AddXyzProcedure(c,aux.FilterBoolFunction(Card.IsSetCard,0xd4c),4,3)
 	c:EnableReviveLimit()
 	--copy effect
 	local e1=Effect.CreateEffect(c)

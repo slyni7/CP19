@@ -1,7 +1,7 @@
 --메카쿠시 키도 츠보미
 function c95480201.initial_effect(c)
 	--xyz summon
-	aux.AddXyzProcedure(c,aux.FilterBoolFunctionEx(Card.IsSetCard,0xd4c),4,3)
+	aux.AddXyzProcedure(c,aux.FilterBoolFunction(Card.IsSetCard,0xd4c),4,3)
 	c:EnableReviveLimit()
 	--search
 	local e1=Effect.CreateEffect(c)

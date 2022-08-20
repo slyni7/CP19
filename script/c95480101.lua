@@ -33,14 +33,37 @@ function c95480101.filter(c)
 	return (c:IsSetCard(0xd5f) or c:IsSetCard(0xd55)) and c:IsType(TYPE_MONSTER) and not c:IsCode(95480101) and c:IsAbleToGrave()
 end
 function c95480101.thtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chk==0 then return Duel.IsExistingMatchingCard(c95480101.filter,tp,LOCATION_DECK,0,1,nil) end
-	Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,nil,1,tp,LOCATION_DECK)
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(1-tp) and c95480101.filter(chkc,tp) end
+	if chk==0 then return Duel.IsExistingTarget(c95480101.filter,tp,0,LOCATION_MZONE+LOCATION_GRAVE,1,nil,tp) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
+	local g=Duel.SelectTarget(tp,c95480101.filter,tp,0,LOCATION_MZONE+LOCATION_GRAVE,1,1,nil,tp)
+	local lv=g:GetFirst():GetLevel()
+end
+function c95480101.thfilter(c)
+	return (c:IsSetCard(0xd5f) or c:IsSetCard(0xd55)) and c:IsAbleToHand()
 end
 function c95480101.thop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
-	local g=Duel.SelectMatchingCard(tp,c95480101.filter,tp,LOCATION_DECK,0,1,1,nil)
-	if g:GetCount()>0 then
-		Duel.SendtoGrave(g,REASON_EFFECT)
+	local tc=Duel.GetFirstTarget()
+	local lv=tc:GetLevel()
+	if Duel.GetFieldGroupCount(tp,LOCATION_DECK,0)<=lv then return end
+	Duel.ConfirmDecktop(tp,lv)
+	local g=Duel.GetDecktopGroup(tp,lv)
+	local ct=g:GetCount()
+	if ct>0 and g:FilterCount(c95480101.thfilter,nil)>0 and Duel.SelectYesNo(tp,aux.Stringid(47674738,2)) then
+		Duel.DisableShuffleCheck()
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+		local sg=g:FilterSelect(tp,c95480101.thfilter,1,1,nil)
+		Duel.SendtoHand(sg,nil,REASON_EFFECT)
+		Duel.ConfirmCards(1-tp,sg)
+		Duel.ShuffleHand(tp)
+		ct=g:GetCount()-sg:GetCount()
+	end
+	if ct>0 then
+		Duel.SortDecktop(tp,tp,ct)
+		for i=1,ct do
+			local mg=Duel.GetDecktopGroup(tp,1)
+			Duel.MoveSequence(mg:GetFirst(),1)
+		end
 	end
 end
 
@@ -72,6 +95,9 @@ function c95480101.effop(e,tp,eg,ep,ev,re,r,rp)
 	e3:SetValue(0xd5f)
 	e3:SetReset(RESET_EVENT+RESETS_STANDARD)
 	rc:RegisterEffect(e3,true)
+	local e4=e3:Clone()
+	e4:SetValue(0xd55)
+	rc:RegisterEffect(e4,true)
 end
 function c95480101.chcon(e)
 	return e:GetHandler():IsLinkState()

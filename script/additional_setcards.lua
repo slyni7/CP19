@@ -24,5 +24,8 @@ function Card.IsSetCard(c,set,...)
 			end
 		end
 	end
+	if type(set)=="string" then
+		return false
+	end
 	return cisc(c,set,...)
 end

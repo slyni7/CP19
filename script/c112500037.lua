@@ -96,14 +96,14 @@ function c112500037.atop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function c112500037.setcon(e,tp,eg,ep,ev,re,r,rp)
-	return rp==tp and re:IsHasType(EFFECT_TYPE_ACTIVATE) and re:IsActiveType(TYPE_SPELL+TYPE_TRAP)
+	return rp==tp and re:IsHasType(EFFECT_TYPE_ACTIVATE) and re:IsActiveType(TYPE_SPELL)
 end
 function c112500037.filter0(c)
 	return c:IsSetCard(0xe83) and c:IsType(TYPE_SPELL) and c:IsSSetable()
 end
 function c112500037.settg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return not e:GetHandler():IsStatus(STATUS_CHAINING) and Duel.GetLocationCount(tp,LOCATION_SZONE)>0
-		and Duel.IsExistingMatchingCard(c112500037.filter0,tp,LOCATION_DECK,0,1,nil) end
+		and Duel.IsExistingMatchingCard(c112500037.filter0,tp,LOCATION_DECK+LOCATION_GRAVE,0,1,nil) end
 end
 function c112500037.setop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetLocationCount(tp,LOCATION_SZONE)<=0 then return end

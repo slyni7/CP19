@@ -35,9 +35,6 @@ function c95480113.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chk==0 then return Duel.IsExistingMatchingCard(c95480113.filter,tp,LOCATION_DECK,0,1,nil) end
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
 end
-function c95480113.spfilter(c)
-	return c:IsSetCard(0xd5f) and c:IsSummonable(true,nil)
-end
 function c95480113.activate(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_OPERATECARD)
 	local g=Duel.SelectMatchingCard(tp,c95480113.filter,tp,LOCATION_DECK,0,1,1,nil)
@@ -45,16 +42,6 @@ function c95480113.activate(e,tp,eg,ep,ev,re,r,rp)
 	local tc=g:GetFirst()
 	if Duel.SendtoHand(tc,nil,REASON_EFFECT)>0 and tc:IsLocation(LOCATION_HAND) then
 		Duel.ConfirmCards(1-tp,tc)
-	end
-	if Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and Duel.IsExistingMatchingCard(c95480113.spfilter,tp,LOCATION_HAND,0,1,nil)
-		and Duel.SelectYesNo(tp,aux.Stringid(95480113,1)) then
-		Duel.BreakEffect()
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-		local g2=Duel.SelectMatchingCard(tp,c95480113.spfilter,tp,LOCATION_HAND,0,1,1,nil)
-		if g2:GetCount()>0 then
-			Duel.Summon(tp,g2:GetFirst(),true,nil)
-		end
 	end
 end
 

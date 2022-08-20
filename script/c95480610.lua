@@ -1,7 +1,7 @@
 --이레귤러: 알터 리얼리티
 function c95480610.initial_effect(c)
 	--synchro summon
-	aux.AddSynchroProcedure(c,aux.FilterBoolFunction(Card.IsSetCard,0xd57),aux.NonTuner(nil),1)
+	aux.AddSynchroProcedure(c,aux.FilterBoolFunction(Card.IsRace,RACE_PSYCHO),aux.NonTuner(nil),1)
 	c:EnableReviveLimit()
 	--Activate
 	local e1=Effect.CreateEffect(c)

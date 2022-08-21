@@ -108,6 +108,7 @@ function Auxiliary.DelightOperation(f,min,max,gf)
 				if #rg>0 then
 					if e:GetLabel()==0 then
 						c:SetStatus(STATUS_SPSUMMON_STEP,true)
+						c:SetStatus(STATUS_EFFECT_ENABLED,false)
 						sg:AddCard(c)
 					end
 					local ct=Duel.GetCurrentPhase()==PHASE_STANDBY and #rg+1 or #rg
@@ -168,6 +169,7 @@ function Auxiliary.DelightOperation(f,min,max,gf)
 							Duel.Hint(HINT_CARD,0,c:GetCode())
 						end
 						c:SetStatus(STATUS_SPSUMMON_STEP,true)
+						c:SetStatus(STATUS_EFFECT_ENABLED,false)
 					else
 						Duel.SpecialSummon(c,SUMMON_TYPE_DELIGHT,tp,tp,false,false,POS_FACEUP)
 						c:CompleteProcedure()
@@ -248,6 +250,151 @@ function Duel.DelightSummon(tp,dc,g)
 		end
 	end
 	return false
+end
+
+function Auxiliary.NotOnFieldFilter(c)
+	return c:IsStatus(STATUS_SPSUMMON_STEP)
+end
+
+local cregeff=Card.RegisterEffect
+function Card.RegisterEffect(c,e,forced,...)
+	local code=c:GetOriginalCode()
+	local mt=_G["c"..code]
+	cregeff(c,e,forced,...)
+	if e:GetCode()==EVENT_SPSUMMON_SUCCESS then
+		local con=e:GetCondition()
+		e:SetCondition(function(e,tp,eg,ep,ev,re,r,rp)
+			local g
+			if eg then
+				g=eg:Clone()
+				g:Remove(Auxiliary.NotOnFieldFilter,nil)
+				if #g==0 then
+					return false
+				end
+			end
+			return not con or con(e,tp,g,ep,ev,re,r,rp)
+		end)
+		local cost=e:GetCost()
+		e:SetCost(function(e,tp,eg,ep,ev,re,r,rp,chk)
+			local g
+			if eg then
+				g=eg:Clone()
+				g:Remove(Auxiliary.NotOnFieldFilter,nil)
+				if #g==0 then
+					return false
+				end
+			end
+			if chk==0 then
+				return not cost or cost(e,tp,g,ep,ev,re,r,rp,0)
+			end
+			if cost then
+				cost(e,tp,g,ep,ev,re,r,rp,1)
+			end
+		end)
+		local tar=e:GetTarget()
+		e:SetTarget(function(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+			local g
+			if eg then
+				g=eg:Clone()
+				g:Remove(Auxiliary.NotOnFieldFilter,nil)
+				if #g==0 then
+					return false
+				end
+			end
+			if chkc then
+				return not tar or tar(e,tp,g,ep,ev,re,r,rp,1,chkc)
+			end
+			if chk==0 then
+				return not tar or tar(e,tp,g,ep,ev,re,r,rp,0,chkc)
+			end
+			if tar then
+				tar(e,tp,g,ep,ev,re,r,rp,1,chkc)
+			end
+		end)
+		local op=e:GetOperation()
+		e:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
+			local g
+			if eg then
+				g=eg:Clone()
+				g:Remove(Auxiliary.NotOnFieldFilter,nil)
+				if #g==0 then
+					return false
+				end
+			end
+			if op then
+				op(e,tp,g,ep,ev,re,r,rp,1)
+			end
+		end)
+	end
+end
+local dregeff=Duel.RegisterEffect
+function Duel.RegisterEffect(e,p,...)
+	dregeff(e,p,...)
+	if e:GetCode()==EVENT_SPSUMMON_SUCCESS then
+		local con=e:GetCondition()
+		e:SetCondition(function(e,tp,eg,ep,ev,re,r,rp)
+			local g
+			if eg then
+				g=eg:Clone()
+				g:Remove(Auxiliary.NotOnFieldFilter,nil)
+				if #g==0 then
+					return false
+				end
+			end
+			return not con or con(e,tp,g,ep,ev,re,r,rp)
+		end)
+		local cost=e:GetCost()
+		e:SetCost(function(e,tp,eg,ep,ev,re,r,rp,chk)
+			local g
+			if eg then
+				g=eg:Clone()
+				g:Remove(Auxiliary.NotOnFieldFilter,nil)
+				if #g==0 then
+					return false
+				end
+			end
+			if chk==0 then
+				return not cost or cost(e,tp,g,ep,ev,re,r,rp,0)
+			end
+			if cost then
+				cost(e,tp,g,ep,ev,re,r,rp,1)
+			end
+		end)
+		local tar=e:GetTarget()
+		e:SetTarget(function(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+			local g
+			if eg then
+				g=eg:Clone()
+				g:Remove(Auxiliary.NotOnFieldFilter,nil)
+				if #g==0 then
+					return false
+				end
+			end
+			if chkc then
+				return not tar or tar(e,tp,g,ep,ev,re,r,rp,1,chkc)
+			end
+			if chk==0 then
+				return not tar or tar(e,tp,g,ep,ev,re,r,rp,0,chkc)
+			end
+			if tar then
+				tar(e,tp,g,ep,ev,re,r,rp,1,chkc)
+			end
+		end)
+		local op=e:GetOperation()
+		e:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
+			local g
+			if eg then
+				g=eg:Clone()
+				g:Remove(Auxiliary.NotOnFieldFilter,nil)
+				if #g==0 then
+					return false
+				end
+			end
+			if op then
+				op(e,tp,g,ep,ev,re,r,rp,1)
+			end
+		end)
+	end
 end
 
 --융합 타입 삭제

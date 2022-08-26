@@ -142,9 +142,13 @@ function cm.ocon11(e,c,minc)
 	local res=g:CheckSubGroup(cm.onfun11,1,ma,c,tp)
 	return ma>0 and res
 end
-function cm.otar11(e,c)
-	local mi,ma=c:GetTributeRequirement()
-	return mi>0 and c:IsRace(RACE_FAIRY+RACE_FIEND)
+function cm.otar11(e,tp,eg,ep,ev,re,r,rp,chk,c)
+	if not c then
+		local mi,ma=tp:GetTributeRequirement()
+		return mi>0 and tp:IsRace(RACE_FAIRY+RACE_FIEND)
+	else
+		return true
+	end
 end
 function cm.oop11(e,tp,eg,ep,ev,re,r,rp,c)
 	local g=Duel.GetTributeGroup(c)

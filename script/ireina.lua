@@ -2162,6 +2162,120 @@ function Duel.GetFirstTarget(...)
 	return dgft(...)
 end
 
+EFFECT_THE_PHANTOM=18453590
+
+local cregeff=Card.RegisterEffect
+function Card.RegisterEffect(c,e,...)
+	local code=c:GetOriginalCode()
+	local mt=_G["c"..code]
+	cregeff(c,e,forced,...)
+	if mt.eff_ct and mt.eff_ct[c] then
+		local ct=0
+		local chk=0
+		while true do
+			if mt.eff_ct[c][ct]==e then
+				chk=true
+				break
+			end
+			if not mt.eff_ct[c][ct] then
+				break
+			end
+			ct=ct+1
+		end
+		if chk then
+			if e:IsHasType(0x7e0) then
+				local cl,clm,cc,cf,chi=e:GetCountLimit()
+				local e1=e:Clone()
+				local con=e1:GetCondition()
+				e1:SetCondition(function(e,tp,eg,ep,ev,re,r,rp)
+					local c=e:GetHandler()
+					local eset={c:IsHasEffect(EFFECT_THE_PHANTOM)}
+					if e:IsHasType(EFFECT_TYPE_TRIGGER_O+EFFECT_TYPE_TRIGGER_F) then
+						if #eset==0 or ep==c:GetControler() or not c:IsLocation(LOCATION_MZONE) then
+							return false
+						end
+					else
+						if #eset==0 or tp==c:GetControler() or not c:IsLocation(LOCATION_MZONE) then
+							return false
+						end
+					end
+					return not con or con(e,tp,eg,ep,ev,re,r,rp)
+				end)
+				if cf==(EFFECT_COUNT_CODE_SINGLE>>28) then
+					e1:SetCountLimit(999999999)
+					local cost=e1:GetCost()
+					e1:SetCost(function(e,tp,eg,ep,ev,re,r,rp,chk)
+						local c=e:GetHandler()
+						local fid=c:GetFieldID()
+						local ct=0
+						local eset={c:GetFlagEffectLabel(EFFECT_THE_PHANTOM)}
+						for _,te in pairs(eset) do
+							if te==fid then
+								ct=ct+1
+							end
+						end
+						if chk==0 then
+							return (not cost or cost(e,tp,eg,ep,ev,re,r,rp,chk)) and ct<cl
+						end
+						c:RegisterFlagEffect(EFFECT_THE_PHANTOM,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END,0,1,fid)
+						if cost then
+							cost(e,tp,eg,ep,ev,re,r,rp,chk)
+						end
+					end)
+				end
+				if e:IsHasType(EFFECT_TYPE_TRIGGER_O+EFFECT_TYPE_TRIGGER_F) then
+					local prop=e1:GetProperty()
+					e1:SetProperty(EFFECT_FLAG_EVENT_PLAYER|prop)
+					local ecode=e1:GetCode()
+					e1:SetCode(0x10000000|ecode)
+					local con=e1:GetCondition()
+					e1:SetCondition(function(e,tp,eg,ep,ev,re,r,rp)
+						local nep,nrp=rp>>16,rp&0xffff
+						return not con or con(e,tp,eg,nep,ev,re,r,nrp)
+					end)
+					local cost=e1:GetCost()
+					e1:SetCost(function(e,tp,eg,ep,ev,re,r,rp,chk)
+						local nep,nrp=rp>>16,rp&0xffff
+						return not cost or cost(e,tp,eg,nep,ev,re,r,nrp,chk)
+					end)
+					local tg=e1:GetTarget()
+					e1:SetTarget(function(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+						local nep,nrp=rp>>16,rp&0xffff
+						return not tg or tg(e,tp,eg,nep,ev,re,r,nrp,chk,chkc)
+					end)
+					local op=e1:GetOperation()
+					e1:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
+						local nep,nrp=rp>>16,rp&0xffff
+						return not op or op(e,tp,eg,nep,ev,re,r,nrp)
+					end)
+					cregeff(c,e1,...)
+					local e2=Effect.CreateEffect(c)
+					local sf=e:GetType()&(EFFECT_TYPE_SINGLE|EFFECT_TYPE_FIELD)
+					e2:SetType(EFFECT_TYPE_CONTINUOUS|sf)
+					e2:SetCode(ecode)
+					e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+					e2:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
+						local c=e:GetHandler()
+						if sf&EFFECT_TYPE_SINGLE>0 then
+							Duel.RaiseSingleEvent(c,0x10000000|ecode,re,r,rp|(ep<<16),1-c:GetControler(),ev)
+						end
+						if sf&EFFECT_TYPE_FIELD>0 then
+							Duel.RaiseEvent(eg,0x10000000|ecode,re,r,rp|(ep<<16),1-c:GetControler(),ev)
+						end
+					end)
+					cregeff(c,e2,...)
+				else
+					local prop=e1:GetProperty()
+					e1:SetProperty(EFFECT_FLAG_BOTH_SIDE|prop)
+					cregeff(c,e1,...)
+				end
+			end
+		end
+	end
+end
+
 --dofile("expansions/script/proto.lua")
 
 --dofile("expansions/script/RDD.lua")
+
+--dofile("expansions/script/fairduel.lua")

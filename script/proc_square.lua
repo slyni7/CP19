@@ -199,7 +199,7 @@ function Card.IsHasExactSquareMana(c,att)
 	return false
 end
 
-function Auxiliary.IsFitSquare(mg,st)
+function Auxiliary.IsFitSquare(mg,st,fc)
 	local mt={}
 	local chain=Duel.GetCurrentChain()
 	local p=chain==0 and Duel.GetTurnPlayer() or Duel.GetChainInfo(0,CHAININFO_TRIGGERING_PLAYER)
@@ -356,7 +356,7 @@ function Auxiliary.SquareCondition(e,c)
 	for _,te in pairs(eset) do
 		local v=te:GetValue()
 		if type(v)=='function' then
-			local vt={v(te,fc)}
+			local vt={v(te,c)}
 			for i=1,#vt do
 				table.insert(mt,vt[i])
 			end
@@ -375,7 +375,7 @@ function Auxiliary.SquareTarget(e,tp,eg,ep,ev,re,r,rp,chk,c)
 	for _,te in pairs(eset) do
 		local v=te:GetValue()
 		if type(v)=='function' then
-			local vt={v(te,fc)}
+			local vt={v(te,c)}
 			for i=1,#vt do
 				table.insert(mt,vt[i])
 			end
@@ -405,3 +405,49 @@ function Auxiliary.SquareOperation(e,tp,eg,ep,ev,re,r,rp,c)
 	Duel.RaiseEvent(g,EVENT_BE_MATERIAL,e,REASON_SQUARE,tp,tp,0)
 	g:DeleteGroup()
 end
+
+function Auxiliary.RegisterSquareString()
+	local e1=Effect.GlobalEffect()
+	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e1:SetCode(EVENT_ADJUST)
+	e1:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE)
+	e1:SetOperation(Auxiliary.SquareStringOperation)
+	Duel.RegisterEffect(e1,0)
+end
+
+EFFECT_SQUARE_STRING=127800000
+
+function Auxiliary.SquareStringOperation(e,tp,eg,ep,ev,re,r,rp)
+	local g=Duel.GetMatchingGroup(nil,tp,0xff,0xff,nil)
+	local tc=g:GetFirst()
+	while tc do
+		local tcsmt=tc:GetSquareMana()
+		local chkt={}
+		for i=1,#tcsmt do
+			local att=tcsmt[i]&0x7f
+			if chkt[att]==nil then
+				chkt[att]=0
+			end
+			chkt[att]=chkt[att]+1
+		end
+		for i=0,127 do
+			local eset={tc:IsHasEffect(EFFECT_SQUARE_STRING+i)}
+			for _,te in pairs(eset) do
+				te:Reset()
+			end
+			if chkt[i]~=nil then
+				local sid=math.min(15,chkt[i]-1)
+				local e1=Effect.CreateEffect(tc)
+				e1:SetType(EFFECT_TYPE_SINGLE)
+				e1:SetCode(EFFECT_SQUARE_STRING+i)
+				e1:SetProperty(EFFECT_FLAG_CLIENT_HINT+EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+				e1:SetDescription(aux.Stringid(EFFECT_SQUARE_STRING+i,sid))
+				e1:SetReset(RESET_EVENT+RESETS_STANDARD)
+				tc:RegisterEffect(e1)
+			end
+		end
+		tc=g:GetNext()
+	end
+end
+
+Auxiliary.RegisterSquareString()

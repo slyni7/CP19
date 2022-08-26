@@ -96,6 +96,7 @@ end
 local setcl=Effect.SetCountLimit
 global_eff_count_limit_max={}
 global_eff_count_limit_code={}
+global_eff_count_limit_flag={}
 function Effect.SetCountLimit(e,max,code,flag,...)
 	if IREDO_COMES_TRUE or YGOPRO_VERSION~="Percy/EDO" then
 		if type(code)=="table" then
@@ -121,6 +122,7 @@ function Effect.SetCountLimit(e,max,code,flag,...)
 	end
 	global_eff_count_limit_max[e]=max
 	global_eff_count_limit_code[e]=code
+	global_eff_count_limit_flag[e]=flag
 	setcl(e,max,code,flag,...)
 end
 if YGOPRO_VERSION~="Percy/EDO" then

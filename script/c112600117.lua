@@ -1,31 +1,71 @@
 --7
-function c112600117.initial_effect(c)
-	--damage
+local m=112600117
+local cm=_G["c"..m]
+function cm.initial_effect(c)
+	--Activate
 	local e1=Effect.CreateEffect(c)
+	e1:SetCategory(CATEGORY_DESTROY+CATEGORY_DAMAGE)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
-	e1:SetCategory(CATEGORY_DAMAGE)
-	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e1:SetCode(EVENT_FREE_CHAIN)
-	e1:SetDescription(aux.Stringid(112600117,0))
-	e1:SetCountLimit(2,112600117)
-	e1:SetCondition(c112600117.condition)
-	e1:SetTarget(c112600117.damtg)
-	e1:SetOperation(c112600117.damop)
+	e1:SetTarget(cm.target)
+	e1:SetOperation(cm.activate)
 	c:RegisterEffect(e1)
+	--fake draw
+	local e2=Effect.CreateEffect(c)
+	e2:SetDescription(aux.Stringid(m,0))
+	e2:SetCategory(CATEGORY_TOHAND)
+	e2:SetType(EFFECT_TYPE_QUICK_O)
+	e2:SetRange(LOCATION_GRAVE)
+	e2:SetCode(EVENT_FREE_CHAIN)
+	e2:SetCost(cm.cost)
+	e2:SetTarget(cm.starget)
+	e2:SetOperation(cm.operation)
+	c:RegisterEffect(e2)
 end
-function c112600117.damtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return true end
-	Duel.SetTargetPlayer(1-tp)
-	Duel.SetTargetParam(1000)
-	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,1000)
-end
-function c112600117.damop(e,tp,eg,ep,ev,re,r,rp)
-	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
-	Duel.Damage(p,d,REASON_EFFECT)
-end
-function c112600117.cfilter(c)
+function cm.filter1(c)
 	return c:IsFaceup() and c:IsSetCard(0xe8c)
 end
-function c112600117.condition(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.IsExistingMatchingCard(c112600117.cfilter,tp,LOCATION_MZONE,0,1,nil)
+function cm.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and cm.filter1(chkc) end
+	if chk==0 then return Duel.IsExistingTarget(cm.filter1,tp,LOCATION_MZONE,0,1,nil) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
+	local g=Duel.SelectTarget(tp,cm.filter1,tp,LOCATION_MZONE,0,1,1,nil)
+	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,1,0,0)
+	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,0)
+end
+function cm.activate(e,tp,eg,ep,ev,re,r,rp)
+	local tc=Duel.GetFirstTarget()
+	if tc:IsRelateToEffect(e) then
+		if Duel.Destroy(tc,REASON_EFFECT)>0 then
+			Duel.Damage(1-tp,tc:GetBaseAttack()/2,REASON_EFFECT)
+		end
+	end
+end
+function cm.cost(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return e:GetHandler():IsAbleToRemoveAsCost() end
+	Duel.Remove(e:GetHandler(),POS_FACEUP,REASON_EFFECT)
+end
+function cm.starget(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsPlayerCanDiscardDeck(tp,5) end
+end
+function cm.filter2(c)
+	return c:IsAbleToHand() and c:IsSetCard(0xe8c)
+end
+function cm.operation(e,tp,eg,ep,ev,re,r,rp)
+	if not Duel.IsPlayerCanDiscardDeck(tp,5) then return end
+	Duel.ConfirmDecktop(tp,5)
+	local g=Duel.GetDecktopGroup(tp,5)
+	if g:GetCount()>0 then
+		Duel.DisableShuffleCheck()
+		if g:IsExists(cm.filter2,1,nil) and Duel.SelectYesNo(tp,aux.Stringid(m,1)) then
+			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+			local sg=g:FilterSelect(tp,cm.filter2,1,1,nil)
+			Duel.SendtoHand(sg,nil,REASON_EFFECT)
+			Duel.ConfirmCards(1-tp,sg)
+			Duel.ShuffleHand(tp)
+			g:Sub(sg)
+		end
+		Duel.ShuffleDeck(tp)
+	end
 end

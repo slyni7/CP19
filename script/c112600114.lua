@@ -1,72 +1,106 @@
 --4
-function c112600114.initial_effect(c)
-	--extra summon
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
-	e1:SetCode(EVENT_SUMMON_SUCCESS)
-	e1:SetOperation(c112600114.sumop)
-	c:RegisterEffect(e1)
-	--spsummon
-	local e2=Effect.CreateEffect(c)
-	e2:SetDescription(aux.Stringid(112600114,2))
-	e2:SetCategory(CATEGORY_SPECIAL_SUMMON)
-	e2:SetType(EFFECT_TYPE_QUICK_O)
-	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
-	e2:SetCode(EVENT_FREE_CHAIN)
-	e2:SetRange(LOCATION_GRAVE)
-	e2:SetCountLimit(1,112600114)
-	e2:SetCost(aux.bfgcost)
-	e2:SetTarget(c112600114.sptg)
-	e2:SetOperation(c112600114.spop)
-	c:RegisterEffect(e2)
+local m=112600114
+local cm=_G["c"..m]
+function cm.initial_effect(c)
+	--pendulum summon
+	aux.EnablePendulumAttribute(c)
 	--damage
-	local ea=Effect.CreateEffect(c)
-	ea:SetDescription(aux.Stringid(112600114,0))
-	ea:SetCategory(CATEGORY_DAMAGE)
-	ea:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
-	ea:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_DELAY)
-	ea:SetCode(EVENT_SUMMON_SUCCESS)
-	ea:SetTarget(c112600114.damtg)
-	ea:SetOperation(c112600114.damop)
-	c:RegisterEffect(ea)
+	local e1=Effect.CreateEffect(c)
+	e1:SetCategory(CATEGORY_DAMAGE)
+	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e1:SetRange(LOCATION_PZONE)
+	e1:SetCode(EVENT_BATTLE_DAMAGE)
+	e1:SetCondition(cm.damcon1)
+	e1:SetOperation(cm.damop1)
+	c:RegisterEffect(e1)
+	local e2=e1:Clone()
+	e2:SetCode(EVENT_DAMAGE)
+	e2:SetCondition(cm.damcon2)
+	c:RegisterEffect(e2)
+	--negate
+	local e3=Effect.CreateEffect(c)
+	e3:SetDescription(aux.Stringid(m,0))
+	e3:SetCategory(CATEGORY_NEGATE+CATEGORY_DESTROY)
+	e3:SetType(EFFECT_TYPE_QUICK_O)
+	e3:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
+	e3:SetCode(EVENT_CHAINING)
+	e3:SetRange(LOCATION_PZONE)
+	e3:SetCountLimit(1)
+	e3:SetCondition(cm.negcon)
+	e3:SetTarget(cm.negtg)
+	e3:SetOperation(cm.negop)
+	c:RegisterEffect(e3)
+	--damage
+	local e4=Effect.CreateEffect(c)
+	e4:SetDescription(aux.Stringid(m,1))
+	e4:SetCategory(CATEGORY_DAMAGE)
+	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+	e4:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_DELAY)
+	e4:SetCode(EVENT_SUMMON_SUCCESS)
+	e4:SetTarget(cm.damtg)
+	e4:SetOperation(cm.damop2)
+	c:RegisterEffect(e4)
+	local e5=e4:Clone()
+	e5:SetCode(EVENT_SPSUMMON_SUCCESS)
+	c:RegisterEffect(e5)
+	--damage
+	local e6=Effect.CreateEffect(c)
+	e6:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_F)
+	e6:SetRange(LOCATION_MZONE)
+	e6:SetCode(EVENT_DRAW)
+	e6:SetCountLimit(1)
+	e6:SetCondition(cm.drcon)
+	e6:SetTarget(cm.drtg)
+	e6:SetOperation(cm.drop)
+	c:RegisterEffect(e6)
 end
-function c112600114.damtg(e,tp,eg,ep,ev,re,r,rp,chk)
+function cm.damcon1(e,tp,eg,ep,ev,re,r,rp)
+	return ep~=tp and eg:GetFirst():IsSetCard(0xe8c)
+end
+function cm.damcon2(e,tp,eg,ep,ev,re,r,rp)
+	return ep~=tp and bit.band(r,REASON_BATTLE)==0 and re
+		and re:IsActiveType(TYPE_MONSTER) and re:GetHandler():IsSetCard(0xe8c)
+end
+function cm.damop1(e,tp,eg,ep,ev,re,r,rp)
+	Duel.Hint(HINT_CARD,0,m)
+	Duel.Damage(1-tp,300,REASON_EFFECT)
+end
+function cm.negcon(e,tp,eg,ep,ev,re,r,rp)
+	return not e:GetHandler():IsStatus(STATUS_BATTLE_DESTROYED) and ep~=tp
+		and re:IsHasType(EFFECT_TYPE_ACTIVATE) and Duel.IsChainNegatable(ev)
+end
+function cm.negtg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return true end
+	Duel.SetOperationInfo(0,CATEGORY_NEGATE,eg,1,0,0)
+	if re:GetHandler():IsDestructable() and re:GetHandler():IsRelateToEffect(re) then
+		Duel.SetOperationInfo(0,CATEGORY_DESTROY,eg,1,0,0)
+	end
+end
+function cm.negop(e,tp,eg,ep,ev,re,r,rp)
+	if Duel.NegateActivation(ev) and re:GetHandler():IsRelateToEffect(re) then
+		Duel.Destroy(eg,REASON_EFFECT)
+	end
+end
+function cm.damtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
 	Duel.SetTargetPlayer(1-tp)
-	Duel.SetTargetParam(100)
-	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,100)
+	Duel.SetTargetParam(400)
+	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,400)
 end
-function c112600114.damop(e,tp,eg,ep,ev,re,r,rp)
+function cm.damop2(e,tp,eg,ep,ev,re,r,rp)
 	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
 	Duel.Damage(p,d,REASON_EFFECT)
 end
-function c112600114.sumop(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.GetFlagEffect(tp,112600114)~=0 then return end
-	local e1=Effect.CreateEffect(e:GetHandler())
-	e1:SetDescription(aux.Stringid(112600114,1))
-	e1:SetType(EFFECT_TYPE_FIELD)
-	e1:SetTargetRange(LOCATION_HAND+LOCATION_MZONE,0)
-	e1:SetCode(EFFECT_EXTRA_SUMMON_COUNT)
-	e1:SetTarget(aux.TargetBoolFunction(Card.IsSetCard,0xe8c))
-	e1:SetReset(RESET_PHASE+PHASE_END)
-	Duel.RegisterEffect(e1,tp)
-	Duel.RegisterFlagEffect(tp,112600114,RESET_PHASE+PHASE_END,0,1)
+function cm.drcon(e,tp,eg,ep,ev,re,r,rp)
+	return ep~=tp
 end
-function c112600114.spfilter(c,e,tp)
-	return c:IsSetCard(0xe8c) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+function cm.drtg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return true end
+	Duel.SetTargetPlayer(1-tp)
+	Duel.SetTargetParam(510)
+	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,510)
 end
-function c112600114.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsControler(tp) and chkc:IsLocation(LOCATION_GRAVE) and c112600114.spfilter(chkc,e,tp) end
-	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and Duel.IsExistingTarget(c112600114.spfilter,tp,LOCATION_GRAVE,0,1,nil,e,tp) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectTarget(tp,c112600114.spfilter,tp,LOCATION_GRAVE,0,1,1,nil,e,tp)
-	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g,1,0,0)
-end
-function c112600114.spop(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
-	local tc=Duel.GetFirstTarget()
-	if tc:IsRelateToEffect(e) then
-		Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
-	end
+function cm.drop(e,tp,eg,ep,ev,re,r,rp)
+	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
+	Duel.Damage(p,d,REASON_EFFECT)
 end

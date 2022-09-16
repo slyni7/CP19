@@ -126,13 +126,25 @@ function c112500023.tdcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsPreviousLocation(LOCATION_ONFIELD)
 end
 function c112500023.tdcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.CheckReleaseGroup(tp,nil,1,nil) end
-	local g=Duel.SelectReleaseGroup(tp,nil,1,1,nil)
-	Duel.Release(g,REASON_COST)
+	e:SetLabel(1000000)
+	return true
+end
+function c112500023.tfun2(g,tp)
+	return true
 end
 function c112500023.tdtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return e:GetHandler():IsAbleToDeck() end
-	Duel.SetOperationInfo(0,CATEGORY_TODECK,e:GetHandler(),1,0,0)
+	local g=Duel.GetMatchingGroup(Card.IsReleaseable,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil)
+	if chk==0 then
+		if e:GetLabel()~=1000000 then
+			return false
+		end
+		e:SetLabel(0)
+		return g:CheckSubGroup(c112500023.tfun2,1,1,tp)
+	end
+	e:SetLabel(0)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_RELEASE)
+	local rg=g:SelectSubGroup(tp,c112500023.tfun2,false,1,1,tp)
+	Duel.Release(rg,REASON_COST)
 end
 function c112500023.tdop(e,tp,eg,ep,ev,re,r,rp)
 	if e:GetHandler():IsRelateToEffect(e) then

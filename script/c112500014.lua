@@ -35,12 +35,8 @@ function c112500014.initial_effect(c)
 	e4:SetOperation(c112500014.thop)
 	c:RegisterEffect(e4)
 end
-function c112500014.thcon2(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetHandler():IsSummonType(SUMMON_TYPE_ADVANCE) and rp==1-tp
-end
 function c112500014.thfilter2(c,tp)
-	return c:IsSetCard(0xe83) and c:GetType()==0x40002
-		and (c:IsAbleToHand() or c:GetActivateEffect():IsActivatable(tp))
+	return c:IsSetCard(0xe83) and c:IsAbleToHand()
 end
 function c112500014.thtg2(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(c112500014.thfilter2,tp,LOCATION_DECK,0,1,nil,tp) end
@@ -51,25 +47,15 @@ function c112500014.thop2(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.SelectMatchingCard(tp,c112500014.thfilter2,tp,LOCATION_DECK,0,1,1,nil,tp)
 	local tc=g:GetFirst()
 	if tc then
-		local b1=tc:IsAbleToHand()
-		local b2=tc:GetActivateEffect():IsActivatable(tp)
-		if b1 and (not b2 or Duel.SelectOption(tp,1190,1150)==0) then
-			Duel.SendtoHand(tc,nil,REASON_EFFECT)
-			Duel.ConfirmCards(1-tp,tc)
-		else
-			Duel.MoveToField(tc,tp,tp,LOCATION_SZONE,POS_FACEUP,true)
-			local te=tc:GetActivateEffect()
-			local tep=tc:GetControler()
-			local cost=te:GetCost()
-			if cost then cost(te,tep,eg,ep,ev,re,r,rp,1) end
-		end
+		Duel.SendtoHand(tc,nil,REASON_EFFECT)
+		Duel.ConfirmCards(1-tp,tc)
 	end
 end
 function c112500014.filter(c)
-	return c:IsSetCard(0xe83) and c:IsType(TYPE_SPELL) and c:IsAbleToHand()
+	return c:IsSetCard(0xe83) and c:IsType(TYPE_SPELL) and c:IsType(TYPE_EQUIP) and c:IsAbleToHand()
 end
 function c112500014.thcon(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetHandler():IsSummonType(SUMMON_TYPE_ADVANCE) and rp==1-tp
+	return e:GetHandler():IsSummonType(SUMMON_TYPE_TRIBUTE) and rp==1-tp
 end
 function c112500014.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(c112500014.filter,tp,LOCATION_DECK,0,1,nil) end

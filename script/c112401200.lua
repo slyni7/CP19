@@ -38,7 +38,8 @@ function c112401200.spop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function c112401200.drcon(e,tp,eg,ep,ev,re,r,rp)
-	return r==REASON_FUSION
+	local c=e:GetHandler()
+	return c:IsLocation(LOCATION_GRAVE) and r==REASON_FUSION
 end
 function c112401200.drtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsPlayerCanDraw(tp,1) end

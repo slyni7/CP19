@@ -46,7 +46,7 @@ function c112401201.spop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function c112401201.condition(e,tp,eg,ep,ev,re,r,rp)
-	return r==REASON_FUSION
+	return e:GetHandler():IsLocation(LOCATION_GRAVE) and r==REASON_FUSION
 end
 function c112401201.thfilter(c)
 	return c:IsSetCard(0xee5) and c:IsType(TYPE_MONSTER) and c:IsAbleToHand()

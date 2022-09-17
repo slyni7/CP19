@@ -30,7 +30,7 @@ function c112401202.atkop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function c112401202.condition(e,tp,eg,ep,ev,re,r,rp)
-	return r==REASON_FUSION
+	return e:GetHandler():IsLocation(LOCATION_GRAVE) and r==REASON_FUSION
 end
 function c112401202.thfilter(c)
 	return (c:IsSetCard(0xee6) or c:IsSetCard(0x46)) and c:IsAbleToHand()

@@ -24,7 +24,6 @@ function c112401203.initial_effect(c)
 	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e4:SetProperty(EFFECT_FLAG_CARD_TARGET+EFFECT_FLAG_DELAY)
 	e4:SetCode(EVENT_BE_MATERIAL)
-	e4:SetCountLimit(1,1112401203+100)
 	e4:SetCondition(c112401203.condition)
 	e4:SetTarget(c112401203.target)
 	e4:SetOperation(c112401203.operation)
@@ -46,7 +45,7 @@ function c112401203.thop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function c112401203.condition(e,tp,eg,ep,ev,re,r,rp)
-	return r==REASON_FUSION
+	return e:GetHandler():IsLocation(LOCATION_GRAVE) and r==REASON_FUSION
 end
 function c112401203.filter(c)
 	return c:IsSetCard(0xee5) and not c:IsCode(112401203) and c:IsAbleToHand()

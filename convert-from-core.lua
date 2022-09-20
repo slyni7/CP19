@@ -12,5 +12,6 @@ if IREDO_COMES_TRUE==nil then
 end
 dofile("expansions/convert-from-core-proc_ritual.lua")
 dofile("expansions/convert-from-core-proc_synchro.lua")
+dofile("expansions/convert-from-core-proc_union.lua")
 dofile("expansions/convert-from-core-proc_xyz.lua")
 dofile("expansions/convert-from-core-utility.lua")

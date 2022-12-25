@@ -52,7 +52,7 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 	end
 	local dg=Duel.GMGroup(aux.TRUE,tp,"O","O",exg)
 	if #dg>0 and Duel.GetFlagEffect(tp,m)<1 then
-		sel=Duel.SelectOption(tp,16*m,16*m+1)
+		sel=Duel.SelectOption(tp,aux.Stringid(m,0),aux.Stringid(m,1))
 	end
 	if Duel.NegateActivation(ev) then
 		if sel<1 then

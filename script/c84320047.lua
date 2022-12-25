@@ -25,7 +25,7 @@ function c84320047.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.PayLPCost(tp,1600)
 end
 function c84320047.target(e,tp,eg,ep,ev,re,r,rp,chk)
-	local g=Duel.GetMatchingGroup(aux.disfilter1,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,c)
+	local g=Duel.GetMatchingGroup(Card.IsNegatable,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,c)
 	if chk==0 then
 		return #g>0
 	end
@@ -36,7 +36,7 @@ end
 function c84320047.drop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local d=Duel.GetFieldGroupCount(tp,0,LOCATION_ONFIELD)
-	local g=Duel.GetMatchingGroup(aux.disfilter1,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,c)
+	local g=Duel.GetMatchingGroup(Card.IsNegatable,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,c)
 	if #g>0 then
 		local sg=g:Select(tp,1,1,nil)
 		local tc=sg:GetFirst()

@@ -107,7 +107,7 @@ function cm.tar3(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SOI(0,CATEGORY_TOHAND,nil,0,tp,"DG")
 end
 function cm.op3(e,tp,eg,ep,ev,re,r,rp)
-	Duel.Hint(HINT_SELECTMSG,tp,HITNMSG_ATOHAND)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
 	local g=Duel.SMCard(tp,cm.tfil3,tp,"DG",0,1,1,nil)
 	local tc=g:GetFirst()
 	if tc then

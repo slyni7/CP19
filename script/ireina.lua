@@ -894,7 +894,7 @@ end
 
 local cregeff=Card.RegisterEffect
 function Card.RegisterEffect(c,e,forced,...)
-	cregeff(c,e,forced)
+	cregeff(c,e,forced,...)
 	local code=c:GetOriginalCode()
 	local mt=_G["c"..code]
 	if c:IsStatus(STATUS_INITIALIZING) and code==40410110 and mt.eff_ct[c][0]==e then
@@ -2172,7 +2172,7 @@ end
 EFFECT_THE_PHANTOM=18453590
 
 local cregeff=Card.RegisterEffect
-function Card.RegisterEffect(c,e,...)
+function Card.RegisterEffect(c,e,forced,...)
 	local code=c:GetOriginalCode()
 	local mt=_G["c"..code]
 	cregeff(c,e,forced,...)
@@ -2270,11 +2270,11 @@ function Card.RegisterEffect(c,e,...)
 							Duel.RaiseEvent(eg,0x10000000|ecode,re,r,rp|(ep<<16),1-c:GetControler(),ev)
 						end
 					end)
-					cregeff(c,e2,...)
+					cregeff(c,e2,forced,...)
 				else
 					local prop=e1:GetProperty()
 					e1:SetProperty(EFFECT_FLAG_BOTH_SIDE|prop)
-					cregeff(c,e1,...)
+					cregeff(c,e1,forced,...)
 				end
 			end
 		end
@@ -2360,6 +2360,450 @@ function Duel.XyzSummon(...)
 		else
 			return dxs(...)
 		end
+	end
+end
+
+EFFECT_ANGER_DESIGNATOR=18453634
+
+local cregeff=Card.RegisterEffect
+function Card.RegisterEffect(c,e,forced,...)
+	local code=c:GetOriginalCode()
+	local mt=_G["c"..code]
+	cregeff(c,e,forced,...)
+	if code==33423043 and mt.eff_ct[c][0]==e then
+		e:SetTarget(function(e,tp,eg,ep,ev,re,r,rp,chk)
+			local loc=LOCATION_HAND
+			if Duel.IsPlayerAffectedByEffect(tp,EFFECT_ANGER_DESIGNATOR) then
+				loc=loc|LOCATION_ONFIELD
+			end
+			if chk==0 then return Duel.GetFieldGroupCount(tp,0,loc)>0
+				and Duel.IsExistingMatchingCard(nil,tp,LOCATION_HAND,0,1,e:GetHandler()) end
+			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_CODE)
+			mt.announce_filter={TYPE_EXTRA,OPCODE_ISTYPE,OPCODE_NOT}
+			local ac=Duel.AnnounceCard(tp,table.unpack(mt.announce_filter))
+			Duel.SetTargetParam(ac)
+			Duel.SetOperationInfo(0,CATEGORY_ANNOUNCE,nil,0,tp,ANNOUNCE_CARD_FILTER)
+		end)
+		e:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
+			local loc=LOCATION_HAND
+			if Duel.IsPlayerAffectedByEffect(tp,EFFECT_ANGER_DESIGNATOR) then
+				loc=loc|LOCATION_ONFIELD
+			end
+			local ac=Duel.GetChainInfo(0,CHAININFO_TARGET_PARAM)
+			local g=Duel.GetMatchingGroup(Card.IsCode,tp,0,loc,nil,ac)
+			local hg=Duel.GetFieldGroup(tp,0,loc)
+			Duel.ConfirmCards(tp,hg)
+			if #g>0 then
+				Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
+				local sg=g:Select(tp,1,1,nil)
+				Duel.Remove(sg,POS_FACEUP,REASON_EFFECT)
+				Duel.ShuffleHand(1-tp)
+			else
+				local sg=Duel.GetFieldGroup(tp,LOCATION_HAND,0)
+				local dg=sg:RandomSelect(tp,1)
+				Duel.Remove(dg,POS_FACEUP,REASON_EFFECT)
+				Duel.ShuffleHand(1-tp)
+			end
+		end)
+	elseif code==89801755 and mt.eff_ct[c][0]==e then
+		e:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
+			local att=e:GetLabel()
+			local p,rc=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
+			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
+			local loc=LOCATION_HAND
+			if Duel.IsPlayerAffectedByEffect(tp,EFFECT_ANGER_DESIGNATOR) and p==1-tp then
+				loc=loc|LOCATION_ONFIELD
+			end
+			local g=Duel.SelectMatchingCard(p,s.filter,p,loc,0,1,1,nil,rc,att)
+			if #g>0 then
+				Duel.SendtoGrave(g,REASON_EFFECT)
+			end
+		end)
+	elseif code==24224830 and mt.eff_ct[c][0]==e then
+		e:SetTarget(function(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+			local loc=LOCATION_HAND
+			if Duel.IsPlayerAffectedByEffect(tp,EFFECT_ANGER_DESIGNATOR) then
+				loc=loc|LOCATION_ONFIELD
+			end
+			if chkc then return chkc:IsControler(1-tp) and chkc:IsLocation(loc) and mt.filter(chkc) end
+			if chk==0 then return Duel.IsExistingTarget(mt.filter,tp,0,loc,1,nil) end
+			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
+			local g=Duel.SelectTarget(tp,mt.filter,tp,0,loc,1,1,nil)
+			Duel.SetOperationInfo(0,CATEGORY_REMOVE,g,1,0,0)
+		end)
+	elseif code==43262273 and mt.eff_ct[c][0]==e then
+		e:SetTarget(function(e,tp,eg,ep,ev,re,r,rp,chk)
+			local loc=LOCATION_HAND
+			if Duel.IsPlayerAffectedByEffect(tp,EFFECT_ANGER_DESIGNATOR) then
+				loc=loc|LOCATION_ONFIELD
+			end
+			if chk==0 then return Duel.GetFieldGroupCount(tp,0,loc)~=0
+				and Duel.IsExistingMatchingCard(Card.IsAbleToRemove,tp,0,loc,1,nil) end
+			Duel.SetOperationInfo(0,CATEGORY_REMOVE,nil,0,1-tp,loc)
+		end)
+		e:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
+			local loc=LOCATION_HAND
+			if Duel.IsPlayerAffectedByEffect(tp,EFFECT_ANGER_DESIGNATOR) then
+				loc=loc|LOCATION_ONFIELD
+			end
+			local g0=Duel.GetFieldGroup(tp,0,loc)
+			Duel.ConfirmCards(tp,g0)
+			local g=Duel.GetMatchingGroup(Card.IsAbleToRemove,tp,0,loc,nil)
+			if #g>0 then
+				Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
+				local sg=g:Select(tp,1,1,nil)
+				local tc=sg:GetFirst()
+				local prevloc=tc:GetLocation()
+				if prevloc==LOCATION_HAND then
+					Duel.Remove(tc,POS_FACEUP,REASON_EFFECT)
+				else
+					Duel.Remove(tc,POS_FACEUP,REASON_EFFECT+REASON_TEMPORARY)
+				end
+				tc:RegisterFlagEffect(43262273,RESET_EVENT+RESETS_STANDARD,0,1)
+				local e1=Effect.CreateEffect(e:GetHandler())
+				e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+				e1:SetCode(EVENT_PHASE+PHASE_END)
+				e1:SetCountLimit(1)
+				if Duel.GetTurnPlayer()==1-tp and Duel.GetCurrentPhase()==PHASE_END then
+					e1:SetLabel(Duel.GetTurnCount())
+					e1:SetReset(RESET_PHASE+PHASE_END+RESET_OPPO_TURN,2)
+				else
+					e1:SetLabel(0)
+					e1:SetReset(RESET_PHASE+PHASE_END+RESET_OPPO_TURN)
+				end
+				e1:SetLabelObject(tc)
+				e1:SetCondition(mt.retcon)
+				if prevloc==LOCATION_HAND then
+					e1:SetOperation(mt.retop)
+				else
+					e1:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
+						local tc=e:GetLabelObject()
+						Duel.ReturnToField(tc)
+					end)
+				end
+				Duel.RegisterEffect(e1,tp)
+			end
+			Duel.ShuffleHand(1-tp)
+		end)
+	end
+end
+
+Auxiliary.SideDeck={}
+for p=0,1 do
+	Auxiliary.SideDeck[p]=Group.CreateGroup()
+	Auxiliary.SideDeck[p]:KeepAlive()
+end
+function side_deck_operation(player,code)
+	local token=Duel.CreateToken(player,code)
+	Auxiliary.SideDeck[player]:AddCard(token)
+end
+
+EFFECT_NIGHT_FEVER_PAYLP_TO_RECOVER=18453685
+EFFECT_NIGHT_FEVER_DISCARD_TO_DRAW=18453686
+EFFECT_NIGHT_FEVER_PAYLP_TO_DRAW=18453687
+EFFECT_NIGHT_FEVER_DISCARD_TO_RECOVER=18453690
+
+Auxiliary.NightFeverChkIsZero=false
+
+local cregeff=Card.RegisterEffect
+function Card.RegisterEffect(c,e,forced,...)
+	local code=c:GetOriginalCode()
+	local mt=_G["c"..code]
+	cregeff(c,e,forced,...)
+	if c:GetOriginalType()&TYPE_TRAP+TYPE_COUNTER~=0 and e:IsHasType(EFFECT_TYPE_ACTIVATE) then
+		local cost=e:GetCost()
+		if cost then
+			e:SetCost(function(e,tp,eg,ep,ev,re,r,rp,chk)
+				if chk==0 then
+					Auxiliary.NightFeverChkIsZero=true
+					return cost(e,tp,eg,ep,ev,re,r,rp,chk)
+				end
+				Auxiliary.NightFeveChkIsZero=false
+				cost(e,tp,eg,ep,ev,re,r,rp,chk)
+			end)
+		end
+	end
+end
+
+local dipabe=Duel.IsPlayerAffectedByEffect
+function Duel.IsPlayerAffectedByEffect(player,ecode)
+	if ecode==EFFECT_DISCARD_COST_CHANGE then
+		if dipabe(player,EFFECT_NIGHT_FEVER_DISCARD_TO_RECOVER) then
+			if Auxiliary.NightFeverChkIsZero then
+				return true
+			else
+				local eset={dipabe(player,EFFECT_NIGHT_FEVER_DISCARD_TO_RECOVER)}
+				local te=eset[1]
+				local tc=te:GetHandler()
+				tc:RegisterFlagEffect(tc:GetOriginalCode(),RESET_EVENT+0x1ec0000+RESET_PHASE+PHASE_END,0,1)
+				Duel.Recover(player,1400,REASON_COST)
+				return true
+			end
+		end
+		if dipabe(player,EFFECT_NIGHT_FEVER_DISCARD_TO_DRAW) then
+			if Auxiliary.NightFeverChkIsZero then
+				if Duel.IsPlayerCanDraw(player,1) then
+					return true
+				end
+			else
+				if Duel.IsPlayerCanDraw(player,1) then
+					local eset={dipabe(player,EFFECT_NIGHT_FEVER_DISCARD_TO_DRAW)}
+					local te=eset[1]
+					local tc=te:GetHandler()
+					tc:RegisterFlagEffect(tc:GetOriginalCode(),RESET_EVENT+0x1ec0000+RESET_PHASE+PHASE_END,0,1)
+					Duel.Draw(player,1,REASON_COST)
+					return true
+				end
+			end
+		end
+	end
+	return dipabe(player,ecode)
+end
+
+local dclc=Duel.CheckLPCost
+function Duel.CheckLPCost(player,lp)
+	local ce=Duel.GetChainInfo(0,CHAININFO_TRIGGERING_EFFECT)
+	if ce and ce:IsHasType(EFFECT_TYPE_ACTIVATE) and ce:IsActiveType(TYPE_COUNTER) then
+		if dipabe(player,EFFECT_NIGHT_FEVER_PAYLP_TO_RECOVER) then
+			return true
+		end
+		if dipabe(player,EFFECT_NIGHT_FEVER_PAYLP_TO_DRAW) then
+			if Duel.IsPlayerCanDraw(player,math.floor((lp/1400)+0.5)) then
+				return true
+			end
+		end
+	end
+	return dclc(player,lp)
+end
+
+local dplc=Duel.PayLPCost
+function Duel.PayLPCost(player,lp)
+	local ce=Duel.GetChainInfo(0,CHAININFO_TRIGGERING_EFFECT)
+	if ce and ce:IsHasType(EFFECT_TYPE_ACTIVATE) and ce:IsActiveType(TYPE_COUNTER) then
+		if dipabe(player,EFFECT_NIGHT_FEVER_PAYLP_TO_RECOVER) then
+			local eset={dipabe(player,EFFECT_NIGHT_FEVER_PAYLP_TO_RECOVER)}
+			local te=eset[1]
+			local tc=te:GetHandler()
+			tc:RegisterFlagEffect(tc:GetOriginalCode(),RESET_EVENT+0x1ec0000+RESET_PHASE+PHASE_END,0,1)
+			Duel.Recover(player,lp,REASON_COST)
+			return true
+		end
+		if dipabe(player,EFFECT_NIGHT_FEVER_PAYLP_TO_DRAW) then
+			if Duel.IsPlayerCanDraw(tp,math.floor((lp/1400)+0.5)) then
+				local eset={dipabe(player,EFFECT_NIGHT_FEVER_PAYLP_TO_DRAW)}
+				local te=eset[1]
+				local tc=te:GetHandler()
+				tc:RegisterFlagEffect(tc:GetOriginalCode(),RESET_EVENT+0x1ec0000+RESET_PHASE+PHASE_END,0,1)
+				Duel.Draw(player,math.floor((lp/1400)+0.5),REASON_COST)
+				return true
+			end
+		end
+	end
+	return dplc(player,lp)
+end
+
+Auxiliary.CounterTrapNegateSpellList={[32415003]=true,[32415004]=true,[32415005]=true,[41420027]=true,[59344077]=true,
+[69632396]=true,[77538567]=true,[92512625]=true,[112501015]=true,[112603063]=true}
+
+Auxiliary.SpecialSummonByEffectNegatedGroup=nil
+EVENT_SPSUMMON_EFFECT=18453695
+function Duel.SpecialSummon(g,...)
+	local t={...}
+	if type(g)=="Card" then
+		g=Group.FromCards(g)
+	end
+	local tc=g:GetFirst()
+	while tc do
+		Duel.SpecialSummonStep(tc,...)
+		tc=g:GetNext()
+	end
+	local ce=Duel.GetChainInfo(0,CHAININFO_TRIGGERING_EFFECT)
+	Duel.RaiseEvent(g,EVENT_SPSUMMON_EFFECT,ce,REASON_EFFECT,t[2],t[2],0)
+	local sg=aux.SpecialSummonByEffectNegatedGroup
+	if sg then
+		g:Sub(sg)
+		sg:DeleteGroup()
+		sg=nil
+	end
+	if #g>0 then
+		Duel.SpecialSummonComplete()
+		return #g
+	end
+end
+
+Auxiliary.SpecialSummonByEffectWaitingGroup=nil
+local dsss=Duel.SpecialSummonStep
+function Duel.SpecialSummonStep(tc,...)
+	if aux.SpecialSumonByEffectWaitingGroup==nil then
+		aux.SpecialSummonByEffectWaitingGroup=Group.CreateGroup()
+		aux.SpecialSummonByEffectWaitingGroup:KeepAlive()
+	end
+	aux.SpecialSummonByEffectWaitingGroup:AddCard(tc)
+	return dsss(tc,...)
+end
+local dssc=Duel.SpecialSummonComplete
+function Duel.SpecialSummonComplete()
+	if aux.SpecialSummonByEffectWaitingGroup==nil then
+		return dssc()
+	else
+		local ce,cp=Duel.GetChainInfo(0,CHAININFO_TRIGGERING_EFFECT,CHAININFO_TRIGGERING_PLAYER)
+		local g=aux.SpecialSummonByEffectWaitingGroup
+		if ce and cp then
+			Duel.RaiseEvent(g,EVENT_SPSUMMON_EFFECT,ce,REASON_EFFECT,cp,cp,0)
+		end
+		g:DeleteGroup()
+		aux.SpecialSummonByEffectWaitingGroup=nil
+		return dssc()
+	end
+end
+
+EFFECT_ANGEL_SIMORGH=18453663
+EFFECT_SIMORGH_HEAVEN=18453667
+EFFECT_SIMORGH_EGG_TOKEN=18453669
+
+function Auxiliary.SimorghBanishFilter1(c,att)
+	return (c:IsAttribute(att|ATTRIBUTE_WIND) or att==0) and c:IsAbleToRemoveAsCost()
+		and (aux.SpElimFilter(c,true) or (c:IsOnField() and c:IsHasEffect(EFFECT_SIMORGH_EGG_TOKEN))
+			or (c:IsLocation(LOCATION_MZONE) and c:IsAttribute(att) and c:IsHasEffect(EFFECT_SIMORGH_HEAVEN)))
+end
+function Auxiliary.SimorghBanishFilter2(c,att)
+	return (c:IsAttribute(att|ATTRIBUTE_WIND) or att==0) and c:IsAbleToRemoveAsCost()
+		and (c:IsLocation(LOCATION_HAND) or (c:IsOnField() and c:IsHasEffect(EFFECT_SIMORGH_EGG_TOKEN))
+			or (c:IsLocation(LOCATION_MZONE) and c:IsAttribute(att) and c:IsHasEffect(EFFECT_SIMORGH_HEAVEN)))
+end
+function Auxiliary.SimorghBanishFilterAngel1(c,att,tp)
+	return (c:IsAttribute(att|ATTRIBUTE_WIND) or att==0) and c:IsAbleToRemoveAsCost()
+		and ((c:IsControler(tp) and (aux.SpElimFilter(c,true) or (c:IsOnField() and c:IsHasEffect(EFFECT_SIMORGH_EGG_TOKEN))
+			or (c:IsLocation(LOCATION_MZONE) and c:IsAttribute(att) and c:IsHasEffect(EFFECT_SIMORGH_HEAVEN))))
+			or (c:IsControler(1-tp) and c:IsFaceup()))
+end
+function Auxiliary.SimorghBanishFilterAngel2(c,att,tp)
+	return (c:IsAttribute(att|ATTRIBUTE_WIND) or att==0) and c:IsAbleToRemoveAsCost()
+		and ((c:IsControler(tp) and (c:IsLocation(LOCATION_HAND) or (c:IsOnField() and c:IsHasEffect(EFFECT_SIMORGH_EGG_TOKEN))
+			or (c:IsLocation(LOCATION_MZONE) and c:IsAttribute(att) and c:IsHasEffect(EFFECT_SIMORGH_HEAVEN))))
+			or (c:IsControler(1-tp) and c:IsFaceup()))
+end
+function Auxiliary.SimorghBanishResult(att)
+	return
+		function(sg,e,tp,mg)
+			if not aux.ChkfMMZ(1)(sg,e,tp,mg) then
+				return false
+			end
+			if #sg==2 then
+				if att==0 then
+					return sg:IsExists(Card.IsAttribute,1,nil,ATTRIBUTE_WIND)
+				end
+				local fc=sg:GetFirst()
+				local nc=sg:GetNext()
+				return (fc:IsAttribute(att) and nc:IsAttribute(ATTRIBUTE_WIND))
+					or (fc:IsAttribute(ATTRIBUTE_WIND) and nc:IsAttribute(att))
+			elseif #sg==1 then
+				local tc=sg:GetFirst()
+				return tc:IsLocation(LOCATION_MZONE) and tc:IsAttribute(att) and tc:IsHasEffect(EFFECT_SIMORGH_HEAVEN)
+			end
+			return false
+		end
+end
+
+local cregeff=Card.RegisterEffect
+function Card.RegisterEffect(c,e,forced,...)
+	local code=c:GetOriginalCode()
+	local mt=_G["c"..code]
+	cregeff(c,e,forced,...)
+	if code==11366199 and mt.eff_ct[c][1]==e then
+		e:SetCost(function(e,tp,eg,ep,ev,re,r,rp,chk)
+			local rg=Duel.GetMatchingGroup(aux.SimorghBanishFilter1,tp,LOCATION_ONFIELD+LOCATION_GRAVE,0,
+				nil,ATTRIBUTE_DARK)
+			if chk==0 then
+				return #rg>0 and aux.SelectUnselectGroup(rg,e,tp,1,2,aux.SimorghBanishResult(ATTRIBUTE_DARK),0)
+			end
+			local g=Group.CreateGroup()
+			while not aux.SimorghBanishResult(ATTRIBUTE_DARK)(g,e,tp,Group.CreateGroup()) do
+				g=aux.SelectUnselectGroup(rg,e,tp,1,2,aux.SimorghBanishResult(ATTRIBUTE_DARK),1,tp,HINTMSG_REMOVE,nil,nil,false)
+			end
+			if #g==1 then
+				local tc=g:GetFirst()
+				local te=tc:IsHasEffect(EFFECT_SIMORGH_HEAVEN)
+				local ec=te:GetHandler()
+				ec:RegisterFlagEffect(EFFECT_SIMORGH_HEAVEN,RESET_PHASE+PHASE_END+RESET_EVENT+0x1ec0000,0,1)
+			end
+			Duel.Remove(g,POS_FACEUP,REASON_COST)
+		end)
+		local e1=e:Clone()
+		e1:SetType(EFFECT_TYPE_QUICK_O)
+		e1:SetCode(EVENT_FREE_CHAIN)
+		e1:SetDescription(aux.Stringid(EFFECT_ANGEL_SIMORGH,0))
+		e1:SetCost(function(e,tp,eg,ep,ev,re,r,rp,chk)
+			local ae=Duel.IsPlayerAffectedByEffect(tp,EFFECT_ANGEL_SIMORGH)
+			local rg=Duel.GetMatchingGroup(aux.SimorghBanishFilterAngel1,tp,LOCATION_ONFIELD+LOCATION_GRAVE,LOCATION_MZONE,
+				nil,ATTRIBUTE_DARK,tp)
+			if chk==0 then
+				return ae and #rg>0 and aux.SelectUnselectGroup(rg,e,tp,1,2,aux.SimorghBanishResult(ATTRIBUTE_DARK),0)
+			end
+			local ac=ae:GetHandler()
+			if ac:CheckRemoveOverlayCard(tp,1,REASON_EFFECT) then
+				ac:RemoveOverlayCard(tp,1,1,REASON_EFFECT)
+			end
+			local g=Group.CreateGroup()
+			while not aux.SimorghBanishResult(ATTRIBUTE_DARK)(g,e,tp,Group.CreateGroup()) do
+				g=aux.SelectUnselectGroup(rg,e,tp,1,2,aux.SimorghBanishResult(ATTRIBUTE_DARK),1,tp,HINTMSG_REMOVE,nil,nil,false)
+			end
+			if #g==1 then
+				local tc=g:GetFirst()
+				local te=tc:IsHasEffect(EFFECT_SIMORGH_HEAVEN)
+				local ec=te:GetHandler()
+				ec:RegisterFlagEffect(EFFECT_SIMORGH_HEAVEN,RESET_PHASE+PHASE_END+RESET_EVENT+0x1ec0000,0,1)
+			end
+			Duel.Remove(g,POS_FACEUP,REASON_COST)
+		end)
+		cregeff(c,e1)
+	elseif code==11366199 and mt.eff_ct[c][2]==e then
+		e:SetCost(function(e,tp,eg,ep,ev,re,r,rp,chk)
+			local rg=Duel.GetMatchingGroup(aux.SimorghBanishFilter2,tp,LOCATION_ONFIELD+LOCATION_HAND,0,
+				nil,ATTRIBUTE_DARK)
+			if chk==0 then
+				return #rg>0 and aux.SelectUnselectGroup(rg,e,tp,1,2,aux.SimorghBanishResult(ATTRIBUTE_DARK),0)
+			end
+			local g=Group.CreateGroup()
+			while not aux.SimorghBanishResult(ATTRIBUTE_DARK)(g,e,tp,Group.CreateGroup()) do
+				g=aux.SelectUnselectGroup(rg,e,tp,1,2,aux.SimorghBanishResult(ATTRIBUTE_DARK),1,tp,HINTMSG_REMOVE,nil,nil,false)
+			end
+			if #g==1 then
+				local tc=g:GetFirst()
+				local te=tc:IsHasEffect(EFFECT_SIMORGH_HEAVEN)
+				local ec=te:GetHandler()
+				ec:RegisterFlagEffect(EFFECT_SIMORGH_HEAVEN,RESET_PHASE+PHASE_END+RESET_EVENT+0x1ec0000,0,1)
+			end
+			Duel.Remove(g,POS_FACEUP,REASON_COST)
+		end)
+		local e1=e:Clone()
+		e1:SetType(EFFECT_TYPE_QUICK_O)
+		e1:SetCode(EVENT_FREE_CHAIN)
+		e1:SetDescription(aux.Stringid(EFFECT_ANGEL_SIMORGH,0))
+		e1:SetCost(function(e,tp,eg,ep,ev,re,r,rp,chk)
+			local ae=Duel.IsPlayerAffectedByEffect(tp,EFFECT_ANGEL_SIMORGH)
+			local rg=Duel.GetMatchingGroup(aux.SimorghBanishFilterAngel2,tp,LOCATION_ONFIELD+LOCATION_HAND,LOCATION_MZONE,
+				nil,ATTRIBUTE_DARK,tp)
+			if chk==0 then
+				return ae and #rg>0 and aux.SelectUnselectGroup(rg,e,tp,1,2,aux.SimorghBanishResult(ATTRIBUTE_DARK),0)
+			end
+			local ac=ae:GetHandler()
+			if ac:CheckRemoveOverlayCard(tp,1,REASON_EFFECT) then
+				ac:RemoveOverlayCard(tp,1,1,REASON_EFFECT)
+			end
+			local g=Group.CreateGroup()
+			while not aux.SimorghBanishResult(ATTRIBUTE_DARK)(g,e,tp,Group.CreateGroup()) do
+				g=aux.SelectUnselectGroup(rg,e,tp,1,2,aux.SimorghBanishResult(ATTRIBUTE_DARK),1,tp,HINTMSG_REMOVE,nil,nil,false)
+			end
+			if #g==1 then
+				local tc=g:GetFirst()
+				local te=tc:IsHasEffect(EFFECT_SIMORGH_HEAVEN)
+				local ec=te:GetHandler()
+				ec:RegisterFlagEffect(EFFECT_SIMORGH_HEAVEN,RESET_PHASE+PHASE_END+RESET_EVENT+0x1ec0000,0,1)
+			end
+			Duel.Remove(g,POS_FACEUP,REASON_COST)
+		end)
+		cregeff(c,e1)
 	end
 end
 

@@ -47,13 +47,13 @@ function cm.cop21(e,tp,eg,ep,ev,re,r,rp)
 end
 function cm.op2(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local e1=MakeEff(c,"F","M")
+	local e1=MakeEff(c,"F")
 	e1:SetCode(m)
 	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
 	e1:SetReset(RESET_PHASE+PHASE_END)
 	e1:SetTR(1,1)
 	e1:SetValue(cm.oval21)
-	c:RegisterEffect(e1)
+	Duel.RegisterEffect(e1,tp)
 end
 function cm.oval21(e,sc,slv,stype)
 	return slv*2

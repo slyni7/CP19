@@ -321,9 +321,9 @@ function Auxiliary.BeyondCheckTable(beyt,crit,filts,bc,dir,...)
 					splitbv=math.max(splitbv,func(tc))
 				end
 			end
-			if dir==">" and splitbv>compbv then
+			if dir==">" and splitbv>=compbv then
 				sres=false
-			elseif dir=="<" and splitbv<compbv then
+			elseif dir=="<" and splitbv<=compbv then
 				sres=false
 			end
 			if not sres then

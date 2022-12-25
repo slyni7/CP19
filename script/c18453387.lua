@@ -44,7 +44,7 @@ end
 function s.ctcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_LINK)
 end
-s.ctfilter=aux.FilterFaceupFunction(Card.IsType,TYPE_TRAP)
+s.ctfilter=aux.FaceupFilter(Card.IsType,TYPE_TRAP)
 function s.cttg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
 	local ct=Duel.GetMatchingGroupCount(s.ctfilter,tp,LOCATION_ONFIELD+LOCATION_GRAVE,LOCATION_ONFIELD+LOCATION_GRAVE,nil)

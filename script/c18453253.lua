@@ -43,6 +43,9 @@ function cm.pfun1(...)
 end
 function cm.val1(e,c)
 	local g=c:GetMaterial()
+	if #g~=2 then
+		return
+	end
 	local te=e:GetLabelObject()
 	e:SetLabel(0)
 	te:SetLabel(0)

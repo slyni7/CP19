@@ -29,6 +29,7 @@ function cm.initial_effect(c)
 end
 cm.square_mana={ATTRIBUTE_EARTH,ATTRIBUTE_EARTH,ATTRIBUTE_EARTH,ATTRIBUTE_EARTH}
 cm.custom_type=CUSTOMTYPE_SQUARE
+cm.listed_names={TOKEN_BRAVE}
 --발동 제한
 function cm.val1(e,re,tp)
 	local tc=re:GetHandler()

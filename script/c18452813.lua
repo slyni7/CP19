@@ -29,13 +29,13 @@ function cm.tar1(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 		end
 	end
 	if chkc then
-		return chkc:IsControler(1-tp) and chkc:IsOnField() and aux.disfilter1(chkc) and not g:IsContains(chkc)
+		return chkc:IsControler(1-tp) and chkc:IsOnField() and chkc:IsNegatable() and not g:IsContains(chkc)
 	end
 	if chk==0 then
-		return Duel.IETarget(aux.disfilter1,tp,0,"O",1,g)
+		return Duel.IETarget(Card.IsNegatable,tp,0,"O",1,g)
 	end
 	Duel.Hint(HINT_SELECTMSG,1-tp,HINTMSG_TARGET)
-	local dg=Duel.SMCard(1-tp,aux.disfilter1,tp,0,"O",1,1,g)
+	local dg=Duel.SMCard(1-tp,Card.IsNegatable,tp,0,"O",1,1,g)
 	Duel.SetTargetCard(dg)
 	Duel.SetOperationInfo(0,CATEGORY_DISABLE,dg,1,0,0)
 end

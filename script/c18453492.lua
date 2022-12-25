@@ -5,7 +5,7 @@ function cm.initial_effect(c)
 	c:EnableReviveLimit()
 	aux.AddDelightProcedure(c,nil,2,2,cm.pfun1)
 	local e1=Effect.CreateEffect(c)
-	e1:SetDescription(aux.Stringm(m,0))
+	e1:SetDescription(aux.Stringid(m,0))
 	e1:SetCategory(CATEGORY_REMOVE)
 	e1:SetType(EFFECT_TYPE_QUICK_O)
 	e1:SetRange(LOCATION_MZONE)
@@ -18,7 +18,7 @@ function cm.initial_effect(c)
 	c:RegisterEffect(e1)
 	--to grave
 	local e2=Effect.CreateEffect(c)
-	e2:SetDescription(aux.Stringm(m,1))
+	e2:SetDescription(aux.Stringid(m,1))
 	e2:SetCategory(CATEGORY_TOGRAVE)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
@@ -64,15 +64,15 @@ function cm.rmop(e,tp,eg,ep,ev,re,r,rp)
 	local rs=g:RandomSelect(1-tp,1)
 	local rg=Group.FromCards(c,rs:GetFirst())
 	if Duel.Remove(rg,POS_FACEDOWN,REASON_EFFECT+REASON_TEMPORARY)~=0 then
-		local fm=c:GetFieldm()
+		local fid=c:GetFieldm()
 		local og=Duel.GetOperatedGroup()
 		local oc=og:GetFirst()
 		for oc in aux.Next(og) do
 			if oc~=c or not c:IsStatus(STATUS_COPYING_EFFECT) then
 				if oc:IsControler(tp) then
-					oc:RegisterFlagEffect(m,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_STANDBY+RESET_SELF_TURN,0,1,fm)
+					oc:RegisterFlagEffect(m,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_STANDBY+RESET_SELF_TURN,0,1,fid)
 				else
-					oc:RegisterFlagEffect(m,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_STANDBY+RESET_OPPO_TURN,0,1,fm)
+					oc:RegisterFlagEffect(m,RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_STANDBY+RESET_OPPO_TURN,0,1,fid)
 				end
 			end
 		end
@@ -82,7 +82,7 @@ function cm.rmop(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE)
 		e1:SetCode(EVENT_PHASE+PHASE_STANDBY)
 		e1:SetCountLimit(1)
-		e1:SetLabel(fm)
+		e1:SetLabel(fid)
 		e1:SetLabelObject(og)
 		e1:SetCondition(cm.retcon)
 		e1:SetOperation(cm.retop)
@@ -107,8 +107,8 @@ function cm.tgop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SendtoGrave(sg,REASON_EFFECT+REASON_RETURN)
 	end
 end
-function cm.retfilter(c,fm)
-	return c:GetFlagEffectLabel(m)==fm
+function cm.retfilter(c,fid)
+	return c:GetFlagEffectLabel(m)==fid
 end
 function cm.retcon(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetTurnPlayer()~=tp then return false end

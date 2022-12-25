@@ -10,6 +10,11 @@ function cm.initial_effect(c)
 	WriteEff(e1,1,"CTO")
 	c:RegisterEffect(e1)
 	--not fully implemented
+	local e2=MakeEff(c,"F","M")
+	e2:SetCode(m)
+	e2:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e2:SetTR(1,0)
+	c:RegisterEffect(e2)
 end
 function cm.cost1(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()

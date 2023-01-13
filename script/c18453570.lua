@@ -158,33 +158,6 @@ function s.oop213(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	c:RegisterFlagEffect(id,RESET_EVENT+RESETS_STANDARD,0,0)
 end
-function s.oco21(effect)
-	return
-		function(e,tp,eg,ep,ev,re,r,rp)
-			local c=e:GetHandler()
-			local e1=MakeEff(c,"FC")
-			e1:SetCode(EVENT_PHASE+PHASE_END)
-			e1:SetCL(1)
-			if Duel.GetCurrentPhase()==PHASE_END then
-				local tid=Duel.GetTurnCount()
-				e1:SetCondition(function(e,tp,eg,ep,ev,re,r,rp)
-					return tid~=Duel.GetTurnCount()
-				end)
-				e1:SetReset(RESET_PHASE+PHASE_END,2)
-			else
-				e1:SetReset(RESET_PHASE+PHASE_END)
-			end
-			e1:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
-				local c=e:GetHandler()
-				Duel.Hint(HINT_CARD,0,c:Code())
-				effect:GetOperation()(e,tp,eg,ep,ev,re,r,rp)
-			end)
-			Duel.RegisterEffect(e1,tp)
-			e1:SetLabel(e:GetLabel())
-			e1:SetLabelObject(e:GetLabelObject())
-			aux.ChainDelay(e1)
-		end
-end
 function s.op3(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if c:IsDisabled() then

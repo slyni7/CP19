@@ -74,7 +74,7 @@ function cm.operation(e,tp,eg,ep,ev,re,r,rp)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
 	e1:SetCode(EFFECT_DISABLE)
-	e1:SetTargetRange(LOCATION_HAND+LOCATION_GRAVE,LOCATION_HAND+LOCATION_GRAVE)
+	e1:SetTargetRange(0,LOCATION_HAND+LOCATION_GRAVE)
 	e1:SetTarget(cm.distarget)
 	e1:SetReset(RESET_PHASE+PHASE_END)
 	Duel.RegisterEffect(e1,tp)
@@ -88,7 +88,7 @@ function cm.operation(e,tp,eg,ep,ev,re,r,rp)
 end
 function cm.disop1(e,tp,eg,ep,ev,re,r,rp)
 	local loc=Duel.GetChainInfo(ev,CHAININFO_TRIGGERING_LOCATION)
-	if (loc==LOCATION_GRAVE or loc==LOCATION_HAND) and not re:GetHandler():IsCode(m) and re:IsActiveType(TYPE_MONSTER) then
+	if rp~=tp and (loc==LOCATION_GRAVE or loc==LOCATION_HAND) and not re:GetHandler():IsCode(m) and re:IsActiveType(TYPE_MONSTER) then
 		Duel.NegateEffect(ev)
 	end
 end

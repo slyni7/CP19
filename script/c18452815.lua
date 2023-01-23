@@ -21,10 +21,20 @@ function cm.initial_effect(c)
 	c:RegisterEffect(e2)
 	if not cm.global_check then
 		cm.global_check=true
+		cm[0]={}
 		local ge1=MakeEff(c,"FC")
 		ge1:SetCode(EVENT_CHAINING)
 		ge1:SetOperation(cm.gop1)
 		Duel.RegisterEffect(ge1,0)
+		local ge2=MakeEff(c,"FC")
+		ge2:SetCode(EVENT_PHASE_START+PHASE_DRAW)
+		ge2:SetCountLimit(1)
+		ge2:SetOperation(cm.gop2)
+		Duel.RegisterEffect(ge2,0)
+		local ge3=ge2:Clone()
+		ge3:SetCode(EVENT_DRAW)
+		ge3:SetOperation(cm.gop3)
+		Duel.RegisterEffect(ge3,0)
 	end
 end
 function cm.pfil1(c,xc)
@@ -42,6 +52,24 @@ function cm.gop1(e,tp,eg,ep,ev,re,r,rp)
 		rc:RegisterFlagEffect(m,RESET_PHASE+PHASE_END,0,1)
 	end
 end
+function cm.gop2(e,tp,eg,ep,ev,re,r,rp)
+	cm[0]={}
+	local g=Duel.GetMatchingGroup(nil,tp,0xff,0xff,nil)
+	local tc=g:GetFirst()
+	while tc do
+		cm[0][tc]={tc:GetControler(),tc:GetLocation(),tc:GetSequence(),tc:GetPosition()}
+		tc=g:GetNext()
+	end
+end
+function cm.gop3(e,tp,eg,ep,ev,re,r,rp)
+	local tc=eg:GetFirst()
+	while tc do
+		if tc:IsReason(REASON_RULE) then
+			cm[0][tc]={tc:GetControler(),tc:GetLocation(),tc:GetSequence(),tc:GetPosition()}
+		end
+		tc=eg:GetNext()
+	end
+end
 function cm.cost1(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
 	if chk==0 then
@@ -54,11 +82,11 @@ function cm.tar1(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
 		return true
 	end
-	local g=Duel.GMGroup(aux.disfilter1,tp,"O","O",c)
+	local g=Duel.GMGroup(Card.IsNegatable,tp,"O","O",c)
 	Duel.SOI(0,CATEGORY_DISABLE,g,#g,0,0)
 end
 function cm.ofil11(c,e)
-	return c:GetFlagEffect(m)>0 and not c:IsImmuneToEffect(e)
+	return c:GetFlagEffect(m)>0 and cm[0][c] and not c:IsImmuneToEffect(e)
 end
 function cm.ofil12(c,loc,p)
 	return c:IsLoc("D") and c:IsControler(p)
@@ -66,7 +94,7 @@ end
 function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local exc=c:IsRelateToEffect(e) and c or nil
-	local g=Duel.GMGroup(aux.disfilter1,tp,"O","O",exc)
+	local g=Duel.GMGroup(Card.IsNegatable,tp,"O","O",exc)
 	local tc=g:GetFirst()
 	while tc do
 		Duel.NegateRelatedChain(tc,RESET_TURN_SET)
@@ -82,15 +110,32 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 		tc=g:GetNext()
 	end
 	local tg=Duel.GMGroup(cm.ofil11,tp,0x7f,0x7f,exc,e)
-	tc=tg:GetFirst()
+	local sc=tg:GetFirst()
 	local sg=Group.CreateGroup()
-	while tc do
-		local og=tc:GetOverlayGroup()
+	while sc do
+		local og=sc:GetOverlayGroup()
 		sg:Merge(og)
-		tc=tg:GetNext()
+		sc=tg:GetNext()
 	end
-	Duel.TimeTyrant(tg)
-	Duel.SendtoGrave(sg,REASON_RULE)
+	sc=tg:GetFirst()
+	while sc do
+		local schk=true
+		if cm[0][sc][2]&LOCATION_ONFIELD~=0 then
+			schk=Duel.CheckLocation(table.unpack(cm[0][sc]))
+		end
+		if schk then
+			Debug.RemoveCardEx(sc)
+			Debug.AddCardEx(sc,table.unpack(cm[0][sc]))
+		end
+		sc=tg:GetNext()
+	end
+	local oc=sg:GetFirst()
+	while oc do
+		Debug.RemoveCardEx(oc)
+		Debug.AddCardEx(oc,oc:GetOwner(),LOCATION_GRAVE,Duel.GetFieldGroupCount(oc:GetOwner(),LOCATION_GRAVE,0),POS_FACEUP)
+		oc=sg:GetNext()
+	end
+	Debug.ReloadFieldEnd()
 	if tg:IsExists(cm.ofil12,1,nil,"D",tp) then
 		Duel.ShuffleDeck(tp)
 	end
@@ -129,7 +174,8 @@ end
 function cm.oval13(e,re,tp)
 	local rc=re:GetHandler()
 	local rp=re:GetHandlerPlayer()
-	return (rc:IsOnField() and e:GetLabel()<1) or (rp~=tp and not rc:IsOnField() and re:IsHasType(EFFECT_TYPE_ACTIVATE))
+	local ep=e:GetHandlerPlayer()
+	return (rc:IsOnField() and e:GetLabel()<1) or (rp~=ep and not rc:IsOnField() and re:IsHasType(EFFECT_TYPE_ACTIVATE))
 end
 function cm.oop14(e,tp,eg,ep,ev,re,r,rp)
 	if e:GetCode()==EVENT_ADJUST and (Duel.GetCurrentChain()>0 or Duel.CheckEvent(EVENT_CHAIN_END)) then

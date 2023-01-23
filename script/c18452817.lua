@@ -58,7 +58,6 @@ function cm.tar2(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
 		return Duel.IsPlayerCanSpecialSummonCount(tp,2)
 			and Duel.GetLocCount(tp,"M")>0
-			and (not EFFECT_MUST_BE_XYZ_MATERIAL or aux.MustMaterialCheck(nil,tp,EFFECT_MUST_BE_XYZ_MATERIAL))
 			and Duel.IsPlayerCanSpecialSummonMonster(tp,m,0,0x11,3000,2500,8,RACE_FAIRY,ATTRIBUTE_LIGHT)
 			and Duel.IEMCard(cm.tfil2,tp,"E",0,1,nil,e,tp,c)
 	end
@@ -74,9 +73,6 @@ function cm.op2(e,tp,eg,ep,ev,re,r,rp)
 		and Duel.IsPlayerCanSpecialSummonMonster(tp,m,0,0x11,3000,2500,8,RACE_FAIRY,ATTRIBUTE_LIGHT) then
 		c:AddMonsterAttribute(TYPE_NORMAL)
 		Duel.SpecialSummon(c,0,tp,tp,true,false,POS_FACEUP)
-		if not aux.MustMaterialCheck(nil,tp,EFFECT_MUST_BE_XYZ_MATERIAL) then
-			return
-		end
 		local g=Duel.SMCard(tp,cm.tfil2,tp,"E",0,1,1,nil,e,tp,c)
 		local tc=g:GetFirst()
 		if tc then

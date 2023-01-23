@@ -159,7 +159,7 @@ function s.tar3(e,tp,eg,ep,ev,re,r,rp,chk)
 	local tset=e:GetLabelObject()
 	local res=false
 	local chain=Duel.GetCurrentChain()
-	local tres={}
+	local tres={false,false,false}
 	for i=1,#tset do
 		if type(tset[i])=="Effect" then
 			local sres=s.tfun3(tset[i],tp,eg,ep,ev,re,r,rp,chain)

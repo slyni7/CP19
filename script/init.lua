@@ -1,3 +1,5 @@
+dofile("expansions/script/deprefunc_nodebug.lua")
+
 dofile("expansions/script/proc_version_check.lua")
 
 function Auxiliary.FilterBoolFunctionEx(f,...)
@@ -152,6 +154,8 @@ dofile("expansions/script/proc_beyond.lua")
 dofile("expansions/script/proc_square.lua")
 dofile("expansions/script/proc_delight.lua")
 dofile("expansions/script/proc_scripted.lua")
+dofile("expansions/script/proc_equal.lua")
+dofile("expansions/script/proc_sequence.lua")
 pcall(dofile,"expansions/script/inf.lua")
 dofile("expansions/script/ireina.lua")
 pcall(dofile,"expansions/script/BELCH.lua")
@@ -192,4 +196,5 @@ function Card.RegisterEffect(c,e,forced,...)
 	end
 	cregeff(c,e,forced,...)
 end
+--dofile("expansions/script/proto.lua")
 --dofile("expansions/script/RDD.lua")

@@ -44,7 +44,7 @@ function cm.pfil2(c,fc,sub,mg,sg)
 end
 function cm.con2(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return not c:IsStatus(STATUS_BATTLE_DESTROYING) and re:IsActiveType(TYPE_MONSTER) and Duel.IsChainNegatable(ev)
+	return not c:IsStatus(STATUS_BATTLE_DESTROYED) and re:IsActiveType(TYPE_MONSTER) and Duel.IsChainNegatable(ev)
 end
 function cm.tar2(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then

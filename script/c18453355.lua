@@ -2,6 +2,7 @@
 local m=18453355
 local cm=_G["c"..m]
 function cm.initial_effect(c)
+	aux.AddSquareProcedure(c)
 	--negate
 	local e1=MakeEff(c,"Qo","H")
 	e1:SetCode(EVENT_CHAINING)

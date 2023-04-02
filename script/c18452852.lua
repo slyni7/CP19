@@ -76,6 +76,7 @@ function cm.op3(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function cm.tar4(e,tp,eg,ep,ev,re,r,rp,chk)
+	local c=e:GetHandler()
 	if chk==0 then
 		return true
 	end
@@ -89,7 +90,7 @@ function cm.op4(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Recover(tp,val,REASON_EFFECT)
 		local e1=MakeEff(c,"S")
 		e1:SetCode(EFFECT_DIRECT_ATTACK)
-		e1:SetReset(RESET_PHSE+PHASE_END+RESET_EVENT+RESETS_STANDARD)
+		e1:SetReset(RESET_PHASE+PHASE_END+RESET_EVENT+RESETS_STANDARD)
 		c:RegisterEffect(e1)
 	end
 end

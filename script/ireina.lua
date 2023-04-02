@@ -948,8 +948,19 @@ function Auxiliary.RegisterSilentMajority()
 		return
 	end
 	GlobalSilentMajority=true
-	SilentMajorityList={18453084,18453085,18453086,18453087,18453088,18453089,18453090,18453091,18453092,18453093,18453094,
-		18453095,18453096,18453097,18453098,18453099,18453100}
+	SilentMajorityList={18453075,18453076,18453077,18453078,18453079,18453080,18453081,18453082,18453083,
+		18453084,18453085,18453086,18453087,18453088,18453089,18453090,18453091,18453092,18453093,18453094,
+		18453095,18453096,18453097,18453098,18453099,18453100,
+		18453732,
+		18453746,18453747,18453748,18453749,18453750,18453751,18453752}
+	local i=#SilentMajorityList
+	while i>0 do
+		local code=SilentMajorityList[i]
+		if not Duel.GetCardLevelFromCode(code) then
+			table.remove(SilentMajorityList,i)
+		end
+		i=i-1
+	end
 	local ge1=Effect.GlobalEffect()
 	ge1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	ge1:SetCode(EVENT_ADJUST)
@@ -978,7 +989,7 @@ function Auxiliary.SilentMajorityOperation(e,tp,eg,ep,ev,re,r,rp)
 			ge1:SetRange(LOCATION_MZONE)
 			ge1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
 			ge1:SetValue(SUMMON_TYPE_LINK)
-			ge1:SetCountLimit(1,18453098)
+			--ge1:SetCountLimit(1,18453098)
 			ge1:SetDescription(aux.Stringid(18453098,0))
 			ge1:SetCondition(Auxiliary.SilentMajorityLinkCondition1)
 			ge1:SetOperation(Auxiliary.SilentMajorityLinkOperation1)
@@ -987,6 +998,21 @@ function Auxiliary.SilentMajorityOperation(e,tp,eg,ep,ev,re,r,rp)
 			ge2:SetTargetRange(LOCATION_MZONE,0)
 			ge2:SetLabelObject(ge1)
 			Duel.RegisterEffect(ge2,p)
+			local ge3=Effect.GlobalEffect()
+			ge3:SetType(EFFECT_TYPE_FIELD)
+			ge3:SetCode(EFFECT_SPSUMMON_PROC_G)
+			ge3:SetRange(LOCATION_MZONE)
+			ge3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+			ge3:SetValue(SUMMON_TYPE_LINK)
+			--ge3:SetCountLimit(1,18453751)
+			ge3:SetDescription(aux.Stringid(18453751,0))
+			ge3:SetCondition(Auxiliary.SilentMajorityLinkCondition2)
+			ge3:SetOperation(Auxiliary.SilentMajorityLinkOperation2)
+			local ge4=Effect.GlobalEffect()
+			ge4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
+			ge4:SetTargetRange(LOCATION_MZONE,0)
+			ge4:SetLabelObject(ge3)
+			Duel.RegisterEffect(ge4,p)
 		end
 	end
 	for p=0,1 do
@@ -1005,7 +1031,6 @@ function Auxiliary.SilentMajorityOperation(e,tp,eg,ep,ev,re,r,rp)
 		end
 	end
 end
-
 
 function Auxiliary.LCheckSilentGoal(sg,tp,lc,gf,lmat)
 	return sg:CheckWithSumEqual(Auxiliary.GetLinkCount,lc:GetLink(),#sg,#sg)
@@ -1035,11 +1060,13 @@ function Auxiliary.SilentMajorityLinkCondition1(e,c,og)
 		return false
 	end
 	Duel.SetSelectedCard(fg)
-	return mg:CheckSubGroup(Auxiliary.LCheckSilentGoal,minc,maxc,tp,lc,nil,c)
+	return mg:CheckSubGroup(Auxiliary.LCheckSilentGoal,1,1,tp,lc,nil,c)
+		and Duel.GetFlagEffect(tp,18453098)==0
 end
 function Auxiliary.SilentMajorityLinkOperation1(e,tp,eg,ep,ev,re,r,rp,c,sg,og)
 	local lg=SilentMajorityGroups[tp]:Filter(function(c) return c:GetOriginalCode()==18453098 end,nil)
 	local lc=lg:GetFirst()
+	local f=aux.FilterBoolFunction(Card.IsLinkSetCard,0x2e0)
 	local mg=Auxiliary.GetLinkMaterials(tp,f,lc)
 	mg:AddCard(c)
 	local fg=Auxiliary.GetMustMaterialGroup(tp,EFFECT_MUST_BE_LMATERIAL)
@@ -1050,6 +1077,58 @@ function Auxiliary.SilentMajorityLinkOperation1(e,tp,eg,ep,ev,re,r,rp,c,sg,og)
 	if not tg then
 		return
 	end
+	Duel.RegisterFlagEffect(tp,18453098,RESET_PHASE+PHASE_END,0,1)
+	sg:AddCard(lc)
+	SilentMajorityGroups[tp]:RemoveCard(lc)
+--	Auxiliary.LExtraMaterialCount(tg,lc,tp)
+	Duel.SendtoGrave(tg,REASON_MATERIAL+REASON_LINK)
+end
+
+function Auxiliary.SilentMajorityLinkCondition2(e,c,og)
+	if c==nil then
+		return true
+	end
+	local tp=c:GetControler()
+	local lg=SilentMajorityGroups[tp]:Filter(function(c) return c:GetOriginalCode()==18453751 end,nil)
+	local lc=lg:GetFirst()
+	if not lc:IsCanBeSpecialSummoned(e,SUMMON_TYPE_LINK,tp,false,false) then
+		return false
+	end
+	local f=nil
+	local mg=Auxiliary.GetLinkMaterials(tp,f,lc)
+	if not Auxiliary.LConditionFilter(c,f,lc) then
+		return false
+	end
+	mg:AddCard(c)
+	local fg=Auxiliary.GetMustMaterialGroup(tp,EFFECT_MUST_BE_LMATERIAL)
+	if fg:IsExists(Auxiliary.MustMaterialCounterFilter,1,nil,mg) then
+		return false
+	end
+	Duel.SetSelectedCard(fg)
+	local gf=function(g)
+		return g:IsExists(Card.IsLinkSetCard,1,nil,0x2e0)
+	end
+	return mg:CheckSubGroup(Auxiliary.LCheckSilentGoal,2,2,tp,lc,gf,c)
+		and Duel.GetFlagEffect(tp,18453751)==0
+end
+function Auxiliary.SilentMajorityLinkOperation2(e,tp,eg,ep,ev,re,r,rp,c,sg,og)
+	local lg=SilentMajorityGroups[tp]:Filter(function(c) return c:GetOriginalCode()==18453751 end,nil)
+	local lc=lg:GetFirst()
+	local f=nil
+	local mg=Auxiliary.GetLinkMaterials(tp,f,lc)
+	mg:AddCard(c)
+	local fg=Auxiliary.GetMustMaterialGroup(tp,EFFECT_MUST_BE_LMATERIAL)
+	Duel.SetSelectedCard(fg)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_LMATERIAL)
+	local cancel=Duel.IsSummonCancelable()
+	local gf=function(g)
+		return g:IsExists(Card.IsLinkSetCard,1,nil,0x2e0)
+	end
+	local tg=mg:SelectSubGroup(tp,Auxiliary.LCheckSilentGoal,cancel,2,2,tp,lc,gf,c)
+	if not tg then
+		return
+	end
+	Duel.RegisterFlagEffect(tp,18453751,RESET_PHASE+PHASE_END,0,1)
 	sg:AddCard(lc)
 	SilentMajorityGroups[tp]:RemoveCard(lc)
 --	Auxiliary.LExtraMaterialCount(tg,lc,tp)
@@ -2421,7 +2500,7 @@ function Card.RegisterEffect(c,e,forced,...)
 		end)
 	elseif code==24224830 and mt.eff_ct[c][0]==e then
 		e:SetTarget(function(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-			local loc=LOCATION_HAND
+			local loc=LOCATION_GRAVE
 			if Duel.IsPlayerAffectedByEffect(tp,EFFECT_ANGER_DESIGNATOR) then
 				loc=loc|LOCATION_ONFIELD
 			end
@@ -2813,6 +2892,34 @@ function Duel.AnnounceCard(p,...)
 	local ac=dac(p,...)
 	Duel.RaiseEvent(Group.CreateGroup(),EVENT_HORNBLOW,Effect.GlobalEffect(),0,p,p,ac)
 	return ac
+end
+
+local cisc=Card.IsSetCard
+CARD_NAMESQUARE_PASQUARE=18453732
+function Card.IsSetCard(c,...)
+	if c:IsCode(CARD_NAMESQUARE_PASQUARE) then
+		return true
+	end
+	return cisc(c,...)
+end
+
+function Duel.AnyOtherResult(f)
+	return f()
+end
+
+Duel.AOR=Duel.AnyOtherResult
+
+--MOVIE_FILMING=true
+if MOVIE_FILMING then
+	function Duel.Draw(p,a,r)
+		local g=Group.CreateGroup()
+		local i=1,a do
+			local tk=Duel.CreateToken(p,3027001)
+			g:AddCard(tk)
+		end
+		Duel.DisableShuffleCheck()
+		return Duel.SendtoHand(g,nil,r)
+	end
 end
 
 pcall(dofile,"expansions/script/proc_braveex.lua")

@@ -4,7 +4,7 @@ local cm=_G["c"..m]
 function cm.initial_effect(c)
 	local e1=MakeEff(c,"Qo","HM")
 	e1:SetCode(EVENT_FREE_CHAIN)
-	e1:SetProperty(EFEFCT_FLAG_CARD_TARGET)
+	e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e1:SetCategory(CATEGORY_DISABLE+CATEGORY_ATKCHANGE)
 	WriteEff(e1,1,"CTO")
 	c:RegisterEffect(e1)

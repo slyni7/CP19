@@ -45,14 +45,12 @@ function cm.initial_effect(c)
 	c:RegisterEffect(e6)
 	if not cm.global_effect then
 		cm.global_effect=true
-		if IREDO_COMES_TRUE then
-			local ge1=MakeEff(c,"F")
-			ge1:SetCode(EFFECT_CAPABLE_CHANGE_POSITION)
-			ge1:SetProperty(EFFECT_FLAG_SET_AVAILABLE+EFFECT_FLAG_IGNORE_IMMUNE)
-			ge1:SetTR("S","S")
-			ge1:SetTarget(aux.TargetBoolFunction(Card.IsCode,m))
-			Duel.RegisterEffect(ge1,0)
-		end
+		local ge1=MakeEff(c,"F")
+		ge1:SetCode(EFFECT_CAPABLE_CHANGE_POSITION)
+		ge1:SetProperty(EFFECT_FLAG_SET_AVAILABLE+EFFECT_FLAG_IGNORE_IMMUNE)
+		ge1:SetTR("S","S")
+		ge1:SetTarget(aux.TargetBoolFunction(Card.IsCode,m))
+		Duel.RegisterEffect(ge1,0)
 	end
 end
 function cm.pfun1(g,lc)
@@ -67,13 +65,7 @@ function cm.cost2(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
 		return Duel.GetLocCount(tp,"S")>0 and c:IsSSetable(true)
 	end
-	if not IREDO_COMES_TRUE then
-		c:Type(TYPE_MOSNTER+TYPE_EFFECT)
-	end
 	Duel.SSet(tp,c)
-	if not IREDO_COMES_TRUE then
-		c:Type(TYPE_MOSNTER+TYPE_EFFECT+TYPE_LINK)
-	end
 end
 function cm.tfil2(c)
 	return c:IsSetCard(0x2e4) and c:IsFaceup() and c:IsType(TYPE_TUNER)
@@ -137,13 +129,7 @@ function cm.cost3(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SET)
 	local g=Duel.SMCard(tp,cm.nfil3,tp,"M",0,1,1,nil)
 	local tc=g:GetFirst()
-	if not IREDO_COMES_TRUE then
-		tc:Type(TYPE_MOSNTER+TYPE_EFFECT)
-	end
 	Duel.SSet(tp,tc)
-	if not IREDO_COMES_TRUE then
-		tc:Type(TYPE_MOSNTER+TYPE_EFFECT+TYPE_LINK)
-	end
 end
 function cm.tar3(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
@@ -154,6 +140,7 @@ function cm.tar3(e,tp,eg,ep,ev,re,r,rp,chk)
 	if rc:IsRelateToEffect(re) and rc:IsDestructable() then
 		Duel.SOI(0,CATEGORY_DESTROY,eg,1,0,0)
 	end
+	e:GetHandler():CancelToGrave(false)
 end
 function cm.op3(e,tp,eg,ep,ev,re,r,rp)
 	local rc=re:GetHandler()
@@ -172,6 +159,7 @@ function cm.tar4(e,tp,eg,ep,ev,re,r,rp,chk)
 	end
 	Duel.SOI(0,CATEGORY_DISABLE_SUMMON,eg,1,0,0)
 	Duel.SOI(0,CATEGORY_DESTROY,eg,1,0,0)
+	e:GetHandler():CancelToGrave(false)
 end
 function cm.op4(e,tp,eg,ep,ev,re,r,rp)
 	Duel.NegateSummon(eg)

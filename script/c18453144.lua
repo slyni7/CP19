@@ -42,11 +42,11 @@ function cm.op2(e,tp,eg,ep,ev,re,r,rp)
 	if #g>0 then
 		local tc=g:GetFirst()
 		if not IREDO_COMES_TRUE then
-			tc:Type(TYPE_MOSNTER+TYPE_EFFECT)
+			tc:Type(TYPE_MONSTER+TYPE_EFFECT)
 		end
 		Duel.SSet(tp,tc)
 		if not IREDO_COMES_TRUE then
-			tc:Type(TYPE_MOSNTER+TYPE_EFFECT+TYPE_LINK)
+			tc:Type(TYPE_MONSTER+TYPE_EFFECT+TYPE_LINK)
 		end
 	end
 end
@@ -64,11 +64,5 @@ function cm.op3(e,tp,eg,ep,ev,re,r,rp,c)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SET)
 	local g=Duel.SMCard(tp,cm.nfil3,tp,"M",0,1,1,nil,tp)
 	local tc=g:GetFirst()
-	if not IREDO_COMES_TRUE then
-		tc:Type(TYPE_MOSNTER+TYPE_EFFECT)
-	end
 	Duel.SSet(tp,tc)
-	if not IREDO_COMES_TRUE then
-		tc:Type(TYPE_MOSNTER+TYPE_EFFECT+TYPE_LINK)
-	end
 end

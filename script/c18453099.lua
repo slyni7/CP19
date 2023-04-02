@@ -59,7 +59,7 @@ function cm.tar2(e,tp,eg,ep,ev,re,r,rp,chk)
 		Auxiliary.GCheckAdditional=nil
 		return res and Duel.GetLocCount(tp,"M")>1
 	end
-	Duel.SOI(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_EXTRA)
+	Duel.SOI(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,"HD")
 end
 function cm.op2(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetLocCount(tp,"M")<2 then

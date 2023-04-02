@@ -1,6 +1,7 @@
 --다이너레스퀘어러 판크라톱스퀘어
 local s,id=GetID()
 function s.initial_effect(c)
+	aux.AddSquareProcedure(c)
 	--special summon
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_QUICK_O)

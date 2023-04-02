@@ -53,7 +53,7 @@ function cm.con4(e,tp,eg,ep,ev,re,r,rp)
 end
 function cm.tfil4(c,e,tp)
 	return c:IsLevelAbove(8) and c:IsCustomType(CUSTOMTYPE_SQUARE) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
-		and c:GetSquareMana(0x0)>=20
+		and #c:GetSquareMana(0x0)>=20
 end
 function cm.tar4(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then

@@ -5,7 +5,7 @@ local cm=_G["c"..m]
 function cm.initial_effect(c)
 
 	c:EnableReviveLimit()
-	aux.AddXyzProcedure(c,aux.FilterBoolFunction(Card.IsSetCard,0xc91),4,2,cm.xyzfil0,aux.Stringid(m,0),63,cm.xyzop)
+	aux.AddXyzProcedure(c,aux.FilterBoolFunction(Card.IsSetCard,0xc91),4,2,cm.mfilter0,aux.Stringid(m,0),99,cm.xyzop)
 	
 	--덤핑
 	local e1=Effect.CreateEffect(c)
@@ -34,15 +34,14 @@ function cm.initial_effect(c)
 end
 
 --엑시즈
-function cm.xyzfil0(c,tp,xyzc)
-	return c:IsFaceup() and c:IsSetCard(0xc91) and c:IsType(TYPE_ORDER,xyzc,SUMMON_TYPE_XYZ,tp)
+function cm.mfilter0(c)
+	return c:IsFaceup() and c:IsSetCard(0xc91) and c:IsType(TYPE_ORDER)
 end
 function cm.xyzop(e,tp,chk)
 	if chk==0 then
 		return Duel.GetFlagEffect(tp,m)==0
 	end
-	Duel.RegisterFlagEffect(tp,m,RESET_PHASE+PHASE_END,0,1)
-	return true
+	Duel.RegisterFlagEffect(tp,m,RESET_PHASE+PHASE_END,EFFECT_FLAG_OATH,1)
 end
 
 --덤핑

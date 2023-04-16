@@ -103,8 +103,7 @@ function cm.spfil0(c,e,tp)
 end
 function cm.tg5(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
-		return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and Duel.IsExistingMatchingCard(cm.spfil0,tp,0x01,0,1,nil,e,tp)
+		return Duel.IsExistingMatchingCard(cm.spfil0,tp,0x01,0,1,nil,e,tp)
 	end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,0x01)
 end
@@ -128,6 +127,9 @@ function cm.ocn1(e,tp,eg,ep,ev,re,r,rp,chk)
 	return Duel.IsExistingMatchingCard(cm.nfil0,tp,0x01,0,1,nil,e,tp)
 end
 function cm.oop1(e,tp,eg,ep,ev,re,r,rp)
+	if Duel.GetLocationCount(tp,0x04)<=0 then
+		return
+	end
 	local c=e:GetHandler()
 	local fid=c:GetFieldID()
 	Duel.Hint(HINT_CARD,0,m)

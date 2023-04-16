@@ -35,6 +35,13 @@ function c81020030.initial_effect(c)
 	e3:SetOperation(c81020030.tgop)
 	c:RegisterEffect(e3)
 	
+	--
+	local e4=Effect.CreateEffect(c)
+	e4:SetType(EFFECT_TYPE_SINGLE)
+	e4:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e4:SetCode(81020000)
+	e4:SetRange(0x01+0x02+0x10+0x20)
+	c:RegisterEffect(e4)
 end
 
 --special summon

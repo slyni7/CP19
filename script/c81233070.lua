@@ -104,7 +104,7 @@ function cm.op2(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function cm.nfilter1(c)
-	return c:IsFaceup() and c:IsSetCard(0xc8f) and c:IsType(TYPE_SYNCHRO) and c:IsLevelAbove(8)
+	return c:IsFaceup() and c:IsRace(RACE_WINDBEAST) and c:IsType(TYPE_SYNCHRO) and c:IsLevelAbove(8)
 end
 function cm.cn3(e)
 	return Duel.IsExistingMatchingCard(cm.nfilter1,e:GetHandlerPlayer(),0x04,0,1,nil)

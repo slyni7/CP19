@@ -88,7 +88,8 @@ function c81261060.tg3(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 		return chkc:IsLocation(0x20) and chkc:IsControler(tp) and c81261060.tfil0(chkc)
 	end
 	if chk==0 then
-		return Duel.IsExistingMatchingCard(c81261060.tfil0,tp,0x20,0,1,nil)
+		return Duel.IsPlayerCanDraw(tp,1)
+		and Duel.IsExistingMatchingCard(c81261060.tfil0,tp,0x20,0,1,nil)
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
 	local g=Duel.SelectTarget(tp,c81261060.tfil0,tp,0x20,0,1,4,nil)

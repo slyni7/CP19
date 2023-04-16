@@ -19,9 +19,9 @@ function cm.initial_effect(c)
 	--서치
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(m,0))
-	e2:SetCategory(CATEGORY_SEARCH+CATEGORY_TOHAND)
+	e2:SetCategory(CATEGORY_DRAW)
 	e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
-	e2:SetProperty(EFFECT_FLAG_DELAY)
+	e2:SetProperty(EFFECT_FLAG_DELAY+EFFECT_FLAG_PLAYER_TARGET)
 	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
 	e2:SetCountLimit(1,m)
 	e2:SetRange(0x10)
@@ -51,16 +51,16 @@ function cm.filter1(c)
 	return c:IsFaceup() and c:IsType(TYPE_ORDER) and c:IsAttribute(0x04)
 end
 function cm.tg1(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	local ct=1
-	if Duel.IsExistingMatchingCard(cm.filter1,tp,0x04,0,1,nil) then ct=ct+1 end
 	if chkc then
-		return chkc:IsOnField() and aux.disfilter1(chkc)
+		return true
 	end
 	if chk==0 then
-		return Duel.IsExistingTarget(aux.disfilter1,tp,0x0c,0x0c,1,e:GetHandler())
+		return Duel.IsExistingTarget(aux.AnyNegateFilter,tp,0x0c,0x0c,1,e:GetHandler())
 	end
+	local ct=1
+	if Duel.IsExistingMatchingCard(cm.filter1,tp,0x04,0,1,nil) then ct=ct+1 end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DISABLE)
-	local g=Duel.SelectTarget(tp,aux.disfilter1,tp,0x0c,0x0c,1,ct,e:GetHandler())
+	local g=Duel.SelectTarget(tp,AnyNegateFilter,tp,0x0c,0x0c,1,ct,e:GetHandler())
 	Duel.SetOperationInfo(0,CATEGORY_DISABLE,g,#g,0,0)
 end
 function cm.op1(e,tp,eg,ep,ev,re,r,rp)
@@ -79,18 +79,23 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 			e2:SetCode(EFFECT_DISABLE_EFFECT)
 			e2:SetValue(RESET_TURN_SET)
 			tc:RegisterEffect(e2)
+			if tc:IsType(TYPE_TRAPMONSTER) then
+				local e3=e1:Clone()
+				e3:SetCode(EFFECT_DISABLE_TRAPMONSTER)
+				tc:RegisterEffect(e3)
+			end
 		end
 	end
-	local e3=Effect.CreateEffect(c)
-	e3:SetType(EFFECT_TYPE_FIELD)
-	e3:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-	e3:SetCode(EFFECT_CHANGE_DAMAGE)
-	e3:SetTargetRange(0,1)
-	e3:SetValue(cm.o1va3)
-	e3:SetReset(RESET_PHASE+PHASE_END)
-	Duel.RegisterEffect(e3,tp)
+	local e4=Effect.CreateEffect(c)
+	e4:SetType(EFFECT_TYPE_FIELD)
+	e4:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+	e4:SetCode(EFFECT_CHANGE_DAMAGE)
+	e4:SetTargetRange(0,1)
+	e4:SetValue(cm.o1va4)
+	e4:SetReset(RESET_PHASE+PHASE_END)
+	Duel.RegisterEffect(e4,tp)
 end
-function cm.o1va3(e,re,val,r,rp,rc)
+function cm.o1va4(e,re,val,r,rp,rc)
 	return math.floor(val/2)
 end
 
@@ -101,63 +106,40 @@ end
 function cm.cn2(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(cm.filter2,1,nil,tp)
 end
-function cm.cfil1(c)
-	return c:IsAbleToRemoveAsCost() and c:GetType()==0x10002
-end
-function cm.filter3(c)
-	return c:IsAbleToHand() and c:IsSetCard(0xc97) and not c:IsCode(m)
+function cm.cfilter1(c)
+	return c:IsAbleToRemoveAsCost() and c:IsType(TYPE_QUICKPLAY)
 end
 function cm.co2(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
-	local mg=Duel.GetMatchingGroup(cm.filter3,tp,0x01,0,nil)
-	local ct=mg:GetClassCount(Card.GetCode)
+	local g=Duel.GetMatchingGroup(cm.cfilter1,tp,0x10,0,c)
+	local ct1=g:GetClassCount(Card.GetCode)
 	if chk==0 then
-		return ct>0 and c:IsAbleToRemoveAsCost() 
+		return c:IsAbleToRemoveAsCost()
 	end
-	local g=Duel.GetMatchingGroup(cm.cfil1,tp,0x10,0,c)
-	local gc=Group.CreateGroup()
-	if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+	local ct=0
+	for i=1,2 do
+		if Duel.IsPlayerCanDraw(tp,i+1) then ct=i end
+	end
+	if ct1<ct then ct=ct1 end
+	local cg=Group.CreateGroup()
+	cg:Merge(c)
+	if ct~=0 and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
-		local sg=g:Select(tp,1,ct,nil)
-		if #sg>0 then gc:Merge(sg) end
+		local sg=g:SelectSubGroup(tp,aux.dncheck,false,1,ct)
+		cg:Merge(sg)
 	end
-	gc:Merge(c)
-	Duel.Remove(gc,POS_FACEUP,REASON_COST)
-	e:SetLabel(#gc)
+	e:SetLabel(Duel.Remove(cg,POS_FACEUP,REASON_COST))
 end
 function cm.tg2(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
-		return true
+		return Duel.IsPlayerCanDraw(tp,1)
 	end
-	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,0x01)
+	local ct=e:GetLabel()
+	Duel.SetTargetPlayer(tp)
+	Duel.SetTargetParam(ct)
+	Duel.SetOperationInfo(0,CATEGORY_DRAW,nil,0,tp,ct)
 end
 function cm.op2(e,tp,eg,ep,ev,re,r,rp)
-	local mg=Duel.GetMatchingGroup(cm.filter3,tp,0x01,0,nil)
-	local ct=e:GetLabel()
-	if mg:GetClassCount(Card.GetCode)>ct then
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-		local g=mg:SelectSubGroup(tp,aux.dncheck,false,ct,ct)
-		local s=0
-		if Duel.SendtoHand(g,nil,REASON_EFFECT)~=1 then s=s+1 end
-		if s==1 then
-			local fg=Duel.GetFieldGroup(tp,0,0x02)
-			local dc=2
-			if #fg==1 then dc=#fg end
-			if dc>0 then
-				Duel.BreakEffect()
-				local g2=fg:RandomSelect(tp,dc)
-				Duel.SendtoGrave(g2,REASON_EFFECT+REASON_DISCARD)
-			end
-		else
-			Duel.ConfirmCards(1-tp,g)
-		end
-	end	
-	local e1=Effect.CreateEffect(e:GetHandler())
-	e1:SetType(EFFECT_TYPE_FIELD)
-	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-	e1:SetCode(EFFECT_CHANGE_DAMAGE)
-	e1:SetTargetRange(0,1)
-	e1:SetValue(cm.o1va3)
-	e1:SetReset(RESET_PHASE+PHASE_END)
-	Duel.RegisterEffect(e1,tp)
+	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
+	Duel.Draw(p,d,REASON_EFFECT)
 end

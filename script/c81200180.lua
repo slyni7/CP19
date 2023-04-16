@@ -95,6 +95,7 @@ function cm.tg2(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chk==0 then
 		return Duel.IsExistingTarget(cm.spfil0,tp,0x10,0,1,nil,e,tp)
 		and e:GetHandler():IsAbleToDeck()
+		and Duel.GetLocationCount(tp,0x04)>0
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 	local g=Duel.SelectTarget(tp,cm.spfil0,tp,0x10,0,1,1,nil,e,tp)
@@ -104,6 +105,9 @@ end
 function cm.op2(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsRelateToEffect(e) then
+		return
+	end
+	if Duel.GetLocationCount(tp,0x04)<=0 then
 		return
 	end
 	local tc=Duel.GetFirstTarget()

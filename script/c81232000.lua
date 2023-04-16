@@ -6,6 +6,13 @@ function cm.initial_effect(c)
 
 	c:EnableReviveLimit()
 	
+	--세트
+	local e0=Effect.CreateEffect(c)
+	e0:SetType(EFFECT_TYPE_SINGLE)
+	e0:SetCode(EFFECT_MONSTER_SSET)
+	e0:SetValue(TYPE_TRAP)
+	c:RegisterEffect(e0)
+	
 	--특수 소환
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
@@ -159,6 +166,7 @@ function cm.op4(e,tp,eg,ep,ev,re,r,rp)
 	local tc=sg:GetFirst()
 	if tc:IsLocation(0x04) then Duel.HintSelection(sg) end
 	if tc then
+		Duel.Hint(HINT_CARD,0,tc:GetCode())
 		local e1=Effect.CreateEffect(c)
 		e1:SetType(EFFECT_TYPE_FIELD)
 		e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)

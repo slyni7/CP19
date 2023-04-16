@@ -64,9 +64,8 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 		local sg=g2:Select(tp,1,ct,nil)
 		local ct2=Duel.SpecialSummon(sg,0,tp,tp,false,false,POS_FACEUP)
-		local d=math.floor((ct2)/2)
 		Duel.BreakEffect()
-		Duel.Draw(tp,d,REASON_EFFECT)
+		Duel.Draw(tp,ct2,REASON_EFFECT)
 	end
 end
 	

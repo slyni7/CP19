@@ -83,7 +83,7 @@ end
 --synchro
 function c81200170.cn3(e,tp,eg,ep,ev,re,r,rp)
 	local ph=Duel.GetCurrentPhase()
-	return tp~=ep and ( ph==PHASE_MAIN1 or ph==PHASE_MAIN2 )
+	return Duel.GetTurnPlayer()~=tp and ( ph==PHASE_MAIN1 or ph==PHASE_MAIN2 )
 end
 function c81200170.mfilter0(c,tp)
 	return c:IsSetCard(0xcb7) and c:IsAbleToGrave() and Duel.GetLocationCountFromEx(tp,tp,c)>-1

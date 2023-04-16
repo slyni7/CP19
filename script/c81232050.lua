@@ -84,7 +84,7 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 		if ft>0 and Duel.IsPlayerAffectedByEffect(tp,59822133) then ft=1 end
 		local cg=Group.CreateGroup()
 		local mg=Duel.GetMatchingGroup(aux.NecroValleyFilter(cm.spfilter1),tp,0x01+0x02+0x10,0,nil,e,tp,tc:GetCode())
-		if ft>0 and tc:IsFaceup() and tc:IsLocation(0x20) and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+		if #mg>0 and ft>0 and tc:IsFaceup() and tc:IsLocation(0x20) and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
 			if #mg<=ft then
 				cm.sp(mg,tp,POS_FACEUP_ATTACK)
 			else

@@ -1,33 +1,35 @@
-function c81020160.initial_effect(c)
+local m=81020160
+local cm=_G["c"..m]
+function cm.initial_effect(c)
 
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
-	e1:SetCountLimit(1,81020160+EFFECT_COUNT_CODE_OATH)
-	e1:SetTarget(c81020160.sttg)
-	e1:SetOperation(c81020160.stop)
+	e1:SetCountLimit(1,m+EFFECT_COUNT_CODE_OATH)
+	e1:SetTarget(cm.sttg)
+	e1:SetOperation(cm.stop)
 	c:RegisterEffect(e1)
 	
 	local e2=Effect.CreateEffect(c)
-	e2:SetCategory(CATEGORY_TODECK+CATEGORY_TOHAND)
-	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
+	e2:SetCategory(CATEGORY_TODECK+CATEGORY_REMOVE)
 	e2:SetType(EFFECT_TYPE_IGNITION)
-	e2:SetRange(LOCATION_GRAVE)
-	e2:SetCondition(aux.exccon)
-	e2:SetTarget(c81020160.rttg)
-	e2:SetOperation(c81020160.rtop)
+	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
+	e2:SetRange(0x10)
+	e2:SetCountLimit(1,m+1)
+	e2:SetTarget(cm.tg2)
+	e2:SetOperation(cm.op2)
 	c:RegisterEffect(e2)
 	
 end
 
 --set
-function c81020160.sttgfilter(c)
-	return c:IsSSetable(true) and c:IsSetCard(0xca2) and c:IsType(TYPE_SPELL) and not c:IsCode(81020160)
+function cm.sttgfilter(c)
+	return c:IsSSetable(true) and c:IsSetCard(0xca2) and c:IsType(TYPE_SPELL) and not c:IsCode(m)
 end
-function c81020160.sttg(e,tp,eg,ep,ev,re,r,rp,chk)
+function cm.sttg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local count=Duel.GetMatchingGroupCount(Card.IsType,tp,LOCATION_MZONE,0,nil,TYPE_FUSION)
 	if chk==0 then
-		return Duel.IsExistingMatchingCard(c81020160.sttgfilter,tp,LOCATION_DECK,0,1,nil,tp)
+		return Duel.IsExistingMatchingCard(cm.sttgfilter,tp,LOCATION_DECK,0,1,nil,tp)
 	end
 	if count>0 then
 		e:SetCategory(CATEGORY_DRAW)
@@ -35,16 +37,16 @@ function c81020160.sttg(e,tp,eg,ep,ev,re,r,rp,chk)
 	end
 end
 
-function c81020160.stop(e,tp,eg,ep,ev,re,r,rp)
+function cm.stop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SET)
-	local g=Duel.SelectMatchingCard(tp,c81020160.sttgfilter,tp,LOCATION_DECK,0,1,1,nil,tp)
+	local g=Duel.SelectMatchingCard(tp,cm.sttgfilter,tp,LOCATION_DECK,0,1,1,nil,tp)
 	local tc=g:GetFirst()
 	if tc then
 		Duel.SSet(tp,tc)
 		if Duel.IsPlayerCanDraw(tp,1)
 			and Duel.GetMatchingGroupCount(Card.IsType,tp,LOCATION_MZONE,0,nil,TYPE_FUSION)>0
-			and Duel.SelectYesNo(tp,aux.Stringid(81020160,0)) then
+			and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
 			Duel.BreakEffect()
 			Duel.Draw(tp,1,REASON_EFFECT)
 		end
@@ -52,27 +54,30 @@ function c81020160.stop(e,tp,eg,ep,ev,re,r,rp)
 end
 
 --return
-function c81020160.rttgfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0xca2) and c:IsAbleToHand()
+function cm.tfilter0(c)
+	return c:IsFaceup() and c:IsAbleToDeck() and c:IsSetCard(0xca2) and not c:IsCode(m)
 end
-function c81020160.rttg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+function cm.tg2(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+	local c=e:GetHandler()
 	if chkc then
-		return chkc:IsLocation(LOCATION_REMOVED) and chkc:IsControler(tp) and c81020160.rttgfilter(chkc)
+		return chkc:IsLocation(0x20) and chkc:IsControler(tp) and cm.tfilter0(chkc)
 	end
 	if chk==0 then
-		return e:GetHandler():IsAbleToDeck()
-		and Duel.IsExistingTarget(c81020160.rttgfilter,tp,LOCATION_REMOVED,0,1,nil)
+		return c:IsAbleToRemove()
+		and Duel.IsExistingTarget(cm.tfilter0,tp,0x20,0,1,nil)
 	end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOHAND)
-	local g=Duel.SelectTarget(tp,c81020160.rttgfilter,tp,LOCATION_REMOVED,0,1,1,nil)
-	Duel.SetOperationInfo(0,CATEGORY_TODECK,e:GetHandler(),1,0,0)
-	Duel.SetOperationInfo(0,CATEGORY_TOHAND,g,1,0,0)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
+	local g=Duel.SelectTarget(tp,cm.tfilter0,tp,0x20,0,1,5,nil)
+	Duel.SetOperationInfo(0,CATEGORY_TODECK,g,#g,0,0)
 end
-
-function c81020160.rtop(e,tp,eg,ep,ev,re,r,rp)
+function cm.op2(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local tc=Duel.GetFirstTarget()
-	if c:IsRelateToEffect(e) and Duel.SendtoDeck(c,nil,2,REASON_EFFECT)~=0 and tc:IsRelateToEffect(e) then
-		Duel.SendtoHand(tc,nil,REASON_EFFECT)
+	if not c:IsRelateToEffect(e) then
+		return
+	end
+	local g=Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS)
+	local tg=g:Filter(Card.IsRelateToEffect,nil,e)
+	if #tg>0 and Duel.SendtoDeck(tg,nil,SEQ_DECKSHUFFLE,REASON_EFFECT)~=0 then
+		Duel.Remove(c,POS_FACEUP,REASON_EFFECT)
 	end
 end

@@ -46,8 +46,8 @@ function cm.cn1(e,tp,eg,ep,ev,re,r,rp)
 	end
 	local a=Duel.GetAttacker()
 	local d=Duel.GetAttackTarget()
-	return ( a:IsControler(tp) and a:IsRelateToBattle())
-	or (d and d:IsControler(tp) and d:IsRelateToBattle())
+	return ( a:IsControler()==tp and a:IsRelateToBattle())
+	or (d and d:IsControler()==tp and d:IsRelateToBattle())
 end
 function cm.cfil0(c)
 	return c:IsAbleToRemoveAsCost() and c:IsType(0x1)
@@ -62,9 +62,9 @@ function cm.co1(e,tp,eg,ep,ev,re,r,rp,chk)
 	if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
 		local sg=g:Select(tp,1,2,nil)
-		if #sg>0 then gc:Merge(sg) end
+		if #sg>0 then gc:AddCard(sg) end
 	end
-	gc:Merge(c)
+	gc:AddCard(c)
 	Duel.Remove(sg,POS_FACEUP,REASON_COST)
 	e:SetLabel(#gc)
 	local e1=Effect.CreateEffect(c)

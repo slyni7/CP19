@@ -23,18 +23,15 @@ function cm.initial_effect(c)
 	e2:SetTarget(cm.tg2)
 	e2:SetOperation(cm.op2)
 	c:RegisterEffect(e2)
-	local e3=e2:Clone()
-	e3:SetCondition(cm.cn3)
-	c:RegisterEffect(e3)
 end
 
 --드로우
 function cm.cn2(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return c:IsPreviousControler(tp) and c:IsPreviousPosition(POS_FACEDOWN) and c:IsPreviousLocation(0x08)
-end
-function cm.cn3(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetHandler():IsReason(REASON_COST) and re:GetHandler():IsSetCard(0xcba)
+	return 
+	(c:IsPreviousControler(tp) and c:IsPreviousPosition(POS_FACEDOWN) and c:IsPreviousLocation(0x08))
+	or 	
+	(e:GetHandler():IsReason(REASON_COST) and re:GetHandler():IsSetCard(0xcba))
 end
 function cm.filchk(c)
 	return c:IsFaceup() and c:IsCode(81232080)

@@ -35,6 +35,14 @@ function c81020070.initial_effect(c)
 	e3:SetOperation(c81020070.ssop)
 	c:RegisterEffect(e3)
 	
+	--
+	local e4=Effect.CreateEffect(c)
+	e4:SetType(EFFECT_TYPE_SINGLE)
+	e4:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e4:SetCode(81020000)
+	e4:SetRange(0x01+0x02+0x10+0x20)
+	c:RegisterEffect(e4)
+	
 end
 
 
@@ -95,8 +103,8 @@ end
 
 function c81020070.sstgfilter(c,tp)
 	return c:IsType(TYPE_SPELL) and c:IsSetCard(0xca2)
-	and ( c:IsCode(81020000) or c:IsCode(81020010) or c:IsCode(81020020) or c:IsCode(81020030) or c:IsCode(81020060) or c:IsCode(81020180)  )
-	and Duel.IsPlayerCanSpecialSummonMonster(tp,c:GetCode(),0xca2,0x21,0,0,0,RACE_PLANT,ATTRIBUTE_WIND)
+	and c:IsHasEffect(81020000)
+	and Duel.IsPlayerCanSpecialSummonMonster(tp,c:GetCode(),c:IsSetCard(),0x21,c:GetLevel(),c:GetAttack(),c:GetDefense(),c:GetRace(),c:GetAttribute())
 end
 function c81020070.sstg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(c81020070.sstgfilter,tp,LOCATION_REMOVED,0,1,nil,tp)

@@ -37,6 +37,13 @@ function cm.initial_effect(c)
 	e3:SetOperation(cm.thop)
 	c:RegisterEffect(e3)
 	
+	--
+	local e4=Effect.CreateEffect(c)
+	e4:SetType(EFFECT_TYPE_SINGLE)
+	e4:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e4:SetCode(81020000)
+	e4:SetRange(0x01+0x02+0x10+0x20)
+	c:RegisterEffect(e4)
 end
 
 --special summon
@@ -89,15 +96,32 @@ function cm.filter(e,te)
 end
 
 --sendto hand
-function cm.thcofilter(c,tp)
+function cm.cfilter0(c,e,tp)
+	return e:GetHandler():IsSetCard(0xca2) and c:IsHasEffect(81020200,tp) and c:IsAbleToRemoveAsCost()
+end
+function cm.cfilter1(c,tp)
 	return c:GetType()==0x2 and c:IsAbleToRemoveAsCost()
 	and Duel.IsExistingTarget(cm.thtgfilter,tp,0x10,0,1,c)
 end
 function cm.thco(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(cm.thcofilter,tp,LOCATION_GRAVE,0,1,nil,tp) end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
-	local g=Duel.SelectMatchingCard(tp,cm.thcofilter,tp,LOCATION_GRAVE,0,1,1,nil,tp)
-	Duel.Remove(g,POS_FACEUP,REASON_COST)
+	local b1=Duel.IsExistingMatchingCard(cm.cfilter0,tp,0x04+0x10,0,1,nil,e,tp)
+	local b2=Duel.IsExistingMatchingCard(cm.cfilter1,tp,0x10,0,1,nil,tp)
+	if chk==0 then
+		return b1 or b2
+	end
+	if b1 and (not b2 or Duel.SelectYesNo(tp,aux.Stringid(81020200,0))) then
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
+		local g=Duel.SelectMatchingCard(tp,cm.cfilter0,tp,0x04+0x10,0,1,1,nil,e,tp)
+		local te=g:GetFirst():IsHasEffect(81020200,tp)
+		if te then
+			te:UseCountLimit(tp)
+			Duel.Remove(g,POS_FACEUP,REASON_REPLACE)
+		end
+	else
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
+		local g=Duel.SelectMatchingCard(tp,cm.cfilter1,tp,0x10,0,1,1,nil,tp)
+		Duel.Remove(g,POS_FACEUP,REASON_COST)
+	end
 end
 function cm.thtgfilter(c)
 	return c:IsAbleToHand() and (c:IsSetCard(0xca2) or c:IsCode(24094653))

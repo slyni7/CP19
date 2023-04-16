@@ -29,7 +29,7 @@ function cm.initial_effect(c)
 	e2:SetCondition(cm.cn2)
 	e2:SetTarget(cm.tg2)
 	e2:SetOperation(cm.op2)
-	e2:SetHintTiming(0,TIMING_STANDBY_PHASE+TIMING_END_PHASE)
+	e2:SetHintTiming(0,TIMING_DRAW_PHASE+TIMING_END_PHASE)
 	c:RegisterEffect(e2)
 	
 	--발동 무효

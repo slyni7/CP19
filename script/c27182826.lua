@@ -8,7 +8,7 @@ function cm.initial_effect(c)
 	c:RegisterEffect(e1)
 	local e2=MakeEff(c,"A")
 	e2:SetCode(EVENT_FREE_CHAIN)
-	e2:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH+CATEGORY_TOGRAVE)
+	e2:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH+CATEGORY_TOGRAVE+CATEGORY_SPECIAL_SUMMON)
 	e2:SetCL(1,m+EFFECT_COUNT_CODE_OATH)
 	WriteEff(e2,2,"TO")
 	c:RegisterEffect(e2)
@@ -53,7 +53,7 @@ function cm.op2(e,tp,eg,ep,ev,re,r,rp)
 		end
 	end
 	if c:IsRelateToEffect(e) and Duel.GetLocCount(tp,"M")>0
-		and Duel.IsPlayerCanSpecialSummonMonster(tp,id,0x2c2,0x11,0,300,4,RACE_WARRIOR,ATTRIBUTE_DARK) then
+		and Duel.IsPlayerCanSpecialSummonMonster(tp,m,0x2c2,0x21,1400,700,3,RACE_CYBERSE,ATTRIBUTE_FIRE) then
 		c:AddMonsterAttribute(TYPE_EFFECT)
 		Duel.SpecialSummonStep(c,0,tp,tp,true,false,POS_FACEUP)
 		local e1=MakeEff(c,"F","M")

@@ -4,6 +4,54 @@ EFFECT_SET_BASE_BRAVE=123450000
 EFFECT_UPDATE_BRAVE=123450001
 EFFECT_SET_BRAVE=123450002
 EFFECT_SET_BRAVE_FINAL=123450003
+EVENT_BURNED=123450004
+
+if not EFFECT_BRAVE then
+	EFFECT_BRAVE=10170016
+end
+
+Auxiliary.BurningZoneTopCard={}
+Auxiliary.BurningZoneCount={0,0}
+local ge2=Effect.GlobalEffect()
+ge2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+ge2:SetCode(EVENT_ADJUST)
+ge2:SetOperation(Auxiliary.BurningZoneTopCardOperation)
+Duel.RegisterEffect(ge2,0)
+
+function Auxiliary.BurningZoneTopCardOperation(e,tp,eg,ep,ev,re,r,rp)
+	for p=0,1 do
+		local bz=Auxiliary.BurningZone[p]
+		local topcard=nil
+		if #bz>0 then
+			topcard=bz[#bz]:GetOriginalCode()
+		end
+		if topcard~=Auxiliary.BurningZoneTopCard[p] or #bz~=Auxiliary.BurningZoneCount[p] then
+			Auxiliary.BurningZoneTopCard[p]=topcard
+			Auxiliary.BurningZoneCount[p]=#bz
+			Duel.Hint(HINT_SKILL_REMOVE,p,0)
+			if topcard then
+				Duel.Hint(HINT_SKILL,p,topcard)
+			end
+		end
+	end
+end
+
+function Auxiliary.EraseFromBurningZone(g)
+	local tc=g:GetFirst()
+	while tc do
+		for p=0,1 do
+			local bz=Auxiliary.BurningZone[p]
+			for i=1,#bz do
+				if tc==bz[i] then
+					table.remove(bz,i)
+					break
+				end
+			end
+			Auxiliary.BurningZoneTopCardOperation(e,tp,eg,ep,ev,re,r,rp)
+		end
+		tc=g:GetNext()
+	end
+end
 
 function Auxiliary.AddBraveProcedure(c,f,min,max,gf)
 	local e1=Effect.CreateEffect(c)
@@ -359,8 +407,7 @@ function Auxiliary.BraveOperation(f,min,max,gf)
 			local tc=g:GetFirst()
 			while tc do
 				table.insert(Auxiliary.BurningZone[tc:GetControler()],tc)
-				Duel.Hint(HINT_SKILL_REMOVE,tc:GetControler(),0)
-				Duel.Hint(HINT_SKILL,tc:GetControler(),tc:GetOriginalCode())
+				Auxiliary.BurningZoneTopCardOperation(e,tp,eg,ep,ev,re,r,rp)
 				tc=g:GetNext()
 			end
 			local tc=g:GetFirst()

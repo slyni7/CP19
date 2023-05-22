@@ -78,6 +78,9 @@ function s.tar2(e,tp,eg,ep,ev,re,r,rp,chk)
 	end
 end
 function s.op2(e,tp,eg,ep,ev,re,r,rp)
+	if Duel.GetCurrentChain()==0 then
+		return
+	end
 	local c=e:GetHandler()
 	local seed=Debug.GetPlayerOpSeed()
 	local fname

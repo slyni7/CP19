@@ -3,7 +3,7 @@ local m=18453729
 local cm=_G["c"..m]
 function cm.initial_effect(c)
 	c:EnableReviveLimit()
-	aux.AddFusionProcMix(c,true,true,cm.pfil1,cm.pfil2)
+	Fusion.AddProcMix(c,true,true,cm.pfil1,cm.pfil2)
 	aux.AddContactFusionProcedure(c,Card.IsAbleToGraveAsCost,LSTN("O"),0,Duel.SendtoGrave,REASON_COST+REASON_MATERIAL)
 	local e1=MakeEff(c,"S")
 	e1:SetCode(EFFECT_SPSUMMON_CONDITION)
@@ -32,8 +32,14 @@ function cm.initial_effect(c)
 	WriteEff(e5,5,"TO")
 	c:RegisterEffect(e5)
 end
-function cm.pfil1(c,fc,sub,mg,sg)
-	if c:IsFusionCode(18453082) or (sub and c:CheckFusionSubstitute(fc)) then
+function cm.pfil1(c,fc,sumtype,tp,sub,mg,sg,contact)
+	local fp=fc:GetControler()
+	local fchk=false
+	if Duel.IsPlayerAffectedByEffect(fp,18453322) and sumtype and sumtype&SUMMON_TYPE_FUSION==SUMMON_TYPE_FUSION then
+		local fatt=Duel.GetCardAttributeFromCode(18453082)
+		fchk=c:IsAttribute(fatt)
+	end
+	if fchk or c:IsFusionCode(18453082) or (sub and c:CheckFusionSubstitute(fc)) then
 		if not sg or sg:FilterCount(aux.TRUE,c)<1 then
 			return true
 		end
@@ -44,8 +50,14 @@ function cm.pfil1(c,fc,sub,mg,sg)
 	end
 	return false
 end
-function cm.pfil2(c,fc,sub,mg,sg)
-	if c:IsFusionCode(18453590) or (sub and c:CheckFusionSubstitute(fc)) then
+function cm.pfil2(c,fc,sumtype,tp,sub,mg,sg,contact)
+	local fp=fc:GetControler()
+	local fchk=false
+	if Duel.IsPlayerAffectedByEffect(fp,18453322) and sumtype and sumtype&SUMMON_TYPE_FUSION==SUMMON_TYPE_FUSION then
+		local fatt=Duel.GetCardAttributeFromCode(18453590)
+		fchk=c:IsAttribute(fatt)
+	end
+	if fchk or c:IsFusionCode(18453590) or (sub and c:CheckFusionSubstitute(fc)) then
 		if not sg or sg:FilterCount(aux.TRUE,c)<1 then
 			return true
 		end

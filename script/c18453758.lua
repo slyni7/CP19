@@ -64,8 +64,10 @@ function s.gop1(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.gop2(e,tp,eg,ep,ev,re,r,rp)
 	s[3]={}
-	for i=1,#s[2] do
-		table.insert(s[3],s[2][i])
+	if s[2] then
+		for i=1,#s[2] do
+			table.insert(s[3],s[2][i])
+		end
 	end
 	s[2]=nil
 end
@@ -100,6 +102,9 @@ function s.op2(e,tp,eg,ep,ev,re,r,rp)
 	Debug.FromVirtualToReal(true)
 end
 function s.con3(e,tp,eg,ep,ev,re,r,rp)
+	if Debug.GetPlayerOpConfig()~=0 then
+		return false
+	end
 	local seed=Debug.GetPlayerOpSeed()
 	local fname
 	if seed==0 then

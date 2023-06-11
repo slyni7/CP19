@@ -51,7 +51,7 @@ function s.op3(e,tp,eg,ep,ev,re,r,rp)
 	e1:SetLabel(0)
 	e1:SetReset(RESET_PHASE+ph)
 	Duel.RegisterEffect(e1,tp)
-	for i=0x0,0xf do
+	for i=0x0,0xff do
 		local e2=MakeEff(c,"FC")
 		e2:SetCode(EVENT_ANYTIME)
 		e2:SetReset(RESET_PHASE+ph)
@@ -64,7 +64,7 @@ function s.op3(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.ocon32(e,tp,eg,ep,ev,re,r,rp)
 	local te=e:GetLabelObject()
-	return te:GetLabel()&0xf==e:GetLabel() and Duel.GetIdleCmdPlayer()==PLAYER_NONE
+	return te:GetLabel()&0xff==e:GetLabel() and Duel.GetIdleCmdPlayer()==PLAYER_NONE
 end
 function s.oop32(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()

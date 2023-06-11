@@ -82,7 +82,7 @@ function Fusion.ParseMaterialTable(tab,mat)
 			end
 			local fp=fc:GetControler()
 			if Duel.IsPlayerAffectedByEffect(fp,18453322) then
-				local fatt=Duel.ReadCard(val[i],CARDDATA_ATTRIBUTE)
+				local fatt=Duel.GetCardAttributeFromCode(val[i])
 				if c:IsFusionAttribute(fatt) then
 					return true
 				end
@@ -138,7 +138,7 @@ function Fusion.AddProcMix(c,sub,insf,...)
 				end
 				local fp=fc:GetControler()
 				if Duel.IsPlayerAffectedByEffect(fp,18453322) then
-					local fatt=Duel.ReadCard(val[i],CARDDATA_ATTRIBUTE)
+					local fatt=Duel.GetCardAttributeFromCode(val[i])
 					if c:IsFusionAttribute(fatt) then
 						return true
 					end
@@ -419,7 +419,7 @@ function Fusion.AddProcMixRep(c,sub,insf,fun1,minc,maxc,...)
 				end
 				local fp=fc:GetControler()
 				if Duel.IsPlayerAffectedByEffect(fp,18453322) then
-					local fatt=Duel.ReadCard(val[i],CARDDATA_ATTRIBUTE)
+					local fatt=Duel.GetCardAttributeFromCode(val[i])
 					if c:IsFusionAttribute(fatt) then
 						return true
 					end

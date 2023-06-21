@@ -1033,7 +1033,15 @@ function Auxiliary.SilentMajorityOperation(e,tp,eg,ep,ev,re,r,rp)
 end
 
 function Auxiliary.LCheckSilentGoal(sg,tp,lc,gf,lmat)
-	return sg:CheckWithSumEqual(Auxiliary.GetLinkCount,lc:GetLink(),#sg,#sg)
+	local lk=lc:GetLink()
+	local eset={Duel.IsPlayerAffectedByEffect(tp,18453522)}
+	for _,te in ipairs(eset) do
+		local val=te:GetValue()
+		if val then
+			lk=val(te,c,lk,TYPE_LINK)
+		end
+	end
+	return sg:CheckWithSumEqual(Auxiliary.GetLinkCount,lk,#sg,#sg)
 		and Duel.GetMZoneCount(tp,sg,tp)>0 and (not gf or gf(sg))
 		and not sg:IsExists(Auxiliary.LUncompatibilityFilter,1,nil,sg,lc,tp)
 		and (not lmat or sg:IsContains(lmat))
@@ -1674,24 +1682,21 @@ function Card.RegisterEffect(c,e,forced,...)
 			return con(e,tp,eg,ep,ev,re,r,rp)
 		end)
 	elseif code==52038441 and mt.eff_ct[c][0]==e then
-		local filter1=function(c)
-			return c:IsFaceup() and c.delightsworn
-		end
-		local filter2=function(c,g)
-			return (g:IsContains(c) and c:IsLocation(LOCATION_MZONE)) or c.delightsworn
+		local filter1=function(c,p,eg)
+			return (c:IsSummonPlayer(p) and eg:IsContains(c) and (c:HasNonZeroAttack() or c:IsNegatableMonster()))
+				or c.delightsworn
+				
 		end
 		e:SetTarget(function(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-			local g=eg:Filter(c52038441.cfilter,nil,tp)
-			local sg=Duel.GetMatchingGroup(filter1,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil)
-			g:Merge(sg)
-			if chkc then return chkc:IsOnField() and filter2(chkc,g) end
-			if chk==0 then return Duel.IsExistingTarget(filter2,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,nil,g) end
-			if g:GetCount()==1 then
-				Duel.SetTargetCard(g)
-			else
-				Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
-				Duel.SelectTarget(tp,filter2,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,nil,g)
+			if chkc then
+				return chkc:IsLocation(LOCATION_ONFIELD) and filter1(chkc,1-tp,eg)
 			end
+			if chk==0 then
+				return Duel.IsExistingTarget(filter1,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,nil,1-tp,eg)
+			end
+			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_NEGATE)
+			local g=Duel.SelectTarget(tp,filter1,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,nil,1-tp,eg)
+			Duel.SetOperationInfo(0,CATEGORY_DISABLE,g,1,0,0)
 		end)
 		Auxiliary.MetatableEffectCount=false
 		local e1=e:Clone()

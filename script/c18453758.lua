@@ -127,6 +127,9 @@ function s.con3(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.op3(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
+	if Duel.GetFlagEffect(tp,id)~=0 then
+		return
+	end
 	Duel.RegisterFlagEffect(tp,id,RESET_CHAIN,0,0)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
 	local g=Duel.SMCard(tp,s.gofil1,tp,"HO",0,1,1,nil)

@@ -18,6 +18,7 @@ function s.pfil1(c)
 end
 function s.tfil1(c,tp)
 	return c:IsControler(tp) and c:IsDefensePos() and c:GetFlagEffect(id)==0 and c:GetReasonPlayer()==1-tp
+		and c:IsLoc("M")
 end
 function s.tar1(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()

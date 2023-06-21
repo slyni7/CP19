@@ -56,5 +56,8 @@ function cm.op2(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RegisterEffect(e1,tp)
 end
 function cm.oval21(e,sc,slv,stype)
+	if slv==nil then
+		return nil
+	end
 	return slv*2
 end

@@ -44,11 +44,16 @@ function Auxiliary.LUncompatibilityFilter(c,sg,lc,tp)
 	return not Auxiliary.LCheckOtherMaterial(c,mg,lc,tp)
 end
 function Auxiliary.LCheckGoal(sg,tp,lc,gf,lmat)
-	return sg:CheckWithSumEqual(Auxiliary.GetLinkCount,lc:GetLink(),#sg,#sg)
+	local lk=lc:GetLink()
+	local eset={Duel.IsPlayerAffectedByEffect(tp,18453522)}
+	for _,te in ipairs(eset) do
+		local val=te:GetValue()
+		if val then
+			lk=val(te,c,lk,TYPE_LINK)
+		end
+	end
+	return sg:CheckWithSumEqual(Auxiliary.GetLinkCount,lk,#sg,#sg)
 		and Duel.GetLocationCountFromEx(tp,tp,sg,lc)>0 and (not gf or gf(sg))
 		and not sg:IsExists(Auxiliary.LUncompatibilityFilter,1,nil,sg,lc,tp)
 		and (not lmat or sg:IsContains(lmat))
 end
-
-Duel.GetLinkedZone=aux.GetMMZonesPointedTo
-Card.IsLinkState=Card.IsLinked

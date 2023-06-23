@@ -87,10 +87,12 @@ function s.op1(e,tp,eg,ep,ev,re,r,rp)
 		Duel.ChangeChainOperation(ev,s.oco11(re))
 	end
 	if (sel&0x2==0x2) then
+		local loc=rc:GetLocation()
 		Duel.Remove(rc,0,REASON_EFFECT+REASON_TEMPORARY)
 		local e2=MakeEff(c,"FC")
 		e2:SetCode(EVENT_PHASE+PHASE_END)
 		e2:SetCL(1)
+		e2:SetLabel(loc)
 		e2:SetLabelObject(rc)
 		e2:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
 		e2:SetCondition(s.ocon12)
@@ -130,7 +132,13 @@ function s.ocon12(e,tp,eg,ep,ev,re,r,rp)
 	return tc and tc:GetReasonEffect() and tc:GetReasonEffect():GetHandler()==e:GetHandler()
 end
 function s.oop12(e,tp,eg,ep,ev,re,r,rp)
-	Duel.ReturnToField(e:GetLabelObject())
+	if e:GetLabel()==LOCATION_HAND then
+		Duel.SendtoHand(g,nil,REASON_EFFECT)
+	elseif e:GetLabel()==LOCATION_GRAVE then
+		Duel.SendtoGrave(g,REASON_EFFECT+REASON_RETURN)
+	else
+		Duel.ReturnToField(e:GetLabelObject())
+	end
 end
 function s.tfil2(c)
 	return (c:IsSetCard("시스토피아") or c:IsSetCard("디클레어러")) and c:IsAbleToHand() and not c:IsCode(id)

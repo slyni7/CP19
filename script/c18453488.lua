@@ -9,6 +9,9 @@ function cm.initial_effect(c)
 	local e2=MakeEff(c,"S")
 	e2:SetCode(EFFECT_QP_ACT_IN_NTPHAND)
 	c:RegisterEffect(e2)
+	local e3=e1:Clone()
+	e3:SetCode(EVENT_CHAIN_END)
+	c:RegisterEffect(e3)
 	if not cm.global_check then
 		cm.global_check=true
 		cm[0]={}

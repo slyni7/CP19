@@ -63,6 +63,9 @@ function s.op3(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function s.ocon32(e,tp,eg,ep,ev,re,r,rp)
+	if Duel.CheckEvent(EVENT_SUMMON,false) or Duel.CheckEvent(EVENT_SPSUMMON,false) or Duel.CheckEvent(EVENT_FLIP_SUMMON,false) then
+		return false
+	end
 	local te=e:GetLabelObject()
 	return te:GetLabel()&0xff==e:GetLabel() and Duel.GetIdleCmdPlayer()==PLAYER_NONE
 end

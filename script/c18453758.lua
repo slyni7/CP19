@@ -102,8 +102,10 @@ function s.op2(e,tp,eg,ep,ev,re,r,rp)
 	Debug.FromVirtualToReal(true)
 end
 function s.con3(e,tp,eg,ep,ev,re,r,rp)
+	--here comes the bugs
 	if Debug.GetPlayerOpConfig()~=0 then
-		return false
+		local lct=Debug.GetPlayerOpLine()-1
+		return Debug.CheckWitchFatal(id,(tp<<31)|lct) and Duel.GetFlagEffect(tp,id)==0
 	end
 	local seed=Debug.GetPlayerOpSeed()
 	local fname

@@ -104,7 +104,32 @@ function s.ooop321(e,tp,eg,ep,ev,re,r,rp)
 		for i=1,#te do
 			te[i]:Reset()
 		end
-		e:Reset()
+		local tc=eg:GetFirst()
+		while tc do
+			local ge1=Effect.CreateEffect(tc)
+			ge1:SetType(EFFECT_TYPE_FIELD)
+			ge1:SetCode(EFFECT_SPSUMMON_PROC_G)
+			ge1:SetRange(LOCATION_MZONE)
+			ge1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+			ge1:SetValue(SUMMON_TYPE_LINK)
+			ge1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_CHAIN)
+			ge1:SetDescription(aux.Stringid(18453098,0))
+			ge1:SetCondition(Auxiliary.SilentMajorityLinkCondition1)
+			ge1:SetOperation(Auxiliary.SilentMajorityLinkOperation1)
+			tc:RegisterEffect(ge1)
+			local ge1=Effect.CreateEffect(tc)
+			ge1:SetType(EFFECT_TYPE_FIELD)
+			ge1:SetCode(EFFECT_SPSUMMON_PROC_G)
+			ge1:SetRange(LOCATION_MZONE)
+			ge1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+			ge1:SetValue(SUMMON_TYPE_LINK)
+			ge1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_CHAIN)
+			ge1:SetDescription(aux.Stringid(18453751,0))
+			ge1:SetCondition(Auxiliary.SilentMajorityLinkCondition2)
+			ge1:SetOperation(Auxiliary.SilentMajorityLinkOperation2)
+			tc:RegisterEffect(ge1)
+			tc=eg:GetNext()
+		end
 		Duel.ProcessQuickEffect(1-tp)
 	end
 end

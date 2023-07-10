@@ -68,14 +68,14 @@ function s.op1(e,tp,eg,ep,ev,re,r,rp)
 			if batk2 then
 				local e1=MakeEff(c,"S")
 				e1:SetCode(EFFECT_UPDATE_ATTACK)
-				e1:SetValue(blv2)
+				e1:SetValue(batk2)
 				e1:SetReset(RESET_EVENT+RESETS_STANDARD)
 				c:RegisterEffect(e1)
 			end
 			if bdef2 then
 				local e1=MakeEff(c,"S")
 				e1:SetCode(EFFECT_UPDATE_DEFENSE)
-				e1:SetValue(blv2)
+				e1:SetValue(bdef2)
 				e1:SetReset(RESET_EVENT+RESETS_STANDARD)
 				c:RegisterEffect(e1)
 			end

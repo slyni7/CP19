@@ -2686,7 +2686,7 @@ function Duel.PayLPCost(player,lp)
 	return dplc(player,lp)
 end
 
-Auxiliary.CounterTrapNegateSpellList={[32415003]=true,[32415004]=true,[32415005]=true,[41420027]=true,[59344077]=true,
+Auxiliary.CounterTrapNegateSpellList={[32415003]=true,[32415004]=true,[32415005]=true,[32415009]=true,[41420027]=true,[59344077]=true,
 [69632396]=true,[77538567]=true,[92512625]=true,[112501015]=true,[112603063]=true}
 
 Auxiliary.SpecialSummonByEffectNegatedGroup=nil

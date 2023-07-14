@@ -348,7 +348,7 @@ function Auxiliary.NotOnFieldFilter(c)
 		return false
 	end
 	local val=te:GetValue()
-	return val>0 or (val==0 and Duel.GetCurrentPhase()<=PHASE_STANDBY)
+	return val>0 or (val==0 and Duel.GetCurrentPhase()<PHASE_STANDBY)
 end
 
 local cregeff=Card.RegisterEffect

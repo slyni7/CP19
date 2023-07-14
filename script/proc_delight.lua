@@ -343,7 +343,12 @@ end
 
 function Auxiliary.NotOnFieldFilter(c)
 	--return c:IsStatus(STATUS_SPSUMMON_STEP)
-	return c:IsHasEffect(EFFECT_DELAY_TURN)
+	local te=c:IsHasEffect(EFFECT_DELAY_TURN)
+	if not te then
+		return false
+	end
+	local val=te:GetValue()
+	return val>0 or (val==0 and Duel.GetCurrentPhase()<=PHASE_STANDBY)
 end
 
 local cregeff=Card.RegisterEffect

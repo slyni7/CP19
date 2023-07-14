@@ -144,9 +144,9 @@ local e2=Effect.GlobalEffect()
 e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 e2:SetCode(EVENT_FREE_CHAIN)
 e2:SetCondition(function(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.GetCurrentChain()>0 then
+	--[[if Duel.GetCurrentChain()>0 then
 		return false
-	end
+	end]]--
 	for p=0,1 do
 		aux.GlobalCurrentSequences[p]={}
 		for i=1,#aux.GlobalSavedSequences[p] do

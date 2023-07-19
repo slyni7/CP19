@@ -107,7 +107,7 @@ function cm.cost3(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.PayLPCost(tp,1500)
 end
 function cm.tfil3(c)
-	return c:IsAbleToGraveAsCost() and c:IsType(TYPE_SPELL) and c:CheckActivateEffect(true,true,false)~=nil 
+	return c:IsAbleToGraveAsCost() and c:IsType(TYPE_SPELL) and c:CheckActivateEffect(true,true,false)~=nil
 end
 function cm.tar3(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then

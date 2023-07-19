@@ -23,6 +23,7 @@ function s.initial_effect(c)
 	WriteEff(e4,4,"TO")
 	c:RegisterEffect(e4)
 end
+s.listed_names={id}
 function s.pfil1(re,rp)
 	local rc=re:GetHandler()
 	return rc:IsRace(RACE_FAIRY)

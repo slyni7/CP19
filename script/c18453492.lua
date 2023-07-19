@@ -64,7 +64,7 @@ function cm.rmop(e,tp,eg,ep,ev,re,r,rp)
 	local rs=g:RandomSelect(1-tp,1)
 	local rg=Group.FromCards(c,rs:GetFirst())
 	if Duel.Remove(rg,POS_FACEDOWN,REASON_EFFECT+REASON_TEMPORARY)~=0 then
-		local fid=c:GetFieldm()
+		local fid=c:GetFieldID()
 		local og=Duel.GetOperatedGroup()
 		local oc=og:GetFirst()
 		for oc in aux.Next(og) do
@@ -96,7 +96,7 @@ end
 function cm.tgtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_REMOVED) and chkc:IsFacedown() end
 	if chk==0 then return Duel.IsExistingTarget(Card.IsFacedown,tp,LOCATION_REMOVED,LOCATION_REMOVED,1,nil) end
-	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringm(m,2))
+	Duel.Hint(HINT_SELECTMSG,tp,aux.Stringid(m,2))
 	local g=Duel.SelectTarget(tp,Card.IsFacedown,tp,LOCATION_REMOVED,LOCATION_REMOVED,1,1,nil)
 	Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,g,1,0,0)
 end

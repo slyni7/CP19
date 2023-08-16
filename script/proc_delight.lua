@@ -6,6 +6,7 @@ EVENT_BE_CUSTOM_MATERIAL=18452703
 EFFECT_CANNOT_BE_DELIGHT_MATERIAL=18452704
 CUSTOMREASON_DELIGHT=0x1
 EFFECT_DELAY_TURN=18452705
+EVENT_DELAY_TURN=18452706
 
 Auxiliary.DelayZone={}
 for p=0,1 do
@@ -315,6 +316,8 @@ function Auxiliary.DelOpOp4(e1,e2,e3,e5)
 			local val=te:GetValue()
 			c:SetTurnCounter(c:GetTurnCounter()-1)
 			te:SetValue(val-1)
+			Duel.RaiseSingleEvent(c,EVENT_DELAY_TURN,e,0,tp,tp,val-1)
+			Duel.RaiseEvent(Group.FromCards(c),EVENT_DELAY_TURN,e,0,tp,tp,val-1)
 			if c:GetTurnCounter()>0 then
 				return
 			end

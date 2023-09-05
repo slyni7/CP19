@@ -5,6 +5,7 @@ EFFECT_UPDATE_BRAVE=123450001
 EFFECT_SET_BRAVE=123450002
 EFFECT_SET_BRAVE_FINAL=123450003
 EVENT_BURNED=123450004
+FLAGEFFECT_BURNING_ZONE=123450005
 
 if not EFFECT_BRAVE then
 	EFFECT_BRAVE=10170016
@@ -402,6 +403,11 @@ function Auxiliary.BraveOperation(f,min,max,gf)
 	return
 		function(e,tp,eg,ep,ev,re,r,rp,c)
 			local g=e:GetLabelObject()
+			local tc=g:GetFirst()
+			while tc do
+				tc:RegisterFlagEffect(FLAGEFFECT_BURNING_ZONE,RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD-RESET_LEAVE,0,0)
+				tc=g:GetNext()
+			end
 			Duel.SendtoDeck(g,nil,-2,REASON_DESTROY+REASON_MATERIAL)
 			c:SetMaterial(g)
 			local tc=g:GetFirst()
@@ -418,6 +424,23 @@ function Auxiliary.BraveOperation(f,min,max,gf)
 			Duel.RaiseEvent(g,EVENT_BE_CUSTOM_MATERIAL,e,CUSTOMREASON_BRAVE,tp,tp,0)
 			g:DeleteGroup()
 		end
+end
+
+local cregeff=Card.RegisterEffect
+function Card.RegisterEffect(c,e,forced,...)
+	local code=c:GetOriginalCode()
+	local mt=_G["c"..code]
+	cregeff(c,e,forced,...)
+	if e:GetType()&EFFECT_TYPE_SINGLE~=0 and e:GetType()&(EFFECT_TYPE_TRIGGER_O+EFFECT_TYPE_TRIGGER_F)~=0 then
+		local con=e:GetCondition()
+		e:SetCondition(function(e,tp,eg,ep,ev,re,r,rp)
+			local c=e:GetHandler()
+			if c:GetLocation()==0 and c:GetFlagEffect(FLAGEFFECT_BURNING_ZONE)==0 then
+				return false
+			end
+			return not con or con(e,tp,eg,ep,ev,re,r,rp)
+		end)
+	end
 end
 
 --융합 타입 삭제

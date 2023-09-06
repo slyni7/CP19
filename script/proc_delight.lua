@@ -7,13 +7,17 @@ EFFECT_CANNOT_BE_DELIGHT_MATERIAL=18452704
 CUSTOMREASON_DELIGHT=0x1
 EFFECT_DELAY_TURN=18452705
 EVENT_DELAY_TURN=18452706
+ELABEL_IS_DELIGHT_SUMMONING=0x1
 
 Auxiliary.DelayZone={}
+Auxiliary.DelayGroup={}
 for p=0,1 do
 	Auxiliary.DelayZone[p]={}
+	Auxiliary.DelayGroup[p]=Group.CreateGroup()
+	Auxiliary.DelayGroup[p]:KeepAlive()
 end
 
-function Auxiliary.DelayByTurn(c,tp,ct)
+function Auxiliary.DelayByTurn(c,tp,ct,lab)
 	local rct=Duel.GetCurrentPhase()==PHASE_STANDBY and ct+1 or ct
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
@@ -53,6 +57,7 @@ function Auxiliary.DelayByTurn(c,tp,ct)
 	e6:SetType(EFFECT_TYPE_SINGLE)
 	e6:SetCode(EFFECT_DELAY_TURN)
 	e6:SetProperty(EFFECT_FLAG_IGNORE_RANGE)
+	e6:SetLabel(lab)
 	e6:SetValue(rct)
 	e4:SetLabelObject(e6)
 	e5:SetLabelObject(e6)
@@ -71,6 +76,7 @@ function Auxiliary.DelayByTurn(c,tp,ct)
 	Duel.RegisterEffect(e9,tp)
 	local cp=c:GetControler()
 	aux.DelayZone[cp][c]=true
+	aux.DelayGroup[cp]:AddCard(c)
 	c:SetStatus(STATUS_SPSUMMON_STEP,true)
 	c:SetStatus(STATUS_EFFECT_ENABLED,false)
 end
@@ -122,6 +128,7 @@ function Auxiliary.DelayTillPhase(c,tp,phase,ct)
 	Duel.RegisterEffect(e9,tp)
 	local cp=c:GetControler()
 	aux.DelayZone[cp][c]=true
+	aux.DelayGroup[cp]:AddCard(c)
 	c:SetStatus(STATUS_SPSUMMON_STEP,true)
 	c:SetStatus(STATUS_EFFECT_ENABLED,false)
 end
@@ -281,7 +288,7 @@ function Auxiliary.DelightOperation(f,min,max,gf)
 						c:SetStatus(STATUS_EFFECT_ENABLED,false)]]--
 						sg:AddCard(c)
 					end
-					aux.DelayByTurn(c,tp,#rg)
+					aux.DelayByTurn(c,tp,#rg,ELABEL_IS_DELIGHT_SUMMONING)
 				end
 				if e:GetLabel()==10000 then
 					if #rg>0 then
@@ -293,7 +300,7 @@ function Auxiliary.DelightOperation(f,min,max,gf)
 						end
 						--[[c:SetStatus(STATUS_SPSUMMON_STEP,true)
 						c:SetStatus(STATUS_EFFECT_ENABLED,false)]]--
-						aux.DelayByTurn(c,tp,#rg)
+						aux.DelayByTurn(c,tp,#rg,ELABEL_IS_DELIGHT_SUMMONING)
 					else
 						Duel.SpecialSummon(c,SUMMON_TYPE_DELIGHT,tp,tp,false,false,POS_FACEUP)
 						c:CompleteProcedure()
@@ -346,6 +353,9 @@ function Auxiliary.DelOpCon5(e,tp,eg,ep,ev,re,r,rp)
 end
 function Auxiliary.DelOpOp5(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
+	local cp=c:GetControler()
+	aux.DelayZone[cp][c]=false
+	aux.DelayGroup[cp]:RemoveCard(c)
 	Duel.Destroy(c,REASON_RULE)
 	e:Reset()
 end
@@ -353,8 +363,6 @@ function Auxiliary.DelOpOp7(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local ct=e:GetLabel()
 	local te=e:GetLabelObject()
-	local cp=c:GetControler()
-	aux.DelayZone[cp][c]=false
 	c:SetStatus(STATUS_SPSUMMON_STEP,true)
 	c:SetStatus(STATUS_EFFECT_ENABLED,false)
 	c:SetTurnCounter(ct)
@@ -391,7 +399,7 @@ function Auxiliary.NotOnFieldFilter(c)
 		return false
 	end
 	local val=te:GetValue()
-	return val>0 or (val==0 and Duel.GetCurrentPhase()<PHASE_STANDBY)
+	return val>0 or (val==0 and Duel.GetCurrentPhase()<=PHASE_STANDBY)
 end
 
 local cregeff=Card.RegisterEffect

@@ -1900,6 +1900,10 @@ function Card.RegisterEffect(c,e,forced,...)
 		local op=e:GetOperation()
 		if op then
 			e:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
+				local c=e:GetHandler()
+				if c:IsHasEffect(EFFECT_ALICE_SCARLET) then
+					return
+				end
 				if Duel.IsPlayerAffectedByEffect(tp,EFFECT_ALICE_SCARLET) then
 					return
 				end
@@ -1926,6 +1930,10 @@ function Duel.RegisterEffect(e,p,...)
 		if e:IsHasType(EFFECT_TYPE_ACTIONS) then
 			local op=e:GetOperation()
 			e:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
+				local c=e:GetHandler()
+				if c:IsHasEffect(EFFECT_ALICE_SCARLET) then
+					return
+				end
 				if Duel.IsPlayerAffectedByEffect(tp,EFFECT_ALICE_SCARLET) then
 					return
 				end
@@ -2345,7 +2353,11 @@ function Card.RegisterEffect(c,e,forced,...)
 					e2:SetType(EFFECT_TYPE_CONTINUOUS|sf)
 					e2:SetCode(ecode)
 					e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+					e2:SetCondition(function(e,tp,eg,ep,ev,re,r,rp)
+						return e:GetLabel()==0
+					end)
 					e2:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
+						e:SetLabel(1)
 						local c=e:GetHandler()
 						if sf&EFFECT_TYPE_SINGLE>0 then
 							Duel.RaiseSingleEvent(c,0x10000000|ecode,re,r,rp|(ep<<16),1-c:GetControler(),ev)
@@ -2353,6 +2365,7 @@ function Card.RegisterEffect(c,e,forced,...)
 						if sf&EFFECT_TYPE_FIELD>0 then
 							Duel.RaiseEvent(eg,0x10000000|ecode,re,r,rp|(ep<<16),1-c:GetControler(),ev)
 						end
+						e:SetLabel(0)
 					end)
 					cregeff(c,e2,forced,...)
 				else
@@ -2928,6 +2941,7 @@ if MOVIE_FILMING then
 end
 
 pcall(dofile,"expansions/script/proc_braveex.lua")
+
 pcall(dofile,"expansions/script/proc_skull.lua")
 
 --dofile("expansions/script/proto.lua")

@@ -61,14 +61,14 @@ function Synchro.CheckFilterChk(c,f1,f2,sub1,sub2,sc,tp)
 	if f(te,c) then
 		reset=true
 	end
-	local res=(c:IsType(TYPE_TUNER,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp) and (not f1 or f1(c,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp))) or not f2 or f2(c,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp) or (sub1 and sub1(c,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp)) or (sub2 and sub2(c,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp))
+	local res=((c:IsType(TYPE_TUNER,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp) or c:IsCode(30765616)) and (not f1 or f1(c,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp))) or not f2 or f2(c,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp) or (sub1 and sub1(c,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp)) or (sub2 and sub2(c,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp))
 	if reset then
 		Duel.AssumeReset()
 	end
 	return res
 end
 function Synchro.TunerFilter(c,f1,sub1,sc,tp)
-	return (c:IsType(TYPE_TUNER,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp) and (not f1 or f1(c,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp))) or (sub1 and sub1(c,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp))
+	return ((c:IsType(TYPE_TUNER,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp) or c:IsCode(30765616)) and (not f1 or f1(c,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp))) or (sub1 and sub1(c,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp))
 end
 function Synchro.NonTunerFilter(c,f2,sub2,sc,tp)
 	return not f2 or f2(c,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp) or (sub2 and sub2(c,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp))
@@ -94,9 +94,27 @@ function Synchro.Condition(f1,min1,max1,f2,min2,max2,sub1,sub2,req1,req2,reqm)
 					g=mg:Filter(Card.IsCanBeSynchroMaterial,c,c)
 					mgchk=true
 				else
-					dg=Duel.GetMatchingGroup(function(mc) return mc:IsFaceup() and (mc:IsControler(tp) or mc:IsCanBeSynchroMaterial(c)) end,tp,LOCATION_MZONE,LOCATION_MZONE,c)
+					local function synchmatfilter(mc)
+						local handmatfilter=mc:IsHasEffect(EFFECT_SYNCHRO_MAT_FROM_HAND)
+						local handmatvalue=nil
+						if handmatfilter then handmatvalue=handmatfilter:GetValue() end
+						return (mc:IsLocation(LOCATION_MZONE) and mc:IsFaceup()
+							and (mc:IsControler(tp) or mc:IsCanBeSynchroMaterial(c)))
+							or (handmatfilter and handmatfilter:CheckCountLimit(tp) and handmatvalue(handmatfilter,mc,c))
+					end
+					dg=Duel.GetMatchingGroup(synchmatfilter,tp,LOCATION_MZONE|LOCATION_HAND,LOCATION_MZONE,c)
 					g=dg:Filter(Card.IsCanBeSynchroMaterial,nil,c)
 					mgchk=false
+				end
+				local hg=Duel.GetMatchingGroup(Card.IsCanBeSynchroMaterial,tp,LOCATION_HAND,0,c,c)
+				for hc in aux.Next(hg) do
+					local te=hc:GetCardEffect(101201102)
+					if te then
+						local val=te:GetValue()
+						if val(te,hc,c) then
+							g:AddCard(hc)
+						end
+					end
 				end
 				local pg=Auxiliary.GetMustBeMaterialGroup(tp,dg,tp,c,g,REASON_SYNCHRO)
 				if not g:Includes(pg) or pg:IsExists(aux.NOT(Card.IsCanBeSynchroMaterial),1,nil,c) then return false end
@@ -541,8 +559,26 @@ function Synchro.Target(f1,min1,max1,f2,min2,max2,sub1,sub2,req1,req2,reqm)
 					g=mg:Filter(Card.IsCanBeSynchroMaterial,c,c)
 				else
 					mgchk=false
-					dg=Duel.GetMatchingGroup(function(mc) return mc:IsFaceup() and (mc:IsControler(tp) or mc:IsCanBeSynchroMaterial(c)) end,tp,LOCATION_MZONE,LOCATION_MZONE,c)
+					local function synchmatfilter(mc)
+						local handmatfilter=mc:IsHasEffect(EFFECT_SYNCHRO_MAT_FROM_HAND)
+						local handmatvalue=nil
+						if handmatfilter then handmatvalue=handmatfilter:GetValue() end
+						return (mc:IsLocation(LOCATION_MZONE) and mc:IsFaceup()
+							and (mc:IsControler(tp) or mc:IsCanBeSynchroMaterial(c)))
+							or (handmatfilter and handmatfilter:CheckCountLimit(tp) and handmatvalue(handmatfilter,mc,c))
+					end
+					dg=Duel.GetMatchingGroup(synchmatfilter,tp,LOCATION_MZONE|LOCATION_HAND,LOCATION_MZONE,c)
 					g=dg:Filter(Card.IsCanBeSynchroMaterial,nil,c)
+				end
+				local hg=Duel.GetMatchingGroup(Card.IsCanBeSynchroMaterial,tp,LOCATION_HAND,0,c,c)
+				for hc in aux.Next(hg) do
+					local te=hc:GetCardEffect(101201102)
+					if te then
+						local val=te:GetValue()
+						if val(te,hc,c) then
+							g:AddCard(hc)
+						end
+					end
 				end
 				local pg=Auxiliary.GetMustBeMaterialGroup(tp,dg,tp,c,g,REASON_SYNCHRO)
 				if smat then
@@ -775,6 +811,19 @@ end
 function Synchro.Operation(e,tp,eg,ep,ev,re,r,rp,c,smat,mg)
 	local g=e:GetLabelObject()
 	c:SetMaterial(g)
+	--Execute the operation function of the Synchro Monster's "EFFECT_MATERIAL_CHECK" effect, if it exists ("Cupid Pitch")
+	local mat_check_eff=c:IsHasEffect(EFFECT_MATERIAL_CHECK)
+	if mat_check_eff then
+		local mat_check_op=mat_check_eff:GetOperation()
+		if mat_check_op then mat_check_op(mat_check_eff,c) end
+	end
+	--Use up the count limit of any "EFFECT_SYNCHRO_MAT_FROM_HAND" effect in the material group ("Revolution Synchron")
+	for mc in g:Iter() do
+		local handmatfilter=mc:IsHasEffect(EFFECT_SYNCHRO_MAT_FROM_HAND)
+		if handmatfilter and handmatfilter:GetValue(handmatfilter,mc,c) then
+			handmatfilter:UseCountLimit(tp)
+		end
+	end
 	local tg=g:Filter(Auxiliary.TatsunecroFilter,nil)
 	if #tg>0 then
 		Synchro.Send=2
@@ -928,9 +977,9 @@ function Synchro.MajesticCheck2(sg,card1,card2,card3,lv,sc,tp,f1,cbt1,f2,cbt2,f3
 	local reqm={...}
 	local tunechk=false
 	if not f1(card1,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp) or not f2(card2,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp) or not f3(card3,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp) then return false end
-	if cbt1 and card1:IsType(TYPE_TUNER,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp) then tunechk=true end
-	if cbt2 and card2:IsType(TYPE_TUNER,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp) then tunechk=true end
-	if cbt3 and card3:IsType(TYPE_TUNER,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp) then tunechk=true end
+	if cbt1 and (card1:IsType(TYPE_TUNER,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp) or card1:IsCode(30765616)) then tunechk=true end
+	if cbt2 and (card2:IsType(TYPE_TUNER,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp) or card2:IsCode(30765616)) then tunechk=true end
+	if cbt3 and (card3:IsType(TYPE_TUNER,sc,SUMMON_TYPE_SYNCHRO|MATERIAL_SYNCHRO,tp) or card3:IsCode(30765616)) then tunechk=true end
 	if not tunechk then return false end
 	local lvchk=false
 	for _,reqmat in ipairs(reqm) do

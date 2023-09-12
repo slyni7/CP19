@@ -127,6 +127,15 @@ function Effect.SetCountLimit(e,max,code,flag,...)
 	global_eff_count_limit_flag[e]=flag
 	setcl(e,max,code,flag,...)
 end
+local setrang=Effect.SetRange
+global_eff_rang={}
+function Effect.SetRange(e,range)
+	global_eff_rang[e]=range
+	setrang(e,range)
+end
+function Effect.GetRange(e)
+	return global_eff_rang[e]
+end
 if YGOPRO_VERSION~="Percy/EDO" then
 	function Auxiliary.FilterFaceupFunction(f,...)
 		local params={...}
@@ -139,6 +148,8 @@ end
 function GetID()
 	return self_table,self_code
 end
+
+dofile("expansions/script/sungak.lua")
 
 dofile("expansions/script/AuxCard_CustomType.lua")
 if YGOPRO_VERSION~="Percy/EDO" then

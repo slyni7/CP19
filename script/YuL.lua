@@ -1,8 +1,11 @@
-﻿--유리도 유틸리티를 난사하구싶어요!
+--유리도 유틸리티를 난사하구싶어요!
 
 YuL={}
 
 pcall(dofile,"expansions/script/proc_module.lua")
+
+--SEARCHING CARD CATEGORY
+CATEGORY_SEARCH_CARD=CATEGORY_SEARCH+CATEGORY_TOHAND
 
 --TYPE_SPELL+TYPE_TRAP
 YuL.ST=0x6
@@ -28,6 +31,48 @@ function YuL.Hint(code,n)
 	Duel.Hint(HINT_MESSAGE,0,aux.Stringid(code,n))
 	Duel.Hint(HINT_MESSAGE,1,aux.Stringid(code,n))
 end
+
+--Aranea Attack/Defense Effect
+function YuL.AraneaMainEffect(c)
+    local e1=MakeEff(c,"FTf","M")
+    e1:SetD(99970461,1)
+    e1:SetCategory(CATEGORY_ATKCHANGE+CATEGORY_DEFCHANGE)
+    e1:SetCode(EVENT_PHASE+PHASE_STANDBY)
+    e1:SetCL(1)
+    e1:SetOperation(YuL.AraneaMainEffectOperation)
+    c:RegisterEffect(e1)
+    local e2=e1:Clone()
+    e2:SetCode(EVENT_PHASE+PHASE_END)
+    c:RegisterEffect(e2)
+end
+function YuL.AraneaMainEffectOperation(e,tp,eg,ep,ev,re,r,rp)
+    local c=e:GetHandler()
+    if c:IsRelateToEffect(e) and c:IsFaceup() then
+        local e1=Effect.CreateEffect(c)
+        e1:SetType(EFFECT_TYPE_SINGLE)
+        e1:SetCode(EFFECT_UPDATE_DEFENSE)
+        e1:SetValue(200)
+        e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_DISABLE)
+        c:RegisterEffect(e1)
+    end
+    local g=Duel.GetMatchingGroup(Card.IsFaceup,tp,0,LOCATION_MZONE,nil)
+    if #g>0 then
+        local sc=g:GetFirst()
+        while sc do
+            local e2=Effect.CreateEffect(c)
+            e2:SetType(EFFECT_TYPE_SINGLE)
+            e2:SetCode(EFFECT_UPDATE_ATTACK)
+            e2:SetReset(RESET_EVENT+RESETS_STANDARD)
+            e2:SetValue(-100)
+            sc:RegisterEffect(e2)
+            local e3=e2:Clone()
+            e3:SetCode(EFFECT_UPDATE_DEFENSE)
+            sc:RegisterEffect(e3)
+            sc=g:GetNext()
+        end
+    end
+end
+
 
 --라바 골렘
 CARD_LAVA_GOLEM=102380
@@ -291,7 +336,7 @@ function Card.RegisterEffect(c,e,forced,...)
 	if not YuL.EnableActivateTurn then
 		YuL.SetActivateTurn()
 	end
-	cregeff(c,e,forced,...)
+	cregeff(c,e,forced)
 end
 function YuL.SetActivateTurn()
 	YuL.EnableActivateTurn=1
@@ -315,7 +360,7 @@ function Card.RegisterEffect(c,e,forced,...)
 	if not YuL.EnableEquipTurn then
 		YuL.SetEquipTurn()
 	end
-	cregeff(c,e,forced,...)
+	cregeff(c,e,forced)
 end
 function YuL.SetEquipTurn()
 	YuL.EnableEquipTurn=1
@@ -893,7 +938,7 @@ function Card.RegisterEffect(c,e,forced,...)
 	if not YuL.RandomSeed then
 		YuL.SetRandomSeed()
 	end
-	cregeff(c,e,forced,...)
+	cregeff(c,e,forced)
 end
 function YuL.SetRandomSeed()
 	YuL.RandomSeed=0

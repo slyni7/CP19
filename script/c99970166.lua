@@ -47,14 +47,14 @@ end
 function cm.damtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(cm.filter,tp,LOCATION_GRAVE,0,1,nil) end
 	local g=Duel.GetMatchingGroup(cm.filter,tp,LOCATION_GRAVE,0,nil)
-	local ct=g:GetClassCount(Card.GetCode)
+	local ct=#g
 	Duel.SetTargetPlayer(1-tp)
-	Duel.SetTargetParam(ct*300)
-	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,ct*300)
+	Duel.SetTargetParam(ct*500)
+	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,ct*500)
 end
 function cm.damop(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(cm.filter,tp,LOCATION_GRAVE,0,nil)
-	local ct=g:GetClassCount(Card.GetCode)
+	local ct=#g
 	local p=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER)
-	Duel.Damage(p,ct*300,REASON_EFFECT)
+	Duel.Damage(p,ct*500,REASON_EFFECT)
 end

@@ -18,7 +18,7 @@ function cm.initial_effect(c)
 	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
 	c:RegisterEffect(e2)
 	local e3=e1:Clone()
-	e3:SetCode(EVENT_FLIPSUMMON_SUCCESS)
+	e3:SetCode(EVENT_FLIP_SUMMON_SUCCESS)
 	c:RegisterEffect(e3)
 	
 	--특수 소환
@@ -29,7 +29,7 @@ function cm.initial_effect(c)
 	e4:SetRange(LOCATION_HAND)
 	e4:SetCode(EVENT_DAMAGE)
 	e4:SetProperty(EFFECT_FLAG_DELAY)
-	e4:SetCountLimit(1,m)
+	e4:SetCountLimit(1,{m,1})
 	e4:SetCondition(cm.sumcon)
 	e4:SetTarget(cm.sumtg)
 	e4:SetOperation(cm.sumop)
@@ -55,13 +55,13 @@ end
 function cm.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
 		local dg=Duel.GetMatchingGroup(cm.thfilter,tp,LOCATION_DECK,0,nil)
-		return dg:GetClassCount(Card.GetCode)>=4
+		return dg:GetClassCount(Card.GetCode)>=3
 	end
 	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
 end
 function cm.thop(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GetMatchingGroup(cm.thfilter,tp,LOCATION_DECK,0,nil)
-	if g:GetClassCount(Card.GetCode)>=4 then
+	if g:GetClassCount(Card.GetCode)>=3 then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_CONFIRM)
 		local sg1=g:Select(tp,1,1,nil)
 		g:Remove(Card.IsCode,nil,sg1:GetFirst():GetCode())
@@ -70,12 +70,8 @@ function cm.thop(e,tp,eg,ep,ev,re,r,rp)
 		g:Remove(Card.IsCode,nil,sg2:GetFirst():GetCode())
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_CONFIRM)
 		local sg3=g:Select(tp,1,1,nil)
-		g:Remove(Card.IsCode,nil,sg3:GetFirst():GetCode())
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_CONFIRM)
-		local sg4=g:Select(tp,1,1,nil)
 		sg1:Merge(sg2)
 		sg1:Merge(sg3)
-		sg1:Merge(sg4)
 		Duel.ConfirmCards(1-tp,sg1)
 		Duel.ShuffleDeck(tp)
 		Duel.Hint(HINT_SELECTMSG,1-tp,HINTMSG_ATOHAND)

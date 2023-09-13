@@ -15,8 +15,6 @@ function cm.initial_effect(c)
 	e1:SetOperation(cm.spop)
 	e1:SetCountLimit(1,m)
 	c:RegisterEffect(e1)
-	Duel.AddCustomActivityCounter(m,ACTIVITY_SUMMON,cm.counterfilter)
-	Duel.AddCustomActivityCounter(m,ACTIVITY_SPSUMMON,cm.counterfilter)
 	
 	--특수 소환
 	local e2=Effect.CreateEffect(c)
@@ -51,9 +49,7 @@ function cm.initial_effect(c)
 	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e4:SetCode(EVENT_PHASE+PHASE_END)
 	e4:SetRange(LOCATION_MZONE)
-	e4:SetCost(cm.thcost)
-	e4:SetTarget(cm.thtg)
-	e4:SetOperation(cm.thop)
+	WriteEff(e4,4,"CTO")
 	c:RegisterEffect(e4)
 	
 	if not cm.global_check then
@@ -70,9 +66,6 @@ function cm.initial_effect(c)
 end
 
 --소환 조건
-function cm.counterfilter(c)
-	return c:IsSetCard(0xd3d)
-end
 function cm.tgfilter(c)
 	return c:IsCode(46130346,73134081,19523799,46918794,33767325) and c:IsAbleToGrave()
 end
@@ -88,20 +81,6 @@ function cm.spop(e,tp,eg,ep,ev,re,r,rp,c)
 	local g=Duel.SelectMatchingCard(tp,cm.tgfilter,tp,LOCATION_HAND,0,1,1,nil)
 	Duel.SendtoGrave(g,REASON_COST)
 	Duel.ShuffleDeck(tp)
-	local e1=Effect.CreateEffect(e:GetHandler())
-	e1:SetType(EFFECT_TYPE_FIELD)
-	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_OATH)
-	e1:SetCode(EFFECT_CANNOT_SUMMON)
-	e1:SetTargetRange(1,0)
-	e1:SetTarget(cm.sumlimit)
-	e1:SetReset(RESET_PHASE+PHASE_END)
-	Duel.RegisterEffect(e1,tp)
-	local e2=e1:Clone()
-	e2:SetCode(EFFECT_CANNOT_SPECIAL_SUMMON)
-	Duel.RegisterEffect(e2,tp)
-end
-function cm.sumlimit(e,c,sump,sumtype,sumpos,targetp,se)
-	return not c:IsSetCard(0xd3d)
 end
 
 --특수 소환
@@ -141,23 +120,41 @@ function cm.op(e,tp,eg,ep,ev,re,r,rp)
 end
 
 --서치 + 데미지
-function cm.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
+function cm.cost4(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():GetFlagEffect(m)~=0 end
 	e:GetHandler():ResetFlagEffect(m)
 end
-function cm.thfilter(c)
-	return c:IsSetCard(0xd3d) and c:IsAbleToHand()
+function cm.tar4(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(cm.op4fil,tp,LOCATION_DECK,0,1,nil,e,tp) end
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_DECK)
 end
-function cm.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(cm.thfilter,tp,LOCATION_DECK,0,1,nil) end
-	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
-	Duel.SetOperationInfo(0,CATEGORY_DAMAGE,nil,0,1-tp,300)
+function cm.op4fil(c,e,tp)
+	if not c:IsSetCard(0x3d3) then return end
+	if c:IsType(TYPE_MONSTER) then 
+		return Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEDOWN_DEFENSE)
+	elseif c:IsType(TYPE_SPELL+TYPE_TRAP) then 
+		return (c:IsType(TYPE_FIELD) or Duel.GetLocationCount(tp,LOCATION_SZONE)>0) and c:IsSSetable()
+	end
+	return false
 end
-function cm.thop(e,tp,eg,ep,ev,re,r,rp)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-	local g=Duel.SelectMatchingCard(tp,cm.thfilter,tp,LOCATION_DECK,0,1,1,nil)
-	if g:GetCount()>0 then
-		Duel.SendtoHand(g,nil,REASON_EFFECT)
-		Duel.ConfirmCards(1-tp,g)
+function cm.op4(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+	if c:IsRelateToEffect(e) and c:IsFaceup() and c:IsAbleToDeck()
+		and Duel.SendtoDeck(c,nil,2,REASON_EFFECT)~=0 then
+		local tc=Duel.SelectMatchingCard(tp,cm.op4fil,tp,LOCATION_DECK,0,1,1,nil,e,tp):GetFirst()
+		if tc:IsType(TYPE_MONSTER) then
+			if Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEDOWN_DEFENSE)>0 then
+		end
+		elseif tc:IsType(TYPE_SPELL+TYPE_TRAP) then
+			if tc:IsType(TYPE_FIELD) then
+				local fc=Duel.GetFieldCard(tp,LOCATION_SZONE,5)
+				if fc then
+					Duel.SendtoGrave(fc,REASON_RULE)
+				end
+			end
+			if Duel.GetLocationCount(tp,LOCATION_SZONE)>0 then
+				Duel.SSet(tp,tc)
+			end
+		end
 	end
 end

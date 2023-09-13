@@ -70,7 +70,7 @@ function cm.filter(c)
 end
 function cm.value(e,c)
 	local g=Duel.GetMatchingGroup(cm.filter,e:GetHandlerPlayer(),LOCATION_GRAVE,0,nil)
-	return g:GetClassCount(Card.GetCode)*200
+	return #g*200
 end
 
 --특수 소환

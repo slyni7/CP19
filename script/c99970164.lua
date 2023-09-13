@@ -129,7 +129,7 @@ function cm.tar4(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_DECK)
 end
 function cm.op4fil(c,e,tp)
-	if not c:IsSetCard(0x3d3) then return end
+	if not c:IsSetCard(0xd3d) then return end
 	if c:IsType(TYPE_MONSTER) then 
 		return Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEDOWN_DEFENSE)
 	elseif c:IsType(TYPE_SPELL+TYPE_TRAP) then 
@@ -139,12 +139,18 @@ function cm.op4fil(c,e,tp)
 end
 function cm.op4(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if c:IsRelateToEffect(e) and c:IsFaceup() and c:IsAbleToDeck()
-		and Duel.SendtoDeck(c,nil,2,REASON_EFFECT)~=0 then
-		local tc=Duel.SelectMatchingCard(tp,cm.op4fil,tp,LOCATION_DECK,0,1,1,nil,e,tp):GetFirst()
+	local tc=Duel.SelectMatchingCard(tp,cm.op4fil,tp,LOCATION_DECK,0,1,1,nil,e,tp):GetFirst()
+	local mchk=Duel.GetLocationCount(tp,LOCATION_MZONE)>0
+	if tc and tc:IsAbleToHand() and
+		(not (mchk and Duel.GetLocationCount(tp,LOCATION_SZONE)>0)
+		or Duel.SelectYesNo(tp,aux.Stringid(m,0))) then
+			Duel.SendtoHand(tc,nil,REASON_EFFECT)
+			Duel.ConfirmCards(1-tp,tc)
+	else
 		if tc:IsType(TYPE_MONSTER) then
-			if Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEDOWN_DEFENSE)>0 then
-		end
+			if mchk then
+				Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEDOWN_DEFENSE)
+			end
 		elseif tc:IsType(TYPE_SPELL+TYPE_TRAP) then
 			if tc:IsType(TYPE_FIELD) then
 				local fc=Duel.GetFieldCard(tp,LOCATION_SZONE,5)

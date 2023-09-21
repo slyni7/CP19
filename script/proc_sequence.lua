@@ -140,14 +140,32 @@ Duel.RegisterEffect(e1,0)
 Auxiliary.GlobalCurrentSequences={}
 Auxiliary.GlobalCurrentSequences[0]={}
 Auxiliary.GlobalCurrentSequences[1]={}
+Auxiliary.GlobalCrazyArcade=false
 local e2=Effect.GlobalEffect()
 e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 e2:SetCode(EVENT_FREE_CHAIN)
+e2:SetLabel(0)
 e2:SetCondition(function(e,tp,eg,ep,ev,re,r,rp)
-	--[[if Duel.GetCurrentChain()>0 then
+	if Duel.GetCurrentChain()>0 then
+		return false
+	end
+	--[[if Duel.GetTurnPlayer()~=tp then
 		return false
 	end]]--
+	--[[if EFFECT_KYRIE_ELEISON then
+		if e:GetLabel()==0 then
+			e:SetLabel(1)
+		else
+			e:SetLabel(0)
+			return false
+		end
+	end]]--
+	if aux.GlobalCrazyArcade then
+		aux.GlobalCrazyArcade=false
+		return false
+	end
 	for p=0,1 do
+	--[[for p=tp,tp do]]--
 		aux.GlobalCurrentSequences[p]={}
 		for i=1,#aux.GlobalSavedSequences[p] do
 			table.insert(aux.GlobalCurrentSequences[p],aux.GlobalSavedSequences[p][i])
@@ -336,7 +354,7 @@ function Auxiliary.SequenceOperation(e,tp,eg,ep,ev,re,r,rp,c,sg,ischain)
 		for p=0,1 do
 			for i=1,#aux.GlobalCurrentSequences[p] do
 				table.insert(aux.GlobalSavedSequences[p],aux.GlobalCurrentSequences[p][i])
-			end		
+			end
 		end
 	end
 end

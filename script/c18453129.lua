@@ -63,5 +63,6 @@ function cm.tar3(e,c)
 end
 function cm.tar4(e,c)
 	return (c:IsType(TYPE_EFFECT) or c:GetOriginalType()&TYPE_EFFECT==TYPE_EFFECT)
-		and (c:IsType(TYPE_LINK) or c:IsLinkState()) and not c:IsCode(m)
+		and (c:IsType(TYPE_LINK) or --[[c:IsLinkState()]]--
+			c:IsLinked()) and not c:IsCode(m)
 end

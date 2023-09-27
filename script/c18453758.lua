@@ -26,14 +26,18 @@ function s.initial_effect(c)
 		ge2:SetCode(EVENT_CHAIN_END)
 		ge2:SetOperation(s.gop2)
 		Duel.RegisterEffect(ge2,0)
-		--[[local ge3=MakeEff(c,"FC")
+		local ge3=MakeEff(c,"FC")
 		ge3:SetCode(EVENT_STARTUP)
 		ge3:SetOperation(s.gop3)
-		Duel.RegisterEffect(ge3,0)]]--
+		--Duel.RegisterEffect(ge3,0)
 		local ge4=MakeEff(c,"FC")
 		ge4:SetCode(EVENT_STARTUP)
 		ge4:SetOperation(s.gop4)
 		--Duel.RegisterEffect(ge4,0)
+		local ge5=MakeEff(c,"FC")
+		ge5:SetCode(EVENT_STARTUP)
+		ge5:SetOperation(s.gop5)
+		--Duel.RegisterEffect(ge5,0)
 	end
 end
 function s.gofil1(c)
@@ -183,6 +187,7 @@ function s.gop3(e,tp,eg,ep,ev,re,r,rp)
 			else
 				Debug.Message("GlobalEffect")
 			end
+			--Debug.Message(te)
 		else
 			Debug.Message("not Effect")
 		end
@@ -193,4 +198,8 @@ end
 function s.gop4(e,tp,eg,ep,ev,re,r,rp)
 	local res=Debug.CheckWitchFatal(id,1243)
 	Debug.Message(res)
+end
+function s.gop5(e,tp,eg,ep,ev,re,r,rp)
+	local ct=Duel.GetFieldGroupCount(tp,0xff,0xff)
+	Debug.Message(ct)
 end

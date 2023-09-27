@@ -89,6 +89,12 @@ function s.op1(e,tp,eg,ep,ev,re,r,rp)
 	end
 	if (sel&0x2==0x2) then
 		local loc=rc:GetLocation()
+		if rc:IsLocation(LOCATION_FZONE) then
+			loc=LOCATION_FZONE
+		end
+		if rc:IsLocation(LOCATION_PZONE) then
+			loc=LOCATION_PZONE
+		end
 		Duel.Remove(rc,0,REASON_EFFECT+REASON_TEMPORARY)
 		local e2=MakeEff(c,"FC")
 		e2:SetCode(EVENT_PHASE+PHASE_END)
@@ -133,12 +139,17 @@ function s.ocon12(e,tp,eg,ep,ev,re,r,rp)
 	return tc and tc:GetReasonEffect() and tc:GetReasonEffect():GetHandler()==e:GetHandler()
 end
 function s.oop12(e,tp,eg,ep,ev,re,r,rp)
+	local tc=e:GetLabelObject()
 	if e:GetLabel()==LOCATION_HAND then
-		Duel.SendtoHand(g,nil,REASON_EFFECT)
+		Duel.SendtoHand(tc,nil,REASON_EFFECT)
 	elseif e:GetLabel()==LOCATION_GRAVE then
-		Duel.SendtoGrave(g,REASON_EFFECT+REASON_RETURN)
+		Duel.SendtoGrave(tc,REASON_EFFECT+REASON_RETURN)
+	elseif e:GetLabel()==LOCATION_FZONE then
+		Duel.MoveToField(tc,1-tp,1-tp,LOCATION_FZONE,POS_FACEUP,true)
+	elseif e:GetLabel()==LOCATION_PZONE then
+		Duel.MoveToField(tc,1-tp,1-tp,LOCATION_PZONE,POS_FACEUP,true)
 	else
-		Duel.ReturnToField(e:GetLabelObject())
+		Duel.ReturnToField(tc)
 	end
 end
 function s.tfil2(c)

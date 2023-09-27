@@ -92,6 +92,9 @@ function s.oop32(e,tp,eg,ep,ev,re,r,rp)
 	e2:SetLabelObject({e1,e3,e4})
 	e3:SetLabelObject({e1,e2,e4})
 	e4:SetLabelObject({e1,e2,e3})
+	if Duel.GetCurrentChain()==0 then
+		aux.GlobalCrazyArcade=true
+	end
 	Duel.ProcessIdleCommand(tp)
 	e1:Reset()
 	e2:Reset()

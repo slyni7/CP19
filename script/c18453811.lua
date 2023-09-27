@@ -8,6 +8,9 @@ function s.initial_effect(c)
 	e1:SetCL(1,id,EFFECT_COUNT_CODE_OATH)
 	WriteEff(e1,1,"TO")
 	c:RegisterEffect(e1)
+	local e2=MakeEff(c,"S")
+	e2:SetCode(EFFECT_TRAP_ACT_IN_HAND)
+	c:RegisterEffect(e2)
 end
 s.listed_names={CARD_CARD_EJECTOR}
 function s.tfil11(c)

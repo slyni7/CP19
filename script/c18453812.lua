@@ -35,7 +35,7 @@ end
 function s.op1(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local rc=re:GetHandler()
-	if Duel.NegateActivation(ev) and rc:GetHandler():IsRelateToEffect(re) then
+	if Duel.NegateActivation(ev) and rc:IsRelateToEffect(re) then
 		Duel.Remove(eg,POS_FACEUP,REASON_EFFECT)
 	end
 	local e1=MakeEff(c,"F")

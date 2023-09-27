@@ -26,18 +26,18 @@ function s.spcheck(sg,tp,exg,dg)
 	return #dg-a>=1
 end
 function s.cfilter(c)
-	return c:IsFaceup() and c:IsLevel(4) and c:IsType(TYPE_GEMINI)
+	return c:IsFaceup() and c:IsCode(CARD_CARD_EJECTOR)
 end
 function s.tar1(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsOnField() and chkc~=e:GetHandler() end
-	local dg=Duel.GetMatchingGroup(Card.IsCanBeEffectTarget,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,e:GetHandler(),e)
+	local dg=Duel.GetMatchingGroup(Card.IsCanBeEffectTarget,tp,0,LOCATION_ONFIELD,e:GetHandler(),e)
 	if chk==0 then
 		if Duel.GetFieldGroupCount(tp,LOCATION_DECK,0)==0 then return false end
 		if e:GetLabel()==1 then
 			e:SetLabel(0)
 			return Duel.CheckReleaseGroupCost(tp,s.cfilter,1,false,s.spcheck,nil,dg)
 		else
-			return Duel.IsExistingTarget(aux.TRUE,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,e:GetHandler())
+			return Duel.IsExistingTarget(aux.TRUE,tp,0,LOCATION_ONFIELD,1,e:GetHandler())
 		end
 	end
 	if e:GetLabel()==1 then
@@ -45,7 +45,7 @@ function s.tar1(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 		Duel.Release(sg,REASON_COST)
 	end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
-	local g=Duel.SelectTarget(tp,aux.TRUE,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,e:GetHandler())
+	local g=Duel.SelectTarget(tp,aux.TRUE,tp,0,LOCATION_ONFIELD,1,1,e:GetHandler())
 	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,#g,0,0)
 	Duel.SetOperationInfo(0,CATEGORY_DRAW,nil,0,tp,1)
 end
@@ -66,7 +66,7 @@ function s.op1(e,tp,eg,ep,ev,re,r,rp)
 	local e2=MakeEff(c,"F")
 	e2:SetCode(EFFECT_CANNOT_BE_EFFECT_TARGET)
 	e2:SetTR("O",0)
-	e2:SetTarget(aux.TBF(Card.IsCode,CARD_CARD_EJECTOR))
+	e2:SetTarget(aux.TargetBoolFunction(Card.IsCode,CARD_CARD_EJECTOR))
 	e2:SetValue(1)
 	Duel.RegisterEffect(e2,tp)
 	local e3=e2:Clone()

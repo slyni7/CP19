@@ -1,4 +1,4 @@
---ìœ ë¦¬ë„ ìœ í‹¸ë¦¬í‹°ë¥¼ ë‚œì‚¬í•˜êµ¬ì‹¶ì–´ìš”!
+--À¯¸®µµ À¯Æ¿¸®Æ¼¸¦ ³­»çÇÏ±¸½Í¾î¿ä!
 
 YuL={}
 
@@ -26,11 +26,515 @@ function Card.IsST(c)
 	return c:IsType(YuL.ST)
 end
 
---ë©”ì„¸ì§€
+--¸Ş¼¼Áö
 function YuL.Hint(code,n)
 	Duel.Hint(HINT_MESSAGE,0,aux.Stringid(code,n))
 	Duel.Hint(HINT_MESSAGE,1,aux.Stringid(code,n))
 end
+
+-- ¿µ¼Ó±³´Ü »ó¼ö --
+CARD_SAFE_ZONE=38296564 --¾ÈÀüÁö´ë
+CARD_FIENDISH_CHAIN=50078509 --µ¥¸ÕÁî Ã¼ÀÎ
+CARD_NIGHTMARE_WHEEL=54704216 --°í¹®¹ÙÄû
+CARD_LIVING_DEAD=97077563 --¸®ºù µ¥µå°¡ ºÎ¸£´Â ¼Ò¸®
+CARD_MANHUNT=36975314 --´ë´ëÀû Ã¼Æ÷ÀÛÀü
+
+CARD_ETERNALIA_SANCTUM=99970841
+CARD_ETERNALIA_DEBT=99970842
+CARD_ETERNALIA_TORMENT=99970843
+CARD_ETERNALIA_RESURRECTION=99970844
+CARD_ETERNALIA_INQUISITION=99970845
+
+CARD_ETERNALIA_SYNAGOGUE=99970848
+
+-- ¿µ¼Ó±³´Ü ½ÃÀÛ --
+local cregeff=Card.RegisterEffect
+function Card.RegisterEffect(c,e,forced,...)
+	local code=c:GetOriginalCode()
+	local mt=_G["c"..code]
+
+	--¾ÈÀüÁö´ë
+	if code==CARD_SAFE_ZONE then
+		if mt.eff_ct[c][0]==e then
+			cregeff(c,e,forced,...)
+			local cfil_sz=function(c,loc)
+				return c:IsHasEffect(CARD_ETERNALIA_SANCTUM) and c:IsAbleToGraveAsCost() and c:IsLocation(loc)
+			end
+			local cost_sz=function(e,tp,eg,ep,ev,re,r,rp,chk)
+				local loc=0
+				if chk==0 then e:GetLabelObject():SetLabel(0)
+					loc=LOCATION_DECK+LOCATION_HAND
+					if c:IsLocation(LOCATION_DECK) then loc=LOCATION_HAND end
+					e:SetLabel(loc)
+					if c:IsLocation(LOCATION_DECK) or c:IsLocation(LOCATION_HAND) then
+						return Duel.IsExistingMatchingCard(cfil_sz,tp,LOCATION_DECK+LOCATION_HAND,0,1,nil,loc)
+					else
+						return true
+					end
+				end
+				if e:GetLabelObject():GetLabel()>0 or c:IsPreviousLocation(LOCATION_DECK) then
+					e:GetLabelObject():SetLabel(0)
+					loc=e:GetLabel()
+					Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
+					local g=Duel.SelectMatchingCard(tp,cfil_sz,tp,LOCATION_DECK+LOCATION_HAND,0,1,1,nil,loc)
+					Duel.SendtoGrave(g,REASON_COST)
+				end
+			end
+			local fil_sz=function(c)
+				return c:IsFaceup() and c:IsAttackPos()
+			end
+			local tar_sz=function(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+				if chkc then return chkc:IsLocation(LOCATION_MZONE) and fil_sz(chkc) end
+				if chk==0 then return Duel.IsExistingTarget(fil_sz,0,LOCATION_MZONE,LOCATION_MZONE,1,nil) end
+				local ct=1
+				if Duel.IsPlayerAffectedByEffect(tp,CARD_ETERNALIA_SYNAGOGUE) then ct=2 end
+				local g=Duel.SelectTarget(tp,fil_sz,0,LOCATION_MZONE,LOCATION_MZONE,1,ct,nil)
+			end
+			local op_sz=function(e,tp,eg,ep,ev,re,r,rp)
+				local c=e:GetHandler()
+				local tg=Duel.GetTargetCards(e)
+				for tc in tg:Iter() do
+					if c:IsRelateToEffect(e) and tc and tc:IsFaceup() and tc:IsRelateToEffect(e) then
+						c:RegisterFlagEffect(code,RESET_EVENT+RESETS_STANDARD,0,1,tp)
+					end
+				end
+			end
+			e:SetCost(cost_sz)
+			e:SetTarget(tar_sz)		
+			e:SetOperation(op_sz)
+			e:SetRange(LOCATION_SZONE+LOCATION_HAND+LOCATION_DECK)
+			local e9=Effect.CreateEffect(c)
+			e9:SetType(EFFECT_TYPE_SINGLE)
+			e9:SetCode(EFFECT_TRAP_ACT_IN_HAND)
+			e9:SetValue(function(e,c) e:SetLabel(1) end)
+			cregeff(c,e9)
+			e:SetLabelObject(e9)
+		elseif mt.eff_ct[c][1]==e then
+			cregeff(c,e,forced,...)
+			local pers_op_sz=function(e,tp,eg,ep,ev,re,r,rp)
+				local c=e:GetHandler()
+				local tg=Duel.GetChainInfo(ev,CHAININFO_TARGET_CARDS)
+				for tc in tg:Iter() do
+					if c:IsRelateToEffect(re) and tc and tc:IsFaceup() and tc:IsRelateToEffect(re) then
+						c:SetCardTarget(tc)
+						c:CreateRelation(tc,RESET_EVENT+RESETS_STANDARD)
+					end
+				end
+			end
+			e:SetCondition(function(e,tp,eg,ep,ev,re,r,rp) return re==e:GetLabelObject() end)
+			e:SetOperation(pers_op_sz)
+		elseif mt.eff_ct[c][5]==e then
+			cregeff(c,e,forced,...)
+			local nda_con_sz=function(e)
+				local c=e:GetHandler()
+				return c:GetFlagEffect(code)>0
+			end
+			e:SetTargetRange(LOCATION_MZONE,0)
+			e:SetCondition(nda_con_sz)
+		elseif mt.eff_ct[c][7]==e then
+			cregeff(c,e,forced,...)
+			local des_op_sz=function(e,tp,eg,ep,ev,re,r,rp)
+				if e:GetLabelObject():GetLabel()~=0 then return end
+				local tg=e:GetHandler():GetCardTarget():Match(Card.IsLocation,nil,LOCATION_MZONE)
+				if not tg or #tg==0 then return end
+				Duel.Destroy(tg,REASON_EFFECT)
+			end
+			e:SetOperation(des_op_sz)
+		elseif mt.eff_ct[c][8]==e then
+			cregeff(c,e,forced,...)
+			local des_con_sz=function(e,tp,eg,ep,ev,re,r,rp)
+				local tg=e:GetHandler():GetCardTarget()
+				return tg and #tg>0 and #(eg&tg)>0
+			end
+			e:SetCondition(des_con_sz)
+		else
+			cregeff(c,e,forced,...)
+		end
+		
+	--µ¥¸ÕÁî Ã¼ÀÎ
+	elseif code==CARD_FIENDISH_CHAIN then
+		if mt.eff_ct[c][0]==e then
+			cregeff(c,e,forced,...)
+			local cfil_fchn=function(c,loc)
+				return c:IsHasEffect(CARD_ETERNALIA_DEBT) and c:IsAbleToGraveAsCost() and c:IsLocation(loc)
+			end
+			local cost_fchn=function(e,tp,eg,ep,ev,re,r,rp,chk)
+				local loc=0
+				if chk==0 then e:GetLabelObject():SetLabel(0)
+					loc=LOCATION_DECK+LOCATION_HAND
+					if c:IsLocation(LOCATION_DECK) then loc=LOCATION_HAND end
+					e:SetLabel(loc)
+					if c:IsLocation(LOCATION_DECK) or c:IsLocation(LOCATION_HAND) then
+						return Duel.IsExistingMatchingCard(cfil_fchn,tp,LOCATION_DECK+LOCATION_HAND,0,1,nil,loc)
+					else
+						return true
+					end
+				end
+				if e:GetLabelObject():GetLabel()>0 or c:IsPreviousLocation(LOCATION_DECK) then
+					e:GetLabelObject():SetLabel(0)
+					loc=e:GetLabel()
+					Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
+					local g=Duel.SelectMatchingCard(tp,cfil_fchn,tp,LOCATION_DECK+LOCATION_HAND,0,1,1,nil,loc)
+					Duel.SendtoGrave(g,REASON_COST)
+				end
+			end
+			local fil_fchn=function(c)
+				return c:IsFaceup() and c:IsType(TYPE_EFFECT)
+			end
+			local tar_fchn=function(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+				if chkc then return chkc:IsLocation(LOCATION_MZONE) and fil_fchn(chkc) end
+				if chk==0 then return Duel.IsExistingTarget(fil_fchn,0,LOCATION_MZONE,LOCATION_MZONE,1,nil) end
+				local ct=1
+				if Duel.IsPlayerAffectedByEffect(tp,CARD_ETERNALIA_SYNAGOGUE) then ct=2 end
+				local g=Duel.SelectTarget(tp,fil_fchn,0,LOCATION_MZONE,LOCATION_MZONE,1,ct,nil)
+				Duel.SetOperationInfo(0,CATEGORY_DISABLE,g,#g,0,0)
+			end
+			e:SetCost(cost_fchn)
+			e:SetTarget(tar_fchn)
+			e:SetRange(LOCATION_SZONE+LOCATION_HAND+LOCATION_DECK)
+			local e9=Effect.CreateEffect(c)
+			e9:SetType(EFFECT_TYPE_SINGLE)
+			e9:SetCode(EFFECT_TRAP_ACT_IN_HAND)
+			e9:SetValue(function(e,c) e:SetLabel(1) end)
+			cregeff(c,e9)
+			e:SetLabelObject(e9)
+		elseif mt.eff_ct[c][1]==e then
+			cregeff(c,e,forced,...)
+			local pers_op_fchn=function(e,tp,eg,ep,ev,re,r,rp)
+				local c=e:GetHandler()
+				local tg=Duel.GetChainInfo(ev,CHAININFO_TARGET_CARDS)
+				for tc in tg:Iter() do
+					if c:IsRelateToEffect(re) and tc and tc:IsFaceup() and tc:IsRelateToEffect(re) then
+						c:SetCardTarget(tc)
+						c:CreateRelation(tc,RESET_EVENT+RESETS_STANDARD)
+					end
+				end
+			end
+			e:SetCondition(function(e,tp,eg,ep,ev,re,r,rp) return re==e:GetLabelObject() end)
+			e:SetOperation(pers_op_fchn)
+		elseif mt.eff_ct[c][4]==e then
+			cregeff(c,e,forced,...)
+			local des_con_fchn=function(e,tp,eg,ep,ev,re,r,rp)
+				if e:GetHandler():IsStatus(STATUS_DESTROY_CONFIRMED) then return false end
+				local tg=e:GetHandler():GetCardTarget()
+				if #tg==2 then
+					return tg and #(eg&tg)>0 and (tg:GetFirst():IsReason(REASON_DESTROY) or tg:GetNext():IsReason(REASON_DESTROY))
+				else
+					return tg and #tg>0 and #(eg&tg)>0 and tg:GetFirst():IsReason(REASON_DESTROY)
+				end
+			end
+			e:SetCondition(des_con_fchn)
+		else
+			cregeff(c,e,forced,...)
+		end
+
+	--°í¹®¹ÙÄû
+	elseif code==CARD_NIGHTMARE_WHEEL then
+		if mt.eff_ct[c][0]==e then
+			cregeff(c,e,forced,...)
+			local cfil_nwhl=function(c,loc)
+				return c:IsHasEffect(CARD_ETERNALIA_TORMENT) and c:IsAbleToGraveAsCost() and c:IsLocation(loc)
+			end
+			local cost_nwhl=function(e,tp,eg,ep,ev,re,r,rp,chk)
+				local loc=0
+				if chk==0 then e:GetLabelObject():SetLabel(0)
+					loc=LOCATION_DECK+LOCATION_HAND
+					if c:IsLocation(LOCATION_DECK) then loc=LOCATION_HAND end
+					e:SetLabel(loc)
+					if c:IsLocation(LOCATION_DECK) or c:IsLocation(LOCATION_HAND) then
+						return Duel.IsExistingMatchingCard(cfil_nwhl,tp,LOCATION_DECK+LOCATION_HAND,0,1,nil,loc)
+					else
+						return true
+					end
+				end
+				if e:GetLabelObject():GetLabel()>0 or c:IsPreviousLocation(LOCATION_DECK) then
+					e:GetLabelObject():SetLabel(0)
+					loc=e:GetLabel()
+					Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
+					local g=Duel.SelectMatchingCard(tp,cfil_nwhl,tp,LOCATION_DECK+LOCATION_HAND,0,1,1,nil,loc)
+					Duel.SendtoGrave(g,REASON_COST)
+				end
+			end
+			local tar_nwhl=function(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+				if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(1-tp) end
+				if chk==0 then return Duel.IsExistingTarget(nil,tp,0,LOCATION_MZONE,1,nil) end
+				local ct=1
+				if Duel.IsPlayerAffectedByEffect(tp,CARD_ETERNALIA_SYNAGOGUE) then ct=2 end
+				local g=Duel.SelectTarget(tp,nil,tp,0,LOCATION_MZONE,1,ct,nil)
+			end
+			e:SetCost(cost_nwhl)
+			e:SetTarget(tar_nwhl)
+			e:SetRange(LOCATION_SZONE+LOCATION_HAND+LOCATION_DECK)
+			local e9=Effect.CreateEffect(c)
+			e9:SetType(EFFECT_TYPE_SINGLE)
+			e9:SetCode(EFFECT_TRAP_ACT_IN_HAND)
+			e9:SetValue(function(e,c) e:SetLabel(1) end)
+			cregeff(c,e9)
+			e:SetLabelObject(e9)
+		elseif mt.eff_ct[c][1]==e then
+			cregeff(c,e,forced,...)
+			local pers_op_nwhl=function(e,tp,eg,ep,ev,re,r,rp)
+				local c=e:GetHandler()
+				local tg=Duel.GetChainInfo(ev,CHAININFO_TARGET_CARDS)
+				for tc in tg:Iter() do
+					if c:IsRelateToEffect(re) and tc and tc:IsFaceup() and tc:IsRelateToEffect(re) then
+						c:SetCardTarget(tc)
+						c:CreateRelation(tc,RESET_EVENT+RESETS_STANDARD)
+					end
+				end
+			end
+			e:SetCondition(function(e,tp,eg,ep,ev,re,r,rp) return re==e:GetLabelObject() end)
+			e:SetOperation(pers_op_nwhl)
+		elseif mt.eff_ct[c][4]==e then
+			cregeff(c,e,forced,...)
+			local dam_con_nwhl=function(e,tp,eg,ep,ev,re,r,rp)
+				return e:GetHandler():GetCardTarget():Match(Card.IsLocation,nil,LOCATION_MZONE):GetCount()>0
+			end
+			e:SetCondition(dam_con_nwhl)
+		elseif mt.eff_ct[c][5]==e then
+			cregeff(c,e,forced,...)
+			local des_con_nwhl=function(e,tp,eg,ep,ev,re,r,rp)
+				if e:GetHandler():IsStatus(STATUS_DESTROY_CONFIRMED) then return false end
+				local tg=e:GetHandler():GetCardTarget()
+				return tg and #tg>0 and #(eg&tg)>0
+			end
+			e:SetCondition(des_con_nwhl)
+		else
+			cregeff(c,e,forced,...)
+		end
+
+	--¸®ºù µ¥µå°¡ ºÎ¸£´Â ¼Ò¸®
+	elseif code==CARD_LIVING_DEAD then
+		if mt.eff_ct[c][0]==e then
+			cregeff(c,e,forced,...)
+			local cfil_lvdd=function(c,loc)
+				return c:IsHasEffect(CARD_ETERNALIA_RESURRECTION) and c:IsAbleToGraveAsCost() and c:IsLocation(loc)
+			end
+			local cost_lvdd=function(e,tp,eg,ep,ev,re,r,rp,chk)
+				local loc=0
+				if chk==0 then e:GetLabelObject():SetLabel(0)
+					loc=LOCATION_DECK+LOCATION_HAND
+					if c:IsLocation(LOCATION_DECK) then loc=LOCATION_HAND end
+					e:SetLabel(loc)
+					if c:IsLocation(LOCATION_DECK) or c:IsLocation(LOCATION_HAND) then
+						return Duel.IsExistingMatchingCard(cfil_lvdd,tp,LOCATION_DECK+LOCATION_HAND,0,1,nil,loc)
+					else
+						return true
+					end
+				end
+				if e:GetLabelObject():GetLabel()>0 or c:IsPreviousLocation(LOCATION_DECK) then
+					e:GetLabelObject():SetLabel(0)
+					loc=e:GetLabel()
+					Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
+					local g=Duel.SelectMatchingCard(tp,cfil_lvdd,tp,LOCATION_DECK+LOCATION_HAND,0,1,1,nil,loc)
+					Duel.SendtoGrave(g,REASON_COST)
+				end
+			end
+			local fil_lvdd=function (c,e,tp)
+				return c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+			end
+			local tar_lvdd=function(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+				if chkc then return chkc:IsLocation(LOCATION_GRAVE) and chkc:IsControler(tp) and fil_lvdd(chkc,e,tp) end
+				local ft=Duel.GetLocationCount(tp,LOCATION_MZONE)
+				if chk==0 then return ft>0 and Duel.IsExistingTarget(fil_lvdd,tp,LOCATION_GRAVE,0,1,nil,e,tp) end
+				ft=math.min(ft,2)
+				if not Duel.IsPlayerAffectedByEffect(tp,CARD_ETERNALIA_SYNAGOGUE)
+					or Duel.IsPlayerAffectedByEffect(tp,CARD_BLUEEYES_SPIRIT) then ft=1 end
+				Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+				local g=Duel.SelectTarget(tp,fil_lvdd,tp,LOCATION_GRAVE,0,1,ft,nil,e,tp)
+				Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,g,#g,0,0)
+			end
+			local op_lvdd=function(e,tp,eg,ep,ev,re,r,rp)
+				local tg=Duel.GetTargetCards(e)
+				local ft=Duel.GetLocationCount(tp,LOCATION_MZONE)
+				if #tg==0 or ft==0 then return end
+				if #tg>1 and Duel.IsPlayerAffectedByEffect(tp,CARD_BLUEEYES_SPIRIT) then return end
+				if #tg>ft then
+					Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
+					tg=tg:Select(tp,1,1,nil)
+				end
+				local c=e:GetHandler()
+				for tc in tg:Iter() do
+					if Duel.SpecialSummonStep(tc,0,tp,tp,false,false,POS_FACEUP_ATTACK) then
+						c:SetCardTarget(tc)
+					end
+				end
+				Duel.SpecialSummonComplete()
+			end
+			e:SetCost(cost_lvdd)
+			e:SetTarget(tar_lvdd)		
+			e:SetOperation(op_lvdd)
+			e:SetRange(LOCATION_SZONE+LOCATION_HAND+LOCATION_DECK)
+			local e9=Effect.CreateEffect(c)
+			e9:SetType(EFFECT_TYPE_SINGLE)
+			e9:SetCode(EFFECT_TRAP_ACT_IN_HAND)
+			e9:SetValue(function(e,c) e:SetLabel(1) end)
+			cregeff(c,e9)
+			e:SetLabelObject(e9)
+		elseif mt.eff_ct[c][2]==e then
+			cregeff(c,e,forced,...)
+			local des_op_lvdd=function(e,tp,eg,ep,ev,re,r,rp)
+				if e:GetLabelObject():GetLabel()~=0 then return end
+				local tg=e:GetHandler():GetCardTarget():Match(Card.IsLocation,nil,LOCATION_MZONE)
+				if not tg or #tg==0 then return end
+				Duel.Destroy(tg,REASON_EFFECT)
+			end
+			e:SetOperation(des_op_lvdd)
+		elseif mt.eff_ct[c][3]==e then
+			cregeff(c,e,forced,...)
+			local des_con_lvdd=function(e,tp,eg,ep,ev,re,r,rp)
+				local tg=e:GetHandler():GetCardTarget()
+				if #tg==2 then
+					return tg and #(eg&tg)>0 and (tg:GetFirst():IsReason(REASON_DESTROY) or tg:GetNext():IsReason(REASON_DESTROY))
+				else
+					return tg and #tg>0 and #(eg&tg)>0 and tg:GetFirst():IsReason(REASON_DESTROY)
+				end
+			end
+			e:SetCondition(des_con_lvdd)
+		else
+			cregeff(c,e,forced,...)
+		end
+
+	--´ë´ëÀû Ã¼Æ÷ÀÛÀü
+	elseif code==CARD_MANHUNT then
+		if mt.eff_ct[c][0]==e then
+			cregeff(c,e,forced,...)
+			local cfil_mhnt=function(c,loc)
+				return c:IsHasEffect(CARD_ETERNALIA_INQUISITION) and c:IsAbleToGraveAsCost() and c:IsLocation(loc)
+			end
+			local cost_mhnt=function(e,tp,eg,ep,ev,re,r,rp,chk)
+				local loc=0
+				if chk==0 then e:GetLabelObject():SetLabel(0)
+					loc=LOCATION_DECK+LOCATION_HAND
+					if c:IsLocation(LOCATION_DECK) then loc=LOCATION_HAND end
+					e:SetLabel(loc)
+					if c:IsLocation(LOCATION_DECK) or c:IsLocation(LOCATION_HAND) then
+						return Duel.IsExistingMatchingCard(cfil_mhnt,tp,LOCATION_DECK+LOCATION_HAND,0,1,nil,loc)
+					else
+						return true
+					end
+				end
+				if e:GetLabelObject():GetLabel()>0 or c:IsPreviousLocation(LOCATION_DECK) then
+					e:GetLabelObject():SetLabel(0)
+					loc=e:GetLabel()
+					Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
+					local g=Duel.SelectMatchingCard(tp,cfil_mhnt,tp,LOCATION_DECK+LOCATION_HAND,0,1,1,nil,loc)
+					Duel.SendtoGrave(g,REASON_COST)
+				end
+			end
+			local fil_mhnt=function (c)
+				return c:IsFaceup() and c:IsControlerCanBeChanged()
+			end
+			local tar_mhnt=function(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+				local ct=Duel.GetLocationCount(tp,LOCATION_MZONE)
+				if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(1-tp) and fil_mhnt(chkc) end
+				if chk==0 then return Duel.IsExistingTarget(fil_mhnt,tp,0,LOCATION_MZONE,1,nil) end
+				Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_CONTROL)
+				if Duel.IsPlayerAffectedByEffect(tp,CARD_ETERNALIA_SYNAGOGUE) then ct=math.min(ct,2) else ct=1 end
+				local g=Duel.SelectTarget(tp,fil_mhnt,tp,0,LOCATION_MZONE,1,ct,nil)
+				Duel.SetOperationInfo(0,CATEGORY_CONTROL,g,#g,0,0)
+			end
+			e:SetCost(cost_mhnt)
+			e:SetTarget(tar_mhnt)		
+			e:SetRange(LOCATION_SZONE+LOCATION_HAND+LOCATION_DECK)
+			local e9=Effect.CreateEffect(c)
+			e9:SetType(EFFECT_TYPE_SINGLE)
+			e9:SetCode(EFFECT_TRAP_ACT_IN_HAND)
+			e9:SetValue(function(e,c) e:SetLabel(1) end)
+			cregeff(c,e9)
+			e:SetLabelObject(e9)
+		elseif mt.eff_ct[c][1]==e then
+			cregeff(c,e,forced,...)
+			local op_mhnt=function(e,tp,eg,ep,ev,re,r,rp)
+				local c=e:GetHandler()
+				local tg=Duel.GetChainInfo(ev,CHAININFO_TARGET_CARDS)
+				for tc in tg:Iter() do
+					if c:IsRelateToEffect(re) and tc and tc:IsRelateToEffect(re) then
+						c:SetCardTarget(tc)
+						local e1=Effect.CreateEffect(c)
+						e1:SetType(EFFECT_TYPE_SINGLE)
+						e1:SetCode(EFFECT_SET_CONTROL)
+						e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE+EFFECT_FLAG_OWNER_RELATE)
+						e1:SetRange(LOCATION_MZONE)
+						e1:SetValue(tp)
+						e1:SetReset(RESET_EVENT+RESETS_STANDARD-RESET_TURN_SET)
+						e1:SetCondition(function(e) return e:GetOwner():IsHasCardTarget(e:GetHandler()) end)
+						cregeff(tc,e1)
+					end
+				end
+			end
+			e:SetOperation(op_mhnt)
+		elseif mt.eff_ct[c][5]==e then
+			cregeff(c,e,forced,...)
+			local des_con_mhnt=function(e,tp,eg,ep,ev,re,r,rp)
+				local tg=e:GetHandler():GetCardTarget()
+				return tg and #tg>0 and #(eg&tg)>0
+			end
+			e:SetCondition(des_con_mhnt)
+		else
+			cregeff(c,e,forced,...)
+		end
+	else
+		cregeff(c,e,forced,...)
+	end
+end
+
+--¿µ¼Ó±³´Ü ÇÁ·Î½ÃÀú
+function YuL.AddEternaliaProcedure(c,code)
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_FIELD)
+	e1:SetCode(EFFECT_SPSUMMON_PROC)
+	e1:SetRange(LOCATION_HAND+LOCATION_GRAVE)
+	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE)
+	e1:SetCondition(YuL.EternaliaCondition(code))
+	e1:SetTarget(YuL.EternaliaTarget(code))
+	e1:SetOperation(YuL.EternaliaOperation)
+	c:RegisterEffect(e1)
+end
+
+function YuL.EternaliaTrapFilter(c,code,tc)
+	return c:IsCode(code) and c:IsHasCardTarget(tc)
+end
+function YuL.EternaliaFilter(c,ft,tp,code)
+	return c:IsReleasable() and (ft>0 or (c:GetSequence()<5 and c:IsControler(tp))) and (c:IsFaceup() or c:IsControler(tp))
+		and Duel.IsExistingMatchingCard(YuL.EternaliaTrapFilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,nil,code,c)
+end
+function YuL.EternaliaCondition(code)
+	return function(e,c)
+		if c==nil then return true end
+		local eff={c:GetCardEffect(EFFECT_NECRO_VALLEY)}
+		for _,te in ipairs(eff) do
+			local op=te:GetOperation()
+			if not op or op(e,c) then return false end
+		end
+		local tp=c:GetControler()
+		local ft=Duel.GetLocationCount(tp,LOCATION_MZONE)
+		local rg=Duel.GetMatchingGroup(YuL.EternaliaFilter,tp,LOCATION_MZONE,LOCATION_MZONE,nil,ft,tp,code)
+		return ft>-1 and #rg>0 and aux.SelectUnselectGroup(rg,e,tp,1,#rg,nil,0)
+	end
+end
+function YuL.EternaliaTarget(code)
+	return function(e,tp,eg,ep,ev,re,r,rp,c)
+		local c=e:GetHandler()
+		local g=nil
+		local ft=Duel.GetLocationCount(tp,LOCATION_MZONE)
+		local rg=Duel.GetMatchingGroup(YuL.EternaliaFilter,tp,LOCATION_MZONE,LOCATION_MZONE,nil,ft,tp,code)
+		local g=aux.SelectUnselectGroup(rg,e,tp,1,#rg,nil,1,tp,HINTMSG_RELEASE,nil,nil,true)
+		if #g>0 then
+			g:KeepAlive()
+			e:SetLabelObject(g)
+			return true
+		end
+		return false
+	end
+end
+function YuL.EternaliaOperation(e,tp,eg,ep,ev,re,r,rp,c)
+	local g=e:GetLabelObject()
+	if not g then return end
+	Duel.Release(g,REASON_COST)
+	g:DeleteGroup()
+end
+-- ¿µ¼Ó±³´Ü ³¡ --
 
 --Aranea Attack/Defense Effect
 function YuL.AraneaMainEffect(c)
@@ -74,7 +578,7 @@ function YuL.AraneaMainEffectOperation(e,tp,eg,ep,ev,re,r,rp)
 end
 
 
---ë¼ë°” ê³¨ë ˜
+--¶ó¹Ù °ñ·½
 CARD_LAVA_GOLEM=102380
 function Card.IsLavaGolem(c)
 	return c:IsCode(CARD_LAVA_GOLEM)
@@ -137,7 +641,7 @@ function YuL.LavaGolemCondition(condition,p)
 	end
 end
 
---ë ˆì¸ë³´ìš° íœ˜ì‹œ
+--·¹ÀÎº¸¿ì ÈÖ½Ã
 CARD_RAINBOW_FISH=23771716
 CARD_FISH_N_KICKS=32703716
 CARD_FISH_N_BACKS=21507589
@@ -148,20 +652,20 @@ function Card.IsRainbowFishCard(c)
 	return c:IsCode(CARD_RAINBOW_FISH) or c:IsSetCard(0xe18)
 end
 
---ìµìŠ¤í”Œë¡œì „!
-YuL.d500sp=46130346 --íŒŒì´ì–´ë³¼
-YuL.d600sp=73134081 --í™”í˜•
-YuL.d800sp=19523799 --ëŒ€í™”ì¬
-YuL.d1000sp1=46918794 --í™”ì—¼ ì§€ì˜¥
-YuL.d1000sp2=33767325 --ë°ìŠ¤ ë©”í…Œì˜¤
+--ÀÍ½ºÇÃ·ÎÀü!
+YuL.d500sp=46130346 --ÆÄÀÌ¾îº¼
+YuL.d600sp=73134081 --È­Çü
+YuL.d800sp=19523799 --´ëÈ­Àç
+YuL.d1000sp1=46918794 --È­¿° Áö¿Á
+YuL.d1000sp2=33767325 --µ¥½º ¸ŞÅ×¿À
 
---í„´ì œ ì†ì„±
+--ÅÏÁ¦ ¼Ó¼º
 YuL.dif=100000000
 YuL.O=EFFECT_COUNT_CODE_OATH
 YuL.D=EFFECT_COUNT_CODE_DUEL
 YuL.S=EFFECT_COUNT_CODE_SINGLE
 
---ì†ì„±
+--¼Ó¼º
 ATT_X=0x0
 ATT_E=0x1
 ATT_W=0x2
@@ -171,7 +675,7 @@ ATT_L=0x10
 ATT_D=0x20
 ATT_G=0x40
 
---ì†Œí™˜íƒ€ì…
+--¼ÒÈ¯Å¸ÀÔ
 SUMT_NOR=SUMMON_TYPE_NORMAL
 SUMT_ADV=SUMMON_TYPE_ADVANCE
 SUMT_DU=SUMMON_TYPE_DUAL
@@ -190,12 +694,12 @@ SUMT_Q=SUMMON_TYPE_SQUARE
 SUMT_B=SUMMON_TYPE_BEYOND
 SUMT_D=SUMMON_TYPE_DELIGHT
 
---ë°ë¯¸ì§€ ê³„ì‚° ì¤‘ ì´ì™¸
+--µ¥¹ÌÁö °è»ê Áß ÀÌ¿Ü
 function Auxiliary.not_damcal()
 	return Duel.GetCurrentPhase()~=PHASE_DAMAGE or not Duel.IsDamageCalculated()
 end
 
---ì¸ì ‘ ì¹´ë“œ ê·¸ë£¹
+--ÀÎÁ¢ Ä«µå ±×·ì
 function Card.GetAdjacentGroup(c)
 	local seq=c:GetSequence()
 	local p=c:GetControler()
@@ -270,7 +774,7 @@ function Card.GetAdjacentGroup(c)
 	return g
 end
 
---ì†Œí™˜ ì·¨ê¸‰
+--¼ÒÈ¯ Ãë±Ş
 EFFECT_CHANGE_SUMMON_TYPE=99970548
 EFFECT_ADD_SUMMON_TYPE=99970549
 EFFECT_REMOVE_SUMMON_TYPE=99970550
@@ -305,7 +809,7 @@ function Card.IsSummonType(c,sumtype)
 	return c:GetSummonType()&sumtype==sumtype
 end
 
---í•„ë“œì—ì„œ
+--ÇÊµå¿¡¼­
 function aux.PreOnfield(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsPreviousLocation(LOCATION_ONFIELD)
 end
@@ -315,7 +819,7 @@ function aux.dscon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetCurrentPhase()~=PHASE_DAMAGE or not Duel.IsDamageCalculated()
 end
 
---ì†Œìƒ ì œí•œ
+--¼Ò»ı Á¦ÇÑ
 function RevLim(c)
 	return c:EnableReviveLimit()
 end
@@ -329,7 +833,7 @@ function Group.RegisterFlagEffect(g,...)
 	end
 end
 
---ì´ í„´ì— ë°œë™ëœ
+--ÀÌ ÅÏ¿¡ ¹ßµ¿µÈ
 ACTIVATED_THIS_TURN=99979999
 local cregeff=Card.RegisterEffect
 function Card.RegisterEffect(c,e,forced,...)
@@ -353,7 +857,7 @@ function Card.IsActivateTurn(c)
 	return c:GetFlagEffect(ACTIVATED_THIS_TURN)>0
 end
 
---ì´ í„´ì— ì¥ì°©ëœ
+--ÀÌ ÅÏ¿¡ ÀåÂøµÈ
 EQUIPED_THIS_TURN=99970000
 local cregeff=Card.RegisterEffect
 function Card.RegisterEffect(c,e,forced,...)
@@ -381,12 +885,12 @@ function Card.IsEquipTurn(c)
 	return c:GetFlagEffect(EQUIPED_THIS_TURN)>0
 end
 
---ì¥ì°© (c,p,f,eqlimit,cost,tg,op,con)
+--ÀåÂø (c,p,f,eqlimit,cost,tg,op,con)
 function YuL.Equip(...)
 	return aux.AddEquipProcedure(...)
 end
 
---ê·¸ë£¹ ì¹´ìš´í„° ì„¸ê¸°(g:GetCounter(ì¹´ìš´í„°))
+--±×·ì Ä«¿îÅÍ ¼¼±â(g:GetCounter(Ä«¿îÅÍ))
 function Group.GetCounter(g,counter)
 	local ct=0
 	local tc=g:GetFirst()
@@ -397,7 +901,7 @@ function Group.GetCounter(g,counter)
 	return ct
 end
 
---ì›ë˜ íƒ€ì…
+--¿ø·¡ Å¸ÀÔ
 function Card.IsOriginalType(c,num)
 	return bit.band(c:GetOriginalType(),num)==num
 end
@@ -407,7 +911,7 @@ function aux.FBF(...)
 	return aux.FilterBoolFunction(...)
 end
 
---ì†ì„±
+--¼Ó¼º
 function YuL.ATT(str)
 	if type(str)=="number" then
 		return str
@@ -437,7 +941,7 @@ function YuL.ATT(str)
 	return num
 end
 
---ì†Œì¬ë¡œ ì‚¬ìš© ë¶ˆê°€
+--¼ÒÀç·Î »ç¿ë ºÒ°¡
 function YuL.NoMat(c,str)
 	if type(str)=="number" then
 		return str
@@ -482,7 +986,7 @@ function YuL.CannotMat(c,tcode)
 	c:RegisterEffect(e1)
 end
 
---í”„ë¦¬ì²´ì¸
+--ÇÁ¸®Ã¼ÀÎ
 function YuL.WriteFreeChainEffect(e,range)
 	e:SetCode(EVENT_FREE_CHAIN)
 	e:SetType(EFFECT_TYPE_QUICK_O)
@@ -492,7 +996,7 @@ function FreeChain(...)
 	return YuL.WriteFreeChainEffect(...)
 end
 
---ê¸°ë™
+--±âµ¿
 function YuL.WriteIgnitionEffect(e,range)
 	e:SetType(EFFECT_TYPE_IGNITION)
 	e:SetRange(LSTN(range))
@@ -501,14 +1005,14 @@ function Ignite(...)
 	return YuL.WriteIgnitionEffect(...)
 end
 
---ë§ˆí•¨ ë°œë™
+--¸¶ÇÔ ¹ßµ¿
 function YuL.ActST(c)
 	local eActivate=Effect.CreateEffect(c)
 	eActivate:SetType(EFFECT_TYPE_ACTIVATE)
 	return eActivate
 end
 
---í‰ë²”í•œ ì§€ì† / í•„ë“œ ë§ˆë²• ë°œë™
+--Æò¹üÇÑ Áö¼Ó / ÇÊµå ¸¶¹ı ¹ßµ¿
 function YuL.Activate(c)
 	local eactivate=Effect.CreateEffect(c)
 	eactivate:SetType(EFFECT_TYPE_ACTIVATE)
@@ -526,7 +1030,7 @@ function Effect.SetCL(e,...)
 	e:SetCountLimit(...)
 end
 
---LP ì½”ìŠ¤íŠ¸ (-1 : ì ˆë°˜)
+--LP ÄÚ½ºÆ® (-1 : Àı¹İ)
 function YuL.LPcost(lp)
 	return function(e,tp,eg,ep,ev,re,r,rp,chk)
 		if lp==-1 then
@@ -539,7 +1043,7 @@ function YuL.LPcost(lp)
 	end
 end
 
---LP íšŒë³µ [ìì‹  0, ìƒëŒ€ 1]
+--LP È¸º¹ [ÀÚ½Å 0, »ó´ë 1]
 function YuL.rectg(player,lp)
 	return function(e,tp,eg,ep,ev,re,r,rp,chk)
 		if chk==0 then return true end
@@ -553,7 +1057,7 @@ function YuL.recop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Recover(p,d,REASON_EFFECT)
 end
 
---LP ë°ë¯¸ì§€ [ìì‹  0, ìƒëŒ€ 1]
+--LP µ¥¹ÌÁö [ÀÚ½Å 0, »ó´ë 1]
 function YuL.damtg(player,lp)
 	return function(e,tp,eg,ep,ev,re,r,rp,chk)
 		if chk==0 then return true end
@@ -567,7 +1071,7 @@ function YuL.damop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Damage(p,d,REASON_EFFECT)
 end
 
---íŒ¨ ì½”ìŠ¤íŠ¸
+--ÆĞ ÄÚ½ºÆ®
 function YuL.discard(min,max)
 	return function(e,tp,eg,ep,ev,re,r,rp,chk)
 		if chk==0 then return Duel.IsExistingMatchingCard(Card.IsDiscardable,tp,LOCATION_HAND,0,min,e:GetHandler()) end
@@ -575,14 +1079,14 @@ function YuL.discard(min,max)
 	end
 end
 
---í˜ì´ì¦ˆ ì»¨ë””ì…˜ [ ìì‹  0, ìƒëŒ€ 1, ì–‘ìª½2 ]
+--ÆäÀÌÁî ÄÁµğ¼Ç [ ÀÚ½Å 0, »ó´ë 1, ¾çÂÊ2 ]
 function YuL.phase(pl,ph)
 	return function(e,tp,eg,ep,ev,re,r,rp)
 		return (pl==2 or Duel.GetTurnPlayer()==math.abs(pl-tp)) and Duel.GetCurrentPhase()&ph~=0
 	end
 end
 
---ë°°í‹€ í˜ì´ì¦ˆ ì»¨ë””ì…˜ [ ìì‹  0, ìƒëŒ€ 1, ì–‘ìª½ 2]
+--¹èÆ² ÆäÀÌÁî ÄÁµğ¼Ç [ ÀÚ½Å 0, »ó´ë 1, ¾çÂÊ 2]
 function YuL.Bphase(pl)
 	return function(e,tp,eg,ep,ev,re,r,rp)
 		if pl==2 or Duel.GetTurnPlayer()==math.abs(pl-tp) then
@@ -593,14 +1097,14 @@ function YuL.Bphase(pl)
 	end
 end
 
---í„´ ì»¨ë””ì…˜ [ ìì‹  0, ìƒëŒ€ 1 ]
+--ÅÏ ÄÁµğ¼Ç [ ÀÚ½Å 0, »ó´ë 1 ]
 function YuL.turn(pl)
 	return function(e,tp,eg,ep,ev,re,r,rp)
 		return Duel.GetTurnPlayer()==math.abs(pl-tp)
 	end
 end
 
---ì „íˆ¬ íŒŒê´´ ë‚´ì„± [ c,ì¥ì†Œ ]
+--ÀüÅõ ÆÄ±« ³»¼º [ c,Àå¼Ò ]
 function YuL.ind_bat(c,range)
 	local ebat=Effect.CreateEffect(c)
 	ebat:SetType(EFFECT_TYPE_SINGLE)
@@ -610,7 +1114,7 @@ function YuL.ind_bat(c,range)
 	c:RegisterEffect(ebat)
 end
 
---íš¨ê³¼ íŒŒê´´ ë‚´ì„± [ c,ì¥ì†Œ,n ] [ n == 1 ìƒëŒ€ íš¨ê³¼ íŒŒê´´ ë‚´ì„± ]
+--È¿°ú ÆÄ±« ³»¼º [ c,Àå¼Ò,n ] [ n == 1 »ó´ë È¿°ú ÆÄ±« ³»¼º ]
 function YuL.ind_eff(c,range,pl)
 	local eeff=Effect.CreateEffect(c)
 	eeff:SetType(EFFECT_TYPE_SINGLE)
@@ -628,7 +1132,7 @@ function YuL.ind_eff_val(e,re,tp)
 	return tp~=e:GetHandlerPlayer()
 end
 
---íš¨ê³¼ ëŒ€ìƒ ë‚´ì„± [ c,ì¥ì†Œ ]
+--È¿°ú ´ë»ó ³»¼º [ c,Àå¼Ò ]
 function YuL.ind_tar(c,range)
 	local etar=Effect.CreateEffect(c)
 	etar:SetType(EFFECT_TYPE_SINGLE)
@@ -639,7 +1143,7 @@ function YuL.ind_tar(c,range)
 	c:RegisterEffect(etar)
 end
 
---ì—‘ìŠ¤íŠ¸ë¼ ë± ì†Œí™˜ ì œí•œ
+--¿¢½ºÆ®¶ó µ¦ ¼ÒÈ¯ Á¦ÇÑ
 function YuL.ExLimit(c)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
@@ -656,9 +1160,9 @@ end
 
 
 
---â‘£: 1í„´ì— 1ë²ˆ, ìì‹  / ìƒëŒ€ í„´ì— ë°œë™í•  ìˆ˜ ìˆë‹¤. ì´ ì¹´ë“œë¥¼ ì£¼ì¸ì˜ íŒ¨ë¡œ ë˜ëŒë¦¬ê³ , ì´ ì¹´ë“œì˜ ì—‘ì‹œì¦ˆ ì†Œì¬ ì¤‘ì—ì„œ ë§¨ ìœ„ì˜ ëª¬ìŠ¤í„°ë¥¼ ë‚´ì–´, ë‚¨ì€ ì¹´ë“œë¥¼ ê·¸ ì•„ë˜ì— ê²¹ì³ ì—‘ì‹œì¦ˆ ì†Œì¬ë¡œ í•œë‹¤. ì´ íš¨ê³¼ë¥¼ ë°œë™í•œ í„´ì—, ìì‹ ì€ "ë§ˆíŠ¸ë£Œì‹œì¹´: ë³¸ì¸"ì„ íŒ¨ì—ì„œ íŠ¹ìˆ˜ ì†Œí™˜í•  ìˆ˜ ì—†ë‹¤.
+--¨ê: 1ÅÏ¿¡ 1¹ø, ÀÚ½Å / »ó´ë ÅÏ¿¡ ¹ßµ¿ÇÒ ¼ö ÀÖ´Ù. ÀÌ Ä«µå¸¦ ÁÖÀÎÀÇ ÆĞ·Î µÇµ¹¸®°í, ÀÌ Ä«µåÀÇ ¿¢½ÃÁî ¼ÒÀç Áß¿¡¼­ ¸Ç À§ÀÇ ¸ó½ºÅÍ¸¦ ³»¾î, ³²Àº Ä«µå¸¦ ±× ¾Æ·¡¿¡ °ãÃÄ ¿¢½ÃÁî ¼ÒÀç·Î ÇÑ´Ù. ÀÌ È¿°ú¸¦ ¹ßµ¿ÇÑ ÅÏ¿¡, ÀÚ½ÅÀº "¸¶Æ®·á½ÃÄ«: º»ÀÎ"À» ÆĞ¿¡¼­ Æ¯¼ö ¼ÒÈ¯ÇÒ ¼ö ¾ø´Ù.
 
---ë§ˆíŠ¸ë£Œì‹œì¹´ êº¼ë‚´ê¸°
+--¸¶Æ®·á½ÃÄ« ²¨³»±â
 function YuL.MatryoshkaOpen(c,ex)
 	local e1=MakeEff(c,"Qo","M")
 	if ex==nil then
@@ -748,7 +1252,7 @@ function YuL.MatryoshkaSumLimit(m,ex)
 	end
 end
 ------------------------
--- ë¦¬ë©”ì´í¬ë˜ì–´ ì‚¬ìš©ì•ˆí•¨ --
+-- ¸®¸ŞÀÌÅ©µÇ¾î »ç¿ë¾ÈÇÔ --
 ------------------------
 --[[
 function YuL.MatryoshkaImmune(c)
@@ -791,7 +1295,7 @@ function YuL.MatryoshkaReplace2(e,tp,eg,ep,ev,re,r,rp)
 end
 ]]------------------------
 
---ë§ˆíŠ¸ë£Œì‹œì¹´ íŠ¹ì†Œ
+--¸¶Æ®·á½ÃÄ« Æ¯¼Ò
 function YuL.MatryoshkaProcedure(c,mat,op,val)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
@@ -873,7 +1377,7 @@ function YuL.MatryoshkaSumOperation(mat,op)
 	end
 end
 
---ì—‘ì‹œì¦ˆ ë² ì¼
+--¿¢½ÃÁî º£ÀÏ
 local cregeff=Card.RegisterEffect
 function Card.RegisterEffect(c,e,forced,...)
 	if code==96457619 and mt.eff_ct[c][1]==e then
@@ -932,7 +1436,7 @@ function YuL.thelibraryofbabelop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Win(1-tp,WIN_REASON_THE_LIBRARY_OF_BABEL)
 end
 
---ê°€ì± ëŠ” ë‚˜ìœ ë¬¸ëª…!
+--°¡Ã­´Â ³ª»Û ¹®¸í!
 local cregeff=Card.RegisterEffect
 function Card.RegisterEffect(c,e,forced,...)
 	if not YuL.RandomSeed then

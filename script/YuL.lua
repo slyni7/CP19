@@ -1,4 +1,4 @@
---À¯¸®µµ À¯Æ¿¸®Æ¼¸¦ ³­»çÇÏ±¸½Í¾î¿ä!
+--ìœ ë¦¬ë„ ìœ í‹¸ë¦¬í‹°ë¥¼ ë‚œì‚¬í•˜êµ¬ì‹¶ì–´ìš”!
 
 YuL={}
 
@@ -26,18 +26,18 @@ function Card.IsST(c)
 	return c:IsType(YuL.ST)
 end
 
---¸Ş¼¼Áö
+--ë©”ì„¸ì§€
 function YuL.Hint(code,n)
 	Duel.Hint(HINT_MESSAGE,0,aux.Stringid(code,n))
 	Duel.Hint(HINT_MESSAGE,1,aux.Stringid(code,n))
 end
 
--- ¿µ¼Ó±³´Ü »ó¼ö --
-CARD_SAFE_ZONE=38296564 --¾ÈÀüÁö´ë
-CARD_FIENDISH_CHAIN=50078509 --µ¥¸ÕÁî Ã¼ÀÎ
-CARD_NIGHTMARE_WHEEL=54704216 --°í¹®¹ÙÄû
-CARD_LIVING_DEAD=97077563 --¸®ºù µ¥µå°¡ ºÎ¸£´Â ¼Ò¸®
-CARD_MANHUNT=36975314 --´ë´ëÀû Ã¼Æ÷ÀÛÀü
+-- ì˜ì†êµë‹¨ ìƒìˆ˜ --
+CARD_SAFE_ZONE=38296564 --ì•ˆì „ì§€ëŒ€
+CARD_FIENDISH_CHAIN=50078509 --ë°ë¨¼ì¦ˆ ì²´ì¸
+CARD_NIGHTMARE_WHEEL=54704216 --ê³ ë¬¸ë°”í€´
+CARD_LIVING_DEAD=97077563 --ë¦¬ë¹™ ë°ë“œê°€ ë¶€ë¥´ëŠ” ì†Œë¦¬
+CARD_MANHUNT=36975314 --ëŒ€ëŒ€ì  ì²´í¬ì‘ì „
 
 CARD_ETERNALIA_SANCTUM=99970841
 CARD_ETERNALIA_DEBT=99970842
@@ -47,13 +47,13 @@ CARD_ETERNALIA_INQUISITION=99970845
 
 CARD_ETERNALIA_SYNAGOGUE=99970848
 
--- ¿µ¼Ó±³´Ü ½ÃÀÛ --
+-- ì˜ì†êµë‹¨ ì‹œì‘ --
 local cregeff=Card.RegisterEffect
 function Card.RegisterEffect(c,e,forced,...)
 	local code=c:GetOriginalCode()
 	local mt=_G["c"..code]
 
-	--¾ÈÀüÁö´ë
+	--ì•ˆì „ì§€ëŒ€
 	if code==CARD_SAFE_ZONE then
 		if mt.eff_ct[c][0]==e then
 			cregeff(c,e,forced,...)
@@ -151,7 +151,7 @@ function Card.RegisterEffect(c,e,forced,...)
 			cregeff(c,e,forced,...)
 		end
 		
-	--µ¥¸ÕÁî Ã¼ÀÎ
+	--ë°ë¨¼ì¦ˆ ì²´ì¸
 	elseif code==CARD_FIENDISH_CHAIN then
 		if mt.eff_ct[c][0]==e then
 			cregeff(c,e,forced,...)
@@ -228,7 +228,7 @@ function Card.RegisterEffect(c,e,forced,...)
 			cregeff(c,e,forced,...)
 		end
 
-	--°í¹®¹ÙÄû
+	--ê³ ë¬¸ë°”í€´
 	elseif code==CARD_NIGHTMARE_WHEEL then
 		if mt.eff_ct[c][0]==e then
 			cregeff(c,e,forced,...)
@@ -303,7 +303,7 @@ function Card.RegisterEffect(c,e,forced,...)
 			cregeff(c,e,forced,...)
 		end
 
-	--¸®ºù µ¥µå°¡ ºÎ¸£´Â ¼Ò¸®
+	--ë¦¬ë¹™ ë°ë“œê°€ ë¶€ë¥´ëŠ” ì†Œë¦¬
 	elseif code==CARD_LIVING_DEAD then
 		if mt.eff_ct[c][0]==e then
 			cregeff(c,e,forced,...)
@@ -395,7 +395,7 @@ function Card.RegisterEffect(c,e,forced,...)
 			cregeff(c,e,forced,...)
 		end
 
-	--´ë´ëÀû Ã¼Æ÷ÀÛÀü
+	--ëŒ€ëŒ€ì  ì²´í¬ì‘ì „
 	elseif code==CARD_MANHUNT then
 		if mt.eff_ct[c][0]==e then
 			cregeff(c,e,forced,...)
@@ -479,7 +479,7 @@ function Card.RegisterEffect(c,e,forced,...)
 	end
 end
 
---¿µ¼Ó±³´Ü ÇÁ·Î½ÃÀú
+--ì˜ì†êµë‹¨ í”„ë¡œì‹œì €
 function YuL.AddEternaliaProcedure(c,code)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
@@ -534,7 +534,7 @@ function YuL.EternaliaOperation(e,tp,eg,ep,ev,re,r,rp,c)
 	Duel.Release(g,REASON_COST)
 	g:DeleteGroup()
 end
--- ¿µ¼Ó±³´Ü ³¡ --
+-- ì˜ì†êµë‹¨ ë --
 
 --Aranea Attack/Defense Effect
 function YuL.AraneaMainEffect(c)
@@ -578,7 +578,7 @@ function YuL.AraneaMainEffectOperation(e,tp,eg,ep,ev,re,r,rp)
 end
 
 
---¶ó¹Ù °ñ·½
+--ë¼ë°” ê³¨ë ˜
 CARD_LAVA_GOLEM=102380
 function Card.IsLavaGolem(c)
 	return c:IsCode(CARD_LAVA_GOLEM)
@@ -641,7 +641,7 @@ function YuL.LavaGolemCondition(condition,p)
 	end
 end
 
---·¹ÀÎº¸¿ì ÈÖ½Ã
+--ë ˆì¸ë³´ìš° íœ˜ì‹œ
 CARD_RAINBOW_FISH=23771716
 CARD_FISH_N_KICKS=32703716
 CARD_FISH_N_BACKS=21507589
@@ -652,30 +652,30 @@ function Card.IsRainbowFishCard(c)
 	return c:IsCode(CARD_RAINBOW_FISH) or c:IsSetCard(0xe18)
 end
 
---ÀÍ½ºÇÃ·ÎÀü!
-YuL.d500sp=46130346 --ÆÄÀÌ¾îº¼
-YuL.d600sp=73134081 --È­Çü
-YuL.d800sp=19523799 --´ëÈ­Àç
-YuL.d1000sp1=46918794 --È­¿° Áö¿Á
-YuL.d1000sp2=33767325 --µ¥½º ¸ŞÅ×¿À
+--ìµìŠ¤í”Œë¡œì „!
+YuL.d500sp=46130346 --íŒŒì´ì–´ë³¼
+YuL.d600sp=73134081 --í™”í˜•
+YuL.d800sp=19523799 --ëŒ€í™”ì¬
+YuL.d1000sp1=46918794 --í™”ì—¼ ì§€ì˜¥
+YuL.d1000sp2=33767325 --ë°ìŠ¤ ë©”í…Œì˜¤
 
---ÅÏÁ¦ ¼Ó¼º
+--í„´ì œ ì†ì„±
 YuL.dif=100000000
 YuL.O=EFFECT_COUNT_CODE_OATH
 YuL.D=EFFECT_COUNT_CODE_DUEL
 YuL.S=EFFECT_COUNT_CODE_SINGLE
 
---¼Ó¼º
-ATT_X=0x0
-ATT_E=0x1
-ATT_W=0x2
-ATT_F=0x4
-ATT_N=0x8
-ATT_L=0x10
-ATT_D=0x20
-ATT_G=0x40
+--ì†ì„±
+ATT_X=0
+ATT_E=ATTRIBUTE_EARTH
+ATT_W=ATTRIBUTE_WATER
+ATT_F=ATTRIBUTE_FIRE
+ATT_N=ATTRIBUTE_WIND
+ATT_L=ATTRIBUTE_LIGHT
+ATT_D=ATTRIBUTE_DARK
+ATT_G=ATTRIBUTE_DIVINE
 
---¼ÒÈ¯Å¸ÀÔ
+--ì†Œí™˜íƒ€ì…
 SUMT_NOR=SUMMON_TYPE_NORMAL
 SUMT_ADV=SUMMON_TYPE_ADVANCE
 SUMT_DU=SUMMON_TYPE_DUAL
@@ -694,12 +694,12 @@ SUMT_Q=SUMMON_TYPE_SQUARE
 SUMT_B=SUMMON_TYPE_BEYOND
 SUMT_D=SUMMON_TYPE_DELIGHT
 
---µ¥¹ÌÁö °è»ê Áß ÀÌ¿Ü
+--ë°ë¯¸ì§€ ê³„ì‚° ì¤‘ ì´ì™¸
 function Auxiliary.not_damcal()
 	return Duel.GetCurrentPhase()~=PHASE_DAMAGE or not Duel.IsDamageCalculated()
 end
 
---ÀÎÁ¢ Ä«µå ±×·ì
+--ì¸ì ‘ ì¹´ë“œ ê·¸ë£¹
 function Card.GetAdjacentGroup(c)
 	local seq=c:GetSequence()
 	local p=c:GetControler()
@@ -774,7 +774,7 @@ function Card.GetAdjacentGroup(c)
 	return g
 end
 
---¼ÒÈ¯ Ãë±Ş
+--ì†Œí™˜ ì·¨ê¸‰
 EFFECT_CHANGE_SUMMON_TYPE=99970548
 EFFECT_ADD_SUMMON_TYPE=99970549
 EFFECT_REMOVE_SUMMON_TYPE=99970550
@@ -809,7 +809,7 @@ function Card.IsSummonType(c,sumtype)
 	return c:GetSummonType()&sumtype==sumtype
 end
 
---ÇÊµå¿¡¼­
+--í•„ë“œì—ì„œ
 function aux.PreOnfield(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsPreviousLocation(LOCATION_ONFIELD)
 end
@@ -819,7 +819,7 @@ function aux.dscon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetCurrentPhase()~=PHASE_DAMAGE or not Duel.IsDamageCalculated()
 end
 
---¼Ò»ı Á¦ÇÑ
+--ì†Œìƒ ì œí•œ
 function RevLim(c)
 	return c:EnableReviveLimit()
 end
@@ -833,7 +833,7 @@ function Group.RegisterFlagEffect(g,...)
 	end
 end
 
---ÀÌ ÅÏ¿¡ ¹ßµ¿µÈ
+--ì´ í„´ì— ë°œë™ëœ
 ACTIVATED_THIS_TURN=99979999
 local cregeff=Card.RegisterEffect
 function Card.RegisterEffect(c,e,forced,...)
@@ -857,7 +857,7 @@ function Card.IsActivateTurn(c)
 	return c:GetFlagEffect(ACTIVATED_THIS_TURN)>0
 end
 
---ÀÌ ÅÏ¿¡ ÀåÂøµÈ
+--ì´ í„´ì— ì¥ì°©ëœ
 EQUIPED_THIS_TURN=99970000
 local cregeff=Card.RegisterEffect
 function Card.RegisterEffect(c,e,forced,...)
@@ -885,12 +885,12 @@ function Card.IsEquipTurn(c)
 	return c:GetFlagEffect(EQUIPED_THIS_TURN)>0
 end
 
---ÀåÂø (c,p,f,eqlimit,cost,tg,op,con)
+--ì¥ì°© (c,p,f,eqlimit,cost,tg,op,con)
 function YuL.Equip(...)
 	return aux.AddEquipProcedure(...)
 end
 
---±×·ì Ä«¿îÅÍ ¼¼±â(g:GetCounter(Ä«¿îÅÍ))
+--ê·¸ë£¹ ì¹´ìš´í„° ì„¸ê¸°(g:GetCounter(ì¹´ìš´í„°))
 function Group.GetCounter(g,counter)
 	local ct=0
 	local tc=g:GetFirst()
@@ -901,7 +901,7 @@ function Group.GetCounter(g,counter)
 	return ct
 end
 
---¿ø·¡ Å¸ÀÔ
+--ì›ë˜ íƒ€ì…
 function Card.IsOriginalType(c,num)
 	return bit.band(c:GetOriginalType(),num)==num
 end
@@ -911,7 +911,7 @@ function aux.FBF(...)
 	return aux.FilterBoolFunction(...)
 end
 
---¼Ó¼º
+--ì†ì„±
 function YuL.ATT(str)
 	if type(str)=="number" then
 		return str
@@ -941,13 +941,13 @@ function YuL.ATT(str)
 	return num
 end
 
---¼ÒÀç·Î »ç¿ë ºÒ°¡
+--ì†Œì¬ë¡œ ì‚¬ìš© ë¶ˆê°€
 function YuL.NoMat(c,str)
 	if type(str)=="number" then
 		return str
 	end
 	if str == "a" then
-		local str = "FSXLOMQBD"
+		local str = "FSXLOMQBD=EKV"
 	end
 	if string.find(str,"F") then
 		YuL.CannotMat(c,EFFECT_CANNOT_BE_FUSION_MATERIAL)
@@ -976,6 +976,26 @@ function YuL.NoMat(c,str)
 	if string.find(str,"D") then
 		YuL.CannotMat(c,EFFECT_CANNOT_BE_DELIGHT_MATERIAL)
 	end
+	if string.find(str,"=") then
+		YuL.CannotMat(c,EFFECT_CANNOT_BE_EQUATION_MATERIAL)
+	end
+	--[[
+	if string.find(str,"E") then
+		YuL.CannotMat(c,EFFECT_CANNOT_BE_EQUAL_MATERIAL)
+	end
+	if string.find(str,"K") then
+		YuL.CannotMat(c,EFFECT_CANNOT_BE_SKULL_MATERIAL)
+	end
+	if string.find(str,"V") then
+		YuL.CannotMat(c,EFFECT_CANNOT_BE_BRAVE_MATERIAL)
+	end
+	if string.find(str,"+") then
+		YuL.CannotMat(c,EFFECT_CANNOT_BE_DIFFUSION_MATERIAL)
+	end
+	if string.find(str,"&") then
+		YuL.CannotMat(c,EFFECT_CANNOT_BE_SEQUENCE_MATERIAL)
+	end
+	]]
 end
 function YuL.CannotMat(c,tcode)
 	local e1=Effect.CreateEffect(c)
@@ -986,7 +1006,7 @@ function YuL.CannotMat(c,tcode)
 	c:RegisterEffect(e1)
 end
 
---ÇÁ¸®Ã¼ÀÎ
+--í”„ë¦¬ì²´ì¸
 function YuL.WriteFreeChainEffect(e,range)
 	e:SetCode(EVENT_FREE_CHAIN)
 	e:SetType(EFFECT_TYPE_QUICK_O)
@@ -996,7 +1016,7 @@ function FreeChain(...)
 	return YuL.WriteFreeChainEffect(...)
 end
 
---±âµ¿
+--ê¸°ë™
 function YuL.WriteIgnitionEffect(e,range)
 	e:SetType(EFFECT_TYPE_IGNITION)
 	e:SetRange(LSTN(range))
@@ -1005,14 +1025,14 @@ function Ignite(...)
 	return YuL.WriteIgnitionEffect(...)
 end
 
---¸¶ÇÔ ¹ßµ¿
+--ë§ˆí•¨ ë°œë™
 function YuL.ActST(c)
 	local eActivate=Effect.CreateEffect(c)
 	eActivate:SetType(EFFECT_TYPE_ACTIVATE)
 	return eActivate
 end
 
---Æò¹üÇÑ Áö¼Ó / ÇÊµå ¸¶¹ı ¹ßµ¿
+--í‰ë²”í•œ ì§€ì† / í•„ë“œ ë§ˆë²• ë°œë™
 function YuL.Activate(c)
 	local eactivate=Effect.CreateEffect(c)
 	eactivate:SetType(EFFECT_TYPE_ACTIVATE)
@@ -1030,7 +1050,7 @@ function Effect.SetCL(e,...)
 	e:SetCountLimit(...)
 end
 
---LP ÄÚ½ºÆ® (-1 : Àı¹İ)
+--LP ì½”ìŠ¤íŠ¸ (-1 : ì ˆë°˜)
 function YuL.LPcost(lp)
 	return function(e,tp,eg,ep,ev,re,r,rp,chk)
 		if lp==-1 then
@@ -1043,7 +1063,7 @@ function YuL.LPcost(lp)
 	end
 end
 
---LP È¸º¹ [ÀÚ½Å 0, »ó´ë 1]
+--LP íšŒë³µ [ìì‹  0, ìƒëŒ€ 1]
 function YuL.rectg(player,lp)
 	return function(e,tp,eg,ep,ev,re,r,rp,chk)
 		if chk==0 then return true end
@@ -1057,7 +1077,7 @@ function YuL.recop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Recover(p,d,REASON_EFFECT)
 end
 
---LP µ¥¹ÌÁö [ÀÚ½Å 0, »ó´ë 1]
+--LP ë°ë¯¸ì§€ [ìì‹  0, ìƒëŒ€ 1]
 function YuL.damtg(player,lp)
 	return function(e,tp,eg,ep,ev,re,r,rp,chk)
 		if chk==0 then return true end
@@ -1071,7 +1091,7 @@ function YuL.damop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Damage(p,d,REASON_EFFECT)
 end
 
---ÆĞ ÄÚ½ºÆ®
+--íŒ¨ ì½”ìŠ¤íŠ¸
 function YuL.discard(min,max)
 	return function(e,tp,eg,ep,ev,re,r,rp,chk)
 		if chk==0 then return Duel.IsExistingMatchingCard(Card.IsDiscardable,tp,LOCATION_HAND,0,min,e:GetHandler()) end
@@ -1079,14 +1099,14 @@ function YuL.discard(min,max)
 	end
 end
 
---ÆäÀÌÁî ÄÁµğ¼Ç [ ÀÚ½Å 0, »ó´ë 1, ¾çÂÊ2 ]
+--í˜ì´ì¦ˆ ì»¨ë””ì…˜ [ ìì‹  0, ìƒëŒ€ 1, ì–‘ìª½2 ]
 function YuL.phase(pl,ph)
 	return function(e,tp,eg,ep,ev,re,r,rp)
 		return (pl==2 or Duel.GetTurnPlayer()==math.abs(pl-tp)) and Duel.GetCurrentPhase()&ph~=0
 	end
 end
 
---¹èÆ² ÆäÀÌÁî ÄÁµğ¼Ç [ ÀÚ½Å 0, »ó´ë 1, ¾çÂÊ 2]
+--ë°°í‹€ í˜ì´ì¦ˆ ì»¨ë””ì…˜ [ ìì‹  0, ìƒëŒ€ 1, ì–‘ìª½ 2]
 function YuL.Bphase(pl)
 	return function(e,tp,eg,ep,ev,re,r,rp)
 		if pl==2 or Duel.GetTurnPlayer()==math.abs(pl-tp) then
@@ -1097,14 +1117,14 @@ function YuL.Bphase(pl)
 	end
 end
 
---ÅÏ ÄÁµğ¼Ç [ ÀÚ½Å 0, »ó´ë 1 ]
+--í„´ ì»¨ë””ì…˜ [ ìì‹  0, ìƒëŒ€ 1 ]
 function YuL.turn(pl)
 	return function(e,tp,eg,ep,ev,re,r,rp)
 		return Duel.GetTurnPlayer()==math.abs(pl-tp)
 	end
 end
 
---ÀüÅõ ÆÄ±« ³»¼º [ c,Àå¼Ò ]
+--ì „íˆ¬ íŒŒê´´ ë‚´ì„± [ c,ì¥ì†Œ ]
 function YuL.ind_bat(c,range)
 	local ebat=Effect.CreateEffect(c)
 	ebat:SetType(EFFECT_TYPE_SINGLE)
@@ -1114,7 +1134,7 @@ function YuL.ind_bat(c,range)
 	c:RegisterEffect(ebat)
 end
 
---È¿°ú ÆÄ±« ³»¼º [ c,Àå¼Ò,n ] [ n == 1 »ó´ë È¿°ú ÆÄ±« ³»¼º ]
+--íš¨ê³¼ íŒŒê´´ ë‚´ì„± [ c,ì¥ì†Œ,n ] [ n == 1 ìƒëŒ€ íš¨ê³¼ íŒŒê´´ ë‚´ì„± ]
 function YuL.ind_eff(c,range,pl)
 	local eeff=Effect.CreateEffect(c)
 	eeff:SetType(EFFECT_TYPE_SINGLE)
@@ -1132,7 +1152,7 @@ function YuL.ind_eff_val(e,re,tp)
 	return tp~=e:GetHandlerPlayer()
 end
 
---È¿°ú ´ë»ó ³»¼º [ c,Àå¼Ò ]
+--íš¨ê³¼ ëŒ€ìƒ ë‚´ì„± [ c,ì¥ì†Œ ]
 function YuL.ind_tar(c,range)
 	local etar=Effect.CreateEffect(c)
 	etar:SetType(EFFECT_TYPE_SINGLE)
@@ -1143,7 +1163,7 @@ function YuL.ind_tar(c,range)
 	c:RegisterEffect(etar)
 end
 
---¿¢½ºÆ®¶ó µ¦ ¼ÒÈ¯ Á¦ÇÑ
+--ì—‘ìŠ¤íŠ¸ë¼ ë± ì†Œí™˜ ì œí•œ
 function YuL.ExLimit(c)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)
@@ -1160,9 +1180,9 @@ end
 
 
 
---¨ê: 1ÅÏ¿¡ 1¹ø, ÀÚ½Å / »ó´ë ÅÏ¿¡ ¹ßµ¿ÇÒ ¼ö ÀÖ´Ù. ÀÌ Ä«µå¸¦ ÁÖÀÎÀÇ ÆĞ·Î µÇµ¹¸®°í, ÀÌ Ä«µåÀÇ ¿¢½ÃÁî ¼ÒÀç Áß¿¡¼­ ¸Ç À§ÀÇ ¸ó½ºÅÍ¸¦ ³»¾î, ³²Àº Ä«µå¸¦ ±× ¾Æ·¡¿¡ °ãÃÄ ¿¢½ÃÁî ¼ÒÀç·Î ÇÑ´Ù. ÀÌ È¿°ú¸¦ ¹ßµ¿ÇÑ ÅÏ¿¡, ÀÚ½ÅÀº "¸¶Æ®·á½ÃÄ«: º»ÀÎ"À» ÆĞ¿¡¼­ Æ¯¼ö ¼ÒÈ¯ÇÒ ¼ö ¾ø´Ù.
+--â‘£: 1í„´ì— 1ë²ˆ, ìì‹  / ìƒëŒ€ í„´ì— ë°œë™í•  ìˆ˜ ìˆë‹¤. ì´ ì¹´ë“œë¥¼ ì£¼ì¸ì˜ íŒ¨ë¡œ ë˜ëŒë¦¬ê³ , ì´ ì¹´ë“œì˜ ì—‘ì‹œì¦ˆ ì†Œì¬ ì¤‘ì—ì„œ ë§¨ ìœ„ì˜ ëª¬ìŠ¤í„°ë¥¼ ë‚´ì–´, ë‚¨ì€ ì¹´ë“œë¥¼ ê·¸ ì•„ë˜ì— ê²¹ì³ ì—‘ì‹œì¦ˆ ì†Œì¬ë¡œ í•œë‹¤. ì´ íš¨ê³¼ë¥¼ ë°œë™í•œ í„´ì—, ìì‹ ì€ "ë§ˆíŠ¸ë£Œì‹œì¹´: ë³¸ì¸"ì„ íŒ¨ì—ì„œ íŠ¹ìˆ˜ ì†Œí™˜í•  ìˆ˜ ì—†ë‹¤.
 
---¸¶Æ®·á½ÃÄ« ²¨³»±â
+--ë§ˆíŠ¸ë£Œì‹œì¹´ êº¼ë‚´ê¸°
 function YuL.MatryoshkaOpen(c,ex)
 	local e1=MakeEff(c,"Qo","M")
 	if ex==nil then
@@ -1252,7 +1272,7 @@ function YuL.MatryoshkaSumLimit(m,ex)
 	end
 end
 ------------------------
--- ¸®¸ŞÀÌÅ©µÇ¾î »ç¿ë¾ÈÇÔ --
+-- ë¦¬ë©”ì´í¬ë˜ì–´ ì‚¬ìš©ì•ˆí•¨ --
 ------------------------
 --[[
 function YuL.MatryoshkaImmune(c)
@@ -1295,7 +1315,7 @@ function YuL.MatryoshkaReplace2(e,tp,eg,ep,ev,re,r,rp)
 end
 ]]------------------------
 
---¸¶Æ®·á½ÃÄ« Æ¯¼Ò
+--ë§ˆíŠ¸ë£Œì‹œì¹´ íŠ¹ì†Œ
 function YuL.MatryoshkaProcedure(c,mat,op,val)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
@@ -1377,7 +1397,7 @@ function YuL.MatryoshkaSumOperation(mat,op)
 	end
 end
 
---¿¢½ÃÁî º£ÀÏ
+--ì—‘ì‹œì¦ˆ ë² ì¼
 local cregeff=Card.RegisterEffect
 function Card.RegisterEffect(c,e,forced,...)
 	if code==96457619 and mt.eff_ct[c][1]==e then
@@ -1436,7 +1456,7 @@ function YuL.thelibraryofbabelop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Win(1-tp,WIN_REASON_THE_LIBRARY_OF_BABEL)
 end
 
---°¡Ã­´Â ³ª»Û ¹®¸í!
+--ê°€ì± ëŠ” ë‚˜ìœ ë¬¸ëª…!
 local cregeff=Card.RegisterEffect
 function Card.RegisterEffect(c,e,forced,...)
 	if not YuL.RandomSeed then

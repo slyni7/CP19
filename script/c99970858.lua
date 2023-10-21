@@ -86,6 +86,10 @@ function s.op1(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetCondition(function(e) return e:GetHandler():IsControler(e:GetOwnerPlayer()) end)
 		e1:SetReset(RESET_EVENT+RESETS_STANDARD)
 		tc:RegisterEffect(e1)
+		local e2=e1:Clone()
+		e2:SetCode(EFFECT_MUST_ATTACK_MONSTER)
+		e2:SetValue(function(e,c) return c==e:GetHandler() end)
+		tc:RegisterEffect(e2)
 	end
 	Duel.SpecialSummonComplete()
 end

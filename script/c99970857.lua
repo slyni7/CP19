@@ -50,7 +50,7 @@ function s.op2fil(c)
 	return c:GetSummonLocation()~=LOCATION_GRAVE and c:IsSummonType(SUMMON_TYPE_SPECIAL)
 end
 function s.op2(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(s.op3fil,tp,0,LOCATION_MZONE,nil)
+	local g=Duel.GetMatchingGroup(s.op2fil,tp,0,LOCATION_MZONE,nil)
 	if #g>0 then
 		Duel.SendtoGrave(g,REASON_RULE,PLAYER_NONE,1-tp)
 	end

@@ -53,7 +53,7 @@ end
 
 function s.cfil(c,ft,tp)
 	return c:IsLevel(5) and c:IsRace(RACE_FIEND) and c:IsAbleToGrave()
-		and (((ft>0 or (c:IsControler(tp) and c:GetSequence()<5)) and c:IsLocation(LOCATION_MZONE)) or c:IsLocation(LOCATION_HAND))
+		and (ft>0 or ( (c:IsControler(tp) and c:GetSequence()<5 and c:IsLocation(LOCATION_MZONE) )) )
 end
 function s.spcon(e,c)
 	if c==nil then return true end

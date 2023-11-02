@@ -10,6 +10,17 @@ CATEGORY_SEARCH_CARD=CATEGORY_SEARCH+CATEGORY_TOHAND
 --TYPE_SPELL+TYPE_TRAP
 YuL.ST=0x6
 
+function YuL.FlipSummon(e,tp)
+	if Duel.IsPlayerAffectedByEffect(tp,EFFECT_CANNOT_FLIP_SUMMON) then return end
+	local flipg=Duel.GetMatchingGroup(Card.IsFacedown,tp,LOCATION_MZONE,0,nil)
+	if #flipg>0 then
+		local flipcard=flipg:Select(tp,1,1,nil):GetFirst()
+		Duel.ChangePosition(flipcard,POS_FACEUP_ATTACK)
+		Duel.RaiseEvent(flipcard,EVENT_FLIP_SUMMON_SUCCESS,e,0,tp,tp,0)
+		Duel.RaiseSingleEvent(flipcard,EVENT_FLIP_SUMMON_SUCCESS,e,0,tp,tp,0)
+	end
+end
+
 function Card.IsMonster(c)
 	return c:IsType(TYPE_MONSTER)
 end
@@ -48,6 +59,10 @@ CARD_ETERNALIA_INQUISITION=99970845
 CARD_ETERNALIA_SYNAGOGUE=99970848
 
 -- 영속교단 시작 --
+function Auxiliary.PersistentTargetFilter(e,c)
+	return e:GetHandler():IsHasCardTarget(c) and e:GetHandler():GetEquipTarget()~=c
+end
+
 local cregeff=Card.RegisterEffect
 function Card.RegisterEffect(c,e,forced,...)
 	local code=c:GetOriginalCode()

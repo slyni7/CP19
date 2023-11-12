@@ -38,15 +38,30 @@ function s.initial_effect(c)
 	e7:SetCode(EVENT_SPSUMMON_NEGATED)
 	WriteEff(e7,7,"O")
 	c:RegisterEffect(e7)
+	if not s.global_check then
+		s.global_check=true
+		local ge1=MakeEff(c,"F")
+		ge1:SetCode(EFFECT_MATERIAL_CHECK)
+		ge1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_SET_AVAILABLE+EFFECT_FLAG_IGNORE_RANGE)
+		ge1:SetValue(s.gval1)
+		Duel.RegisterEffect(ge1,0)
+	end
 end
 s.custom_type=CUSTOMTYPE_DELIGHT
 function s.pfil1(c)
 	local tp=c:GetControler()
 	return c:IsSummonType(SUMMON_TYPE_NORMAL) and not Duel.IEMCard(nil,tp,"M",0,1,c) and c:IsLoc("M")
 end
+function s.gval1(e,c)
+	local mg=c:GetMaterial()
+	if mg:IsExists(Card.IsType,1,nil,TYPE_NORMAL) then
+		c:RegisterFlagEffect(id-1,RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD,0,1)
+	end
+end
 function s.tar1(e,c)
 	local mg=c:GetMaterial()
 	return mg:IsExists(Card.IsOriginalType,1,nil,TYPE_NORMAL)
+		or c:GetFlagEffect(id-1)>0
 end
 function s.vfil3(c)
 	return c:IsType(TYPE_NORMAL) or c:IsSummonType(SUMMON_TYPE_NORMAL)

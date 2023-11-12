@@ -953,11 +953,20 @@ function Auxiliary.RegisterSilentMajority()
 		18453095,18453096,18453097,18453098,18453099,18453100,
 		18453732,
 		18453746,18453747,18453748,18453749,18453750,18453751,18453752}
+	EinereiAsukaList={18452825,18452827,18452842,18452733,18452734,18452735,18452736,18452737,18452738}
 	local i=#SilentMajorityList
 	while i>0 do
 		local code=SilentMajorityList[i]
 		if not Duel.GetCardLevelFromCode(code) then
 			table.remove(SilentMajorityList,i)
+		end
+		i=i-1
+	end
+	local i=#EinereiAsukaList
+	while i>0 do
+		local code=EinereiAsukaList[i]
+		if not Duel.GetCardLevelFromCode(code) then
+			table.remove(EinereiAsukaList,i)
 		end
 		i=i-1
 	end
@@ -971,15 +980,23 @@ end
 function Auxiliary.SilentMajorityOperation(e,tp,eg,ep,ev,re,r,rp)
 	if not SilentMajorityGroups then
 		SilentMajorityGroups={}
+		EinereiAsukaGroups={}
 		for p=0,1 do
 			SilentMajorityGroups[p]=Group.CreateGroup()
 			SilentMajorityGroups[p]:KeepAlive()
+			EinereiAsukaGroups[p]=Group.CreateGroup()
+			EinereiAsukaGroups[p]:KeepAlive()
 		end
 		for p=0,1 do
 			for i=1,#SilentMajorityList do
 				local code=SilentMajorityList[i]
 				local token=Duel.CreateToken(p,code)
 				SilentMajorityGroups[p]:AddCard(token)
+			end
+			for i=1,#EinereiAsukaList do
+				local code=EinereiAsukaList[i]
+				local token=Duel.CreateToken(p,code)
+				EinereiAsukaGroups[p]:AddCard(token)
 			end
 		end
 		for p=0,1 do
@@ -1027,6 +1044,19 @@ function Auxiliary.SilentMajorityOperation(e,tp,eg,ep,ev,re,r,rp)
 				SilentMajorityGroups[p]:RemoveCard(tc)
 				local token=Duel.CreateToken(p,code)
 				SilentMajorityGroups[p]:AddCard(token)
+			end
+		end
+		for i=1,#EinereiAsukaList do
+			local code=EinereiAsukaList[i]
+			local tg=EinereiAsukaGroups[p]:Filter(function(c,code) return c:GetOriginalCode()==code end,nil,code)
+			local tc=tg:GetFirst()
+			if not tc then
+				local token=Duel.CreateToken(p,code)
+				EinereiAsukaGroups[p]:AddCard(token)
+			elseif tc:GetLocation()~=0 then
+				EinereiAsukaGroups[p]:RemoveCard(tc)
+				local token=Duel.CreateToken(p,code)
+				EinereiAsukaGroups[p]:AddCard(token)
 			end
 		end
 	end
@@ -2938,6 +2968,189 @@ if MOVIE_FILMING then
 		Duel.DisableShuffleCheck()
 		return Duel.SendtoHand(g,nil,r)
 	end
+end
+
+CARD_CARD_EJECTOR=26701483
+
+local cregeff=Card.RegisterEffect
+function Card.RegisterEffect(c,e,forced,...)
+	local code=c:GetOriginalCode()
+	local mt=_G["c"..code]
+	if code==CARD_CARD_EJECTOR and e:IsHasType(EFFECT_TYPE_ACTIONS) then
+		if mt.eff_ct[c][0]==e then
+			cregeff(c,e,forced,...)
+			local tfil=function(c,tp)
+				return c:IsAbleToRemove() and
+					(c:IsLoc("G")
+							or (aux.SpElimFilter(c) and c:IsLoc("M"))
+							or (Duel.IsPlayerAffectedByEffect(tp,18453804) and c:IsOnField())
+						)
+			end
+			e:SetTarget(function(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
+				if chkc then
+					return chkc:IsLoc("OG") and chkc:GetControler()~=tp and tfil(chkc,tp)
+				end
+				if chk==0 then
+					return Duel.IETarget(tfil,tp,0,"OG",1,nil,tp)
+				end
+				Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
+				local g=Duel.STarget(tp,tfil,tp,0,"OG",1,1,nil,tp)
+				local tc=g:GetFirst()
+				if tc:IsOnField() and not aux.SpElimFilter(tc) then
+					Duel.Hint(HINT_CARD,0,18453804)
+				end
+				if Duel.IsPlayerAffectedByEffect(tp,18453809) then
+					Duel.SOI(0,CATEGORY_REMOVE,g,1,tp,"HOG")
+				else
+					Duel.SOI(0,CATEGORY_REMOVE,g,1,0,0)
+				end
+			end)
+			local ofil=function(c)
+				return c:IsAbleToRemove() and aux.SpElimFilter(c)
+			end
+			e:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
+				local tc=Duel.GetFirstTarget()
+				local loc=tc:GetLocation()
+				if tc and tc:IsRelateToEffect(e) and Duel.Remove(tc,POS_FACEUP,REASON_EFFECT)>0
+					and Duel.IsPlayerAffectedByEffect(tp,18453809) then
+					local g1=Duel.GetMatchingGroup(Card.IsAbleToRemove,tp,0,LOCATION_ONFIELD,nil)
+					local g2=Duel.GetMatchingGroup(ofil,tp,0,LOCATION_MZONE+LOCATION_GRAVE,nil)
+					local g3=Duel.GetMatchingGroup(Card.IsAbleToRemove,tp,0,LOCATION_HAND,nil)
+					if loc&LOCATION_ONFIELD~=0 then
+						g1=Group.CreateGroup()
+					end
+					if loc&LOCATION_GRAVE~=0 then
+						g2=Group.CreateGroup()
+					end
+					local sg=Group.CreateGroup()
+					if #g1>0 then
+						Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
+						local sg1=g1:Select(tp,0,1,nil)
+						Duel.HintSelection(sg1)
+						sg:Merge(sg1)
+					end
+					if #g2>0 then
+						Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
+						local sg2=g2:Select(tp,0,1,nil)
+						Duel.HintSelection(sg2)
+						sg:Merge(sg2)
+					end
+					if #g3>0 and Duel.SelectYesNo(tp,aux.Stringid(18453809,0)) then
+						Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
+						local sg3=g3:RandomSelect(tp,1)
+						sg:Merge(sg3)
+					end
+					if #sg>0 then
+						Duel.Hint(HINT_CARD,0,18453809)
+						Duel.Remove(sg,POS_FACEUP,REASON_EFFECT)
+					end
+				end
+			end)
+			local e1=e:Clone()
+			e1:SetType(EFFECT_TYPE_QUICK_O)
+			e1:SetCode(EVENT_FREE_CHAIN)
+			e:SetCost(function(e,tp,eg,ep,ev,re,r,rp,chk)
+				local c=e:GetHandler()
+				if chk==0 then
+					return not Duel.IsPlayerAffectedByEffect(tp,18453807) and c:GetFlagEffect(CARD_CARD_EJECTOR)==0
+				end
+				c:RegisterFlagEffect(CARD_CARD_EJECTOR,RESET_PHASE+PHASE_END+RESET_EVENT+RESETS_STANDARD,0,1)
+			end)
+			e1:SetCost(function(e,tp,eg,ep,ev,re,r,rp,chk)
+				local c=e:GetHandler()
+				if chk==0 then
+					return Duel.IsPlayerAffectedByEffect(tp,18453807) and c:GetFlagEffect(CARD_CARD_EJECTOR)==0
+				end
+				c:RegisterFlagEffect(CARD_CARD_EJECTOR,RESET_PHASE+PHASE_END+RESET_EVENT+RESETS_STANDARD,0,1)
+				Duel.Hint(HINT_CARD,0,18453807)
+			end)
+			cregeff(c,e1,forced,...)
+			local e2=Effect.CreateEffect(c)
+			e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+			e2:SetCode(EVENT_SUMMON_SUCCESS)
+			e2:SetProperty(EFFECT_FLAG_DELAY)
+			e2:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
+			local tfil2=function(c)
+				return c:IsAbleToHand() and aux.IsCodeListed(c,CARD_CARD_EJECTOR) and c:IsSpellTrap()
+			end
+			e2:SetTarget(function(e,tp,eg,ep,ev,re,r,rp,chk)
+				if chk==0 then
+					return Duel.IEMCard(tfil2,tp,"D",0,1,nil) and Duel.IsPlayerAffectedByEffect(tp,18453810)
+				end
+				Duel.Hint(HINT_CARD,0,18453810)
+				Duel.SOI(0,CATEGORY_TOHAND,nil,1,tp,"D")
+			end)
+			e2:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
+				Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+				local g=Duel.SMCard(tp,tfil2,tp,"D",0,1,1,nil)
+				if #g>0 then
+					Duel.SendtoHand(g,nil,REASON_EFFECT)
+					Duel.ConfirmCards(1-tp,g)
+				end
+			end)
+			cregeff(c,e2)
+			local e3=e2:Clone()
+			e3:SetCode(EVENT_SPSUMMON_SUCCESS)
+			cregeff(c,e3)
+			local e4=e2:Clone()
+			e4:SetCode(EVENT_FLIP)
+			cregeff(c,e4)
+		end
+	else
+		cregeff(c,e,forced,...)
+	end
+end
+
+local dregeff=Duel.RegisterEffect
+function Duel.RegisterEffect(e,...)
+	dregeff(e,...)
+	local c=e:GetHandler()
+	local code=c:GetOriginalCode()
+	local event=e:GetCode()
+	if code==112603118 or code==111100100 then
+		local con=e:GetCondition()
+		e:SetCondition(function(e,...)
+			local tp=e:GetHandlerPlayer()
+			return not Duel.IsPlayerAffectedByEffect(tp,18453835)
+				and (not con or con(e,...))
+		end)
+	end
+end
+
+local dne=Duel.NegateEffect
+local dna=Duel.NegateActivation
+local dnrc=Duel.NegateRelatedChain
+
+Auxiliary.ClassicMemoriesShiroCheck={}
+
+local cregeff=Card.RegisterEffect
+function Card.RegisterEffect(c,e,...)
+	cregeff(c,e,...)
+	if e:IsHasType(EFFECT_TYPE_ACTIONS) then
+		local con=e:GetCondition()
+		e:SetCondition(function(e,tp,eg,ep,ev,re,r,rp)
+			local c=e:GetHandler()
+			if c:IsHasEffect(EFFECT_DISABLE_EFFECT) then
+				aux.ClassicMemoriesShiroCheck[Duel.GetCurrentChain()]=true
+			end
+			return not con or con(e,tp,eg,ep,ev,re,r,rp)
+		end)
+	end
+end
+
+function Duel.NegateEffect(...)
+	local ct=Duel.GetCurrentChain()
+	aux.ClassicMemoriesShiroCheck[ct]=true
+	return dne(...)
+end
+function Duel.NegateActivation(...)
+	local ct=Duel.GetCurrentChain()
+	aux.ClassicMemoriesShiroCheck[ct]=true
+	return dna(...)
+end
+function Duel.NegateRelatedChain(c,...)
+	aux.ClassicMemoriesShiroCheck[c]=true
+	return dnrc(c,...)
 end
 
 pcall(dofile,"expansions/script/proc_braveex.lua")

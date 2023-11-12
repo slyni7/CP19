@@ -44,7 +44,11 @@ end
 function s.op1(e,tp,eg,ep,ev,re,r,rp,c)
 	local g=e:GetLabelObject()
 	local tc=g:GetFirst()
+	local og=tc:GetOverlayGroup()
+	local tempc=Duel.GetFirstMatchingCard(nil,tp,0xf3,0xf3,nil)
+	Duel.Overlay(tempc,og)
 	Duel.MoveToField(tc,tp,tp,LSTN("S"),POS_FACEUP,true)
+	Duel.Overlay(tc,og)
 	local e1=MakeEff(c,"S")
 	e1:SetCode(EFFECT_CHANGE_TYPE)
 	e1:SetReset(RESET_EVENT+RESETS_STANDARD-RESET_TEMP_REMOVE)
@@ -84,6 +88,9 @@ function s.op2(e,tp,eg,ep,ev,re,r,rp)
 		return
 	end
 	Duel.MoveToField(tc,tp,tp,LSTN("S"),POS_FACEUP,true)
+	if tc:IsType(TYPE_XYZ) and c:IsRelateToEffect(e) and Duel.SelectEffectYesNo(tp,c,aux.Stringid(id,0)) then
+		Duel.Overlay(tc,Group.FromCards(c))
+	end
 	local e1=MakeEff(c,"S")
 	e1:SetCode(EFFECT_CHANGE_TYPE)
 	e1:SetReset(RESET_EVENT+RESETS_STANDARD-RESET_TEMP_REMOVE)

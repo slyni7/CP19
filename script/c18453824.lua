@@ -1,6 +1,9 @@
 --Kyrie Eleison
 local s,id=GetID()
 function s.initial_effect(c)
+	local e0=MakeEff(c,"FC","HG")
+	e0:SetCode(EFFECT_KYRIE_ELEISON)
+	c:RegisterEffect(e0)
 	local e1=MakeEff(c,"S","HG")
 	e1:SetCode(EFFECT_KYRIE_ELEISON)
 	e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)

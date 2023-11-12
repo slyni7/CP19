@@ -1,7 +1,7 @@
 --건물 사이에 피어난 장미
 local s,id=GetID()
 function s.initial_effect(c)
-	c:SetUniqueOnField(1,0,id)
+	c:SetUniqueOnField(1,1,id)
 	local e1=MakeEff(c,"Qo","H")
 	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
@@ -70,7 +70,7 @@ end
 function s.tfil2(c)
 	local atk=c:GetAttack()
 	return (c:IsRace(RACE_PLANT) or c:IsAttribute(ATTRIBUTE_FIRE)) and (c:IsAbleToHand() or c:IsAbleToGrave())
-		and math.floor(atk/1850)*1850==atk
+		and (math.floor(atk/1850)*1850==atk or c:IsCode(18453842))
 end
 function s.tar2(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then

@@ -126,7 +126,11 @@ function c17290009.con2(e,c)
 	return Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and m:CheckWithSumGreater(c17290009.tfunction1,c:GetLevel(),c)
 end
 function c17290009.tg2(e,c)
-	return c:IsSetCard(0x2c3)
+	if type(c)=="Card" then
+		return c:IsSetCard(0x2c3)
+	else
+		return true
+	end
 end
 function c17290009.op2(e,tp,eg,ep,ev,re,r,rp,c)
 	local m=Duel.GetMatchingGroup(Card.IsAbleToRemove,tp,LOCATION_GRAVE,0,nil)

@@ -1,4 +1,4 @@
---Î†àÏù¥Ìä∏ Î∏îÎ£®Î®∏
+--∑π¿Ã∆Æ ∫Ì∑Á∏”
 local s,id=GetID()
 function s.initial_effect(c)
 	local e1=MakeEff(c,"STo")
@@ -28,7 +28,7 @@ function s.ocost11(e,tp,eg,ep,ev,re,r,rp,chk)
 			and (b1 or b2)
 	end
 	if Duel.GetTurnCount()==e:GetLabel() then
-		local te=Duel.IsPlayerAffectedByeffect(tp,18453867)
+		local te=Duel.IsPlayerAffectedByEffect(tp,18453867)
 		local tc=te:GetHandler()
 		tc:RemoveOverlayCard(tp,1,1,REASON_EFFECT)
 	end
@@ -41,7 +41,7 @@ function s.ocost11(e,tp,eg,ep,ev,re,r,rp,chk)
 		e:SetOperation(s.oop11)
 	elseif op==2 then
 		Duel.Hint(HINT_OPSELECTED,1-tp,aux.Stringid(id,1))
-		Duel.RegisterFlagEffect(tp,id-10000,RESET_PHASE+PHASE_END,0,1)
+		Duel.RegisterFlagEffect(tp,id-10000,RESET_PHASE+PHASE_END,0,2)
 		e:SetOperation(s.oop12)
 	else
 		e:SetOperation(s.oop13)
@@ -54,7 +54,7 @@ function s.oop11(e,tp,eg,ep,ev,re,r,rp)
 	e1:SetTR("H",0)
 	e1:SetCL(1)
 	e1:SetTarget(function(e,c)
-		return c:IsSeCard("Î†àÏù¥Ìä∏ Î∏îÎ£®")
+		return c:IsSetCard("∑π¿Ã∆Æ ∫Ì∑Á")
 	end)
 	e1:SetReset(RESET_PHASE+PHASE_END)
 	Duel.RegisterEffect(e1,tp)
@@ -67,7 +67,7 @@ function s.oop12(e,tp,eg,ep,ev,re,r,rp)
 	e1:SetTR("S",0)
 	e1:SetCL(1)
 	e1:SetTarget(function(e,c)
-		return c:IsSeCard("Î†àÏù¥Ìä∏ Î∏îÎ£®")
+		return c:IsSetCard("∑π¿Ã∆Æ ∫Ì∑Á")
 	end)
 	e1:SetReset(RESET_PHASE+PHASE_END)
 	Duel.RegisterEffect(e1,tp)

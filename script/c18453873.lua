@@ -10,7 +10,7 @@ function s.op1(e,tp,eg,ep,ev,re,r,rp)
 	local token=Duel.CreateToken(tp,id)
 	local e1=MakeEff(token,"Qo")
 	e1:SetCode(EVENT_FREE_CHAIN)
-	e1:SetProperty(EFFECT_FLAG_DAMAGE_SETP+EFFECT_FLAG_DAMAGE_CAL)
+	e1:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
 	e1:SetReset(RESET_PHASE+PHASE_END,3)
 	e1:SetCL(1,{id,1})
 	e1:SetLabel(Duel.GetTurnCount())
@@ -32,13 +32,13 @@ function s.ocost11(e,tp,eg,ep,ev,re,r,rp,chk)
 	local cp=Duel.GetChainInfo(cc,CHAININFO_TRIGGERING_PLAYER)
 	local b2=Duel.GetFlagEffect(tp,id-10000)==0
 		and Duel.IEMCard(s.onfil12,tp,"M",0,1,nil)
-		and ce:IsActiveType(TYPE_SPELL) and cp~=tp and ce:IsHasType(EFFECT_TYPE_ACTIVATE)
+		and ce and ce:IsActiveType(TYPE_SPELL) and cp~=tp and ce:IsHasType(EFFECT_TYPE_ACTIVATE)
 	if chk==0 then
 		return (Duel.GetTurnCount()~=e:GetLabel() or Duel.IsPlayerAffectedByEffect(tp,18453867))
 			and (b1 or b2)
 	end
 	if Duel.GetTurnCount()==e:GetLabel() then
-		local te=Duel.IsPlayerAffectedByeffect(tp,18453867)
+		local te=Duel.IsPlayerAffectedByEffect(tp,18453867)
 		local tc=te:GetHandler()
 		tc:RemoveOverlayCard(tp,1,1,REASON_EFFECT)
 	end
@@ -54,7 +54,7 @@ function s.ocost11(e,tp,eg,ep,ev,re,r,rp,chk)
 		e:SetOperation(s.oop11)
 	elseif op==2 then
 		Duel.Hint(HINT_OPSELECTED,1-tp,aux.Stringid(id,1))
-		Duel.RegisterFlagEffect(tp,id-10000,RESET_PHASE+PHASE_END,0,1)
+		Duel.RegisterFlagEffect(tp,id-10000,RESET_PHASE+PHASE_END,0,2)
 		e:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
 		e:SetCategory(CATEGORY_NEGATE+CATEGORY_DESTROY)
 		e:SetTarget(s.otar12)

@@ -67,7 +67,7 @@ function s.ocost11(e,tp,eg,ep,ev,re,r,rp,chk)
 			and (b1 or b2)
 	end
 	if Duel.GetTurnCount()==e:GetLabel() then
-		local te=Duel.IsPlayerAffectedByeffect(tp,18453867)
+		local te=Duel.IsPlayerAffectedByEffect(tp,18453867)
 		local tc=te:GetHandler()
 		tc:RemoveOverlayCard(tp,1,1,REASON_EFFECT)
 	end
@@ -81,7 +81,7 @@ function s.ocost11(e,tp,eg,ep,ev,re,r,rp,chk)
 		e:SetOperation(s.oop11)
 	elseif op==2 then
 		Duel.Hint(HINT_OPSELECTED,1-tp,aux.Stringid(id,1))
-		Duel.RegisterFlagEffect(tp,id-10000,RESET_PHASE+PHASE_END,0,1)
+		Duel.RegisterFlagEffect(tp,id-10000,RESET_PHASE+PHASE_END,0,2)
 		e:SetCategory(CATEGORY_SPECIAL_SUMMON)
 		e:SetOperation(s.oop12)
 	else
@@ -90,7 +90,7 @@ function s.ocost11(e,tp,eg,ep,ev,re,r,rp,chk)
 	end
 end
 function s.otfil11(c)
-	return c:IsSetCard("레이트 블루머") and c:IsAbleToGrave() and not c:IsCode(id)
+	return c:IsSetCard("레이트 블루") and c:IsAbleToGrave() and not c:IsCode(id)
 end
 function s.oop11(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
@@ -100,7 +100,7 @@ function s.oop11(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function s.otfil12(c)
-	return c:IsSetCard("레이트 블루머") and c:IsXyzSummonable()
+	return c:IsSetCard("레이트 블루") and c:IsXyzSummonable()
 end
 function s.oop12(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GMGroup(s.otfil12,tp,"E",0,nil)

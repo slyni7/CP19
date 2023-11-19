@@ -26,13 +26,13 @@ function s.op1(e,tp,eg,ep,ev,re,r,rp)
 	e1:SetTarget(s.otar11)
 	e1:SetOperation(s.oop11)
 	Duel.RegisterEffect(e1,tp)
-	local e1=MakeEff(token,"Qo")
+	local e2=MakeEff(token,"Qo")
 	e2:SetCode(EVENT_SPSUMMON)
 	e2:SetCategory(CATEGORY_DISABLE_SUMMON)
 	e2:SetReset(RESET_PHASE+PHASE_END,3)
 	e2:SetCL(1,id)
 	e2:SetLabel(Duel.GetTurnCount())
-	e2:SetCondition(s.con12)
+	e2:SetCondition(s.ocon12)
 	e2:SetCost(s.ocost12)
 	e2:SetTarget(s.otar12)
 	e2:SetOperation(s.oop12)
@@ -44,10 +44,11 @@ function s.ocost11(e,tp,eg,ep,ev,re,r,rp,chk)
 			and Duel.GetFlagEffect(tp,id-20000)==0
 	end
 	if Duel.GetTurnCount()==e:GetLabel() then
-		local te=Duel.IsPlayerAffectedByeffect(tp,18453867)
+		local te=Duel.IsPlayerAffectedByEffect(tp,18453867)
 		local tc=te:GetHandler()
 		tc:RemoveOverlayCard(tp,1,1,REASON_EFFECT)
 	end
+	Duel.RegisterFlagEffect(tp,id-20000,RESET_PHASE+PHASE_END,0,2)
 end
 function s.otfil11(c,e,tp)
 	return c:IsSetCard("레이트 블루") and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP_DEFENSE)
@@ -78,10 +79,11 @@ function s.ocost12(e,tp,eg,ep,ev,re,r,rp,chk)
 			and Duel.GetFlagEffect(tp,id-10000)==0
 	end
 	if Duel.GetTurnCount()==e:GetLabel() then
-		local te=Duel.IsPlayerAffectedByeffect(tp,18453867)
+		local te=Duel.IsPlayerAffectedByEffect(tp,18453867)
 		local tc=te:GetHandler()
 		tc:RemoveOverlayCard(tp,1,1,REASON_EFFECT)
 	end
+	Duel.RegisterFlagEffect(tp,id-10000,RESET_PHASE+PHASE_END,0,2)
 end
 function s.otar12(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then

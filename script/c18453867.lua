@@ -38,7 +38,7 @@ function s.ocost11(e,tp,eg,ep,ev,re,r,rp,chk)
 			and (b1 or b2)
 	end
 	if Duel.GetTurnCount()==e:GetLabel() then
-		local te=Duel.IsPlayerAffectedByeffect(tp,18453867)
+		local te=Duel.IsPlayerAffectedByEffect(tp,18453867)
 		local tc=te:GetHandler()
 		tc:RemoveOverlayCard(tp,1,1,REASON_EFFECT)
 	end
@@ -53,7 +53,7 @@ function s.ocost11(e,tp,eg,ep,ev,re,r,rp,chk)
 		e:SetOperation(s.oop11)
 	elseif op==2 then
 		Duel.Hint(HINT_OPSELECTED,1-tp,aux.Stringid(id,1))
-		Duel.RegisterFlagEffect(tp,id-10000,RESET_PHASE+PHASE_END,0,1)
+		Duel.RegisterFlagEffect(tp,id-10000,RESET_PHASE+PHASE_END,0,2)
 		e:SetCategory(0)
 		e:SetTarget(s.otar12)
 		e:SetOperation(s.oop12)

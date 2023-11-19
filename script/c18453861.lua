@@ -37,6 +37,10 @@ function s.initial_effect(c)
 	c:RegisterEffect(e6)
 	local e7=e6:Clone()
 	e7:SetCode(EVENT_TO_DECK)
+	e7:SetCondition(function(e)
+		local c=e:GetHandler()
+		return c:IsFaceup()
+	end)
 	c:RegisterEffect(e7)
 end
 s.pendulum_level=7

@@ -105,7 +105,7 @@ function cm.op0(e,tp,eg,ep,ev,re,r,rp)
 				local sg=tg:Select(tp,1,1,nil)
 				Duel.HintSelection(sg)
 				Duel.SendtoHand(sg,nil,REASON_EFFECT)
-			else Duel.SendtoHand(sg,nil,REASON_EFFECT) end
+			else Duel.SendtoHand(tg,nil,REASON_EFFECT) end
 		end
 	end
 end

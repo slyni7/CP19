@@ -6,7 +6,6 @@ function s.initial_effect(c)
 	e2:SetCategory(CATEGORY_DISABLE+CATEGORY_DESTROY)
 	e2:SetType(EFFECT_TYPE_ACTIVATE)
 	e2:SetCode(EVENT_CHAINING)
-	e2:SetCountLimit(1,id)
 	WriteEff(e2,2,"CNTO")
 	c:RegisterEffect(e2)
 	

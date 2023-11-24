@@ -4,7 +4,7 @@ function s.initial_effect(c)
 
 	local e1=MakeEff(c,"A")
 	e1:SetCategory(CATEGORY_COUNTER)
-	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_NEGATE)
+	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_INACTIVATE+EFFECT_FLAG_CANNOT_NEGATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	WriteEff(e1,1,"TO")
 	c:RegisterEffect(e1)

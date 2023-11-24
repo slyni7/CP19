@@ -28,7 +28,7 @@ function s.initial_effect(c)
 	e3:SetCode(EFFECT_UPDATE_LEVEL)
 	e3:SetRange(LOCATION_FZONE)
 	e3:SetTargetRange(LOCATION_MZONE,0)
-	e3:SetTarget(aux.TargetBoolFunction(Card.IsSetCard,0xd36))
+	e2:SetTarget(aux.TargetBoolFunction(Card.IsSetCard,0xd36))
 	e3:SetValue(function(e,c) return Duel.GetCounter(0,1,1,0x1051)*1 end)
 	c:RegisterEffect(e3)
 	

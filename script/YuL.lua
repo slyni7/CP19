@@ -12,12 +12,19 @@ YuL.ST=0x6
 
 function YuL.FlipSummon(e,tp)
 	if Duel.IsPlayerAffectedByEffect(tp,EFFECT_CANNOT_FLIP_SUMMON) then return end
-	local flipg=Duel.GetMatchingGroup(Card.IsFacedown,tp,LOCATION_MZONE,0,nil)
+	local flipg=Duel.GetMatchingGroup(function(c) return c:IsFacedown() and not c:IsHasEffect(EFFECT_CANNOT_CHANGE_POSITION) end,tp,LOCATION_MZONE,0,nil)
 	if #flipg>0 then
 		local flipcard=flipg:Select(tp,1,1,nil):GetFirst()
 		Duel.ChangePosition(flipcard,POS_FACEUP_ATTACK)
 		Duel.RaiseEvent(flipcard,EVENT_FLIP_SUMMON_SUCCESS,e,0,tp,tp,0)
 		Duel.RaiseSingleEvent(flipcard,EVENT_FLIP_SUMMON_SUCCESS,e,0,tp,tp,0)
+		local e1=Effect.CreateEffect(e:GetHandler())
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetCode(EFFECT_ADD_SUMMON_TYPE)
+		e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE|EFFECT_FLAG_IGNORE_IMMUNE)
+		e1:SetValue(SUMMON_TYPE_FLIP)
+		e1:SetReset(RESET_EVENT|RESETS_STANDARD)
+		flipcard:RegisterEffect(e1)
 	end
 end
 

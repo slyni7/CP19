@@ -1,78 +1,57 @@
---Star Absorber
-function c99970075.initial_effect(c)
-
-	--링크 소환
-	aux.AddLinkProcedure(c,aux.FilterBoolFunction(Card.IsSetCard,0xd36),2,2)
-	c:EnableReviveLimit()
-
-	--스타 앱소버 공격력
-	local es=Effect.CreateEffect(c)
-	es:SetType(EFFECT_TYPE_SINGLE)
+--[ Star Absorber ]
+local s,id=GetID()
+function s.initial_effect(c)
+	
+	RevLim(c)
+	aux.AddLinkProcedure(c,aux.FilterBoolFunction(Card.IsLinkSetCard,0xd36),2,2)
+	
+	local es=MakeEff(c,"S","M")
 	es:SetCode(EFFECT_UPDATE_ATTACK)
 	es:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
-	es:SetRange(LOCATION_MZONE)
-	es:SetValue(c99970075.starabsorber)
+	es:SetValue(function(e,c) return Duel.GetCounter(0,1,1,0x1051)*100 end)
 	c:RegisterEffect(es)
 	
-	--특수 소환
-	local eq=Effect.CreateEffect(c)
-	eq:SetDescription(aux.Stringid(99970075,1))
-	eq:SetCategory(CATEGORY_SPECIAL_SUMMON)
-	eq:SetType(EFFECT_TYPE_IGNITION)
-	eq:SetRange(LOCATION_MZONE)
-	eq:SetCountLimit(1,99970075)
-	eq:SetTarget(c99970075.target)
-	eq:SetOperation(c99970075.operation)
-	c:RegisterEffect(eq)
+	local e2=Effect.CreateEffect(c)
+	e2:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH)
+	e2:SetType(EFFECT_TYPE_IGNITION)
+	e2:SetRange(LOCATION_MZONE)
+	e2:SetCountLimit(1,id)
+	e2:SetTarget(s.thtg)
+	e2:SetOperation(s.thop)
+	c:RegisterEffect(e2)
 	
-	--내성 부여
-	local e3=Effect.CreateEffect(c)
-	e3:SetProperty(EFFECT_FLAG_SET_AVAILABLE)
-	e3:SetType(EFFECT_TYPE_FIELD)
-	e3:SetCode(EFFECT_INDESTRUCTABLE_EFFECT)
-	e3:SetRange(LOCATION_MZONE)
-	e3:SetValue(1)
-	e3:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
-	e3:SetTarget(c99970075.indtg)
-	e3:SetCondition(c99970075.condition)
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_FIELD)
+	e1:SetCode(EFFECT_INDESTRUCTABLE_EFFECT)
+	e1:SetProperty(EFFECT_FLAG_SET_AVAILABLE)
+	e1:SetRange(LOCATION_MZONE)
+	e1:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
+	e1:SetTarget(s.indtg)
+	e1:SetValue(1)
+	c:RegisterEffect(e1)
+	local e3=e1:Clone()
+	e3:SetCode(EFFECT_INDESTRUCTABLE_BATTLE)
 	c:RegisterEffect(e3)
 	
 end
 
---스타 앱소버 공격력
-function c99970075.starabsorber(e,c)
-	return Duel.GetCounter(0,1,1,0x1051)*100
+function s.thfilter(c)
+	return c:IsSetCard(0xd36) and c:IsAbleToHand()
 end
-
---특수 소환
-function c99970075.filterQ(c,e,tp,zone)
-	return c:IsSetCard(0xd36) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP,tp,zone)
+function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil) end
+	Duel.SetOperationInfo(0,CATEGORY_TOHAND,nil,1,tp,LOCATION_DECK)
 end
-function c99970075.target(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then
-		local zone=e:GetHandler():GetLinkedZone(tp)
-		return zone~=0 and Duel.IsExistingMatchingCard(c99970075.filterQ,tp,LOCATION_HAND+LOCATION_GRAVE,0,1,nil,e,tp,zone)
-	end
-	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_HAND+LOCATION_GRAVE)
-end
-function c99970075.operation(e,tp,eg,ep,ev,re,r,rp)
-	local zone=e:GetHandler():GetLinkedZone(tp)
-	if zone==0 then return end
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectMatchingCard(tp,c99970075.filterQ,tp,LOCATION_HAND+LOCATION_GRAVE,0,1,1,nil,e,tp,zone)
-	if g:GetCount()>0 then
-		Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP,zone)
+function s.thop(e,tp,eg,ep,ev,re,r,rp)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
+	local g=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_DECK,0,1,1,nil)
+	if #g>0 then
+		Duel.SendtoHand(g,nil,REASON_EFFECT)
+		Duel.ConfirmCards(1-tp,g)
 	end
 end
 
---내성 부여
-function c99970075.indtg(e,c)
-	return e:GetHandler():GetLinkedGroup():IsContains(c)
-end
-function c99970075.cfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0xd36)
-end
-function c99970075.condition(e,tp,eg,ep,ev,re,r,rp)
-	local g=Duel.GetMatchingGroup(c99970075.cfilter,tp,LOCATION_ONFIELD+LOCATION_GRAVE,0,nil)
-	return g:GetClassCount(Card.GetCode)>=5
+function s.indtg(e,c)
+	local oc=e:GetHandler()
+	return c==oc or oc:GetLinkedGroup():IsContains(c)
 end

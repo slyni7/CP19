@@ -48,7 +48,7 @@ function s.op2(e,tp,eg,ep,ev,re,r,rp)
 	local sg=Duel.GetMatchingGroup(s.nsfilter,tp,LOCATION_HAND|LOCATION_MZONE,0,nil)
 	if #sg>0 and Duel.SelectYesNo(tp,aux.Stringid(id,0)) then
 		Duel.BreakEffect()
-		local tc=sg:Select(tp,1,1,nil):GetFirst()
+		local sc=sg:Select(tp,1,1,nil):GetFirst()
 		Duel.Summon(tp,sc,true,nil)
 	end
 end

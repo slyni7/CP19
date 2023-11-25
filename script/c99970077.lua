@@ -95,7 +95,7 @@ function s.rmop(e,tp,eg,ep,ev,re,r,rp)
 end
 
 function s.tar9(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return not e:GetHandler():IsReason(REASON_REPLACE+REASON_RULE) or e:GetHandler():GetReasonPlayer()~=1-tp
+	if chk==0 then return not e:GetHandler():IsReason(REASON_REPLACE+REASON_RULE) or e:GetHandler():GetReasonPlayer()==1-tp
 		and e:GetHandler():GetCounter(0x1051)>6 end
 	return Duel.SelectEffectYesNo(tp,e:GetHandler(),96)
 end

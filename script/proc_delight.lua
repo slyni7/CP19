@@ -196,7 +196,7 @@ function Card.IsCanBeDelightMaterial(c,del)
 	return true
 end
 
-function Auxiliary.AddDelightProcedure(c,f,min,max,gf)
+function Auxiliary.AddDelightProcedure(c,f,min,max,gf,mgf)
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
 	e1:SetCode(EFFECT_SPSUMMON_PROC_G)
@@ -208,15 +208,15 @@ function Auxiliary.AddDelightProcedure(c,f,min,max,gf)
 	end
 	e1:SetValue(SUMMON_TYPE_DELIGHT)
 	e1:SetLabel(0)
-	e1:SetCondition(Auxiliary.DelightCondition(f,min,max,gf))
-	e1:SetOperation(Auxiliary.DelightOperation(f,min,max,gf))
+	e1:SetCondition(Auxiliary.DelightCondition(f,min,max,gf,mgf))
+	e1:SetOperation(Auxiliary.DelightOperation(f,min,max,gf,mgf))
 	c:RegisterEffect(e1)
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE)
 	e2:SetCode(EFFECT_DELIGHT_SUMMON)
 	e2:SetLabel(10000)
-	e2:SetCondition(Auxiliary.DelightCondition(f,min,max,gf))
-	e2:SetOperation(Auxiliary.DelightOperation(f,min,max,gf))
+	e2:SetCondition(Auxiliary.DelightCondition(f,min,max,gf,mgf))
+	e2:SetOperation(Auxiliary.DelightOperation(f,min,max,gf,mgf))
 	c:RegisterEffect(e2)
 	local mt=_G["c"..c:GetOriginalCode()]
 	mt.CardType_Delight=true
@@ -239,7 +239,7 @@ function Auxiliary.DelCheckGoal(sg,e,tp,dc,gf)
 		and sg:FilterCount(Card.IsLocation,nil,LOCATION_MZONE)<=Duel.GetTurnCount()
 		and dc:IsCanBeSpecialSummoned(e,SUMMON_TYPE_DELIGHT,tp,false,false)
 end
-function Auxiliary.DelightCondition(f,min,max,gf)
+function Auxiliary.DelightCondition(f,min,max,gf,mgf)
 	return
 		function(e,c,og)
 			if c==nil then
@@ -252,10 +252,11 @@ function Auxiliary.DelightCondition(f,min,max,gf)
 				return false
 			end
 			Duel.SetSelectedCard(fg)
-			return mg:CheckSubGroup(Auxiliary.DelCheckGoal,min,max,e,tp,c,gf)
+			return (not mgf or mgf(mg))
+				and mg:CheckSubGroup(Auxiliary.DelCheckGoal,min,max,e,tp,c,gf)
 		end
 end
-function Auxiliary.DelightOperation(f,min,max,gf)
+function Auxiliary.DelightOperation(f,min,max,gf,mgf)
 	return
 		function(e,tp,eg,ep,ev,re,r,rp,c,sg,og)
 			local mg=Auxiliary.GetDelightMaterials(tp,f,c)

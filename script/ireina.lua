@@ -2253,6 +2253,9 @@ end
 
 function Auxiliary.ChainDelay(effect)
 	local ce=Duel.GetChainInfo(0,CHAININFO_TRIGGERING_EFFECT)
+	if type(ce)~="Effect" then
+		ce=effect
+	end
 	local card=ce:GetHandler()
 	if card:IsRelateToEffect(ce) then
 		card:CreateEffectRelation(effect)
@@ -2684,13 +2687,16 @@ function Duel.IsPlayerAffectedByEffect(player,ecode)
 			end
 		end
 	end
+	if type(player)~="number" then
+		return nil
+	end
 	return dipabe(player,ecode)
 end
 
 local dclc=Duel.CheckLPCost
 function Duel.CheckLPCost(player,lp)
 	local ce=Duel.GetChainInfo(0,CHAININFO_TRIGGERING_EFFECT)
-	if ce and ce:IsHasType(EFFECT_TYPE_ACTIVATE) and ce:IsActiveType(TYPE_COUNTER) then
+	if type(ce)=="Effect" and ce:IsHasType(EFFECT_TYPE_ACTIVATE) and ce:IsActiveType(TYPE_COUNTER) then
 		if dipabe(player,EFFECT_NIGHT_FEVER_PAYLP_TO_RECOVER) then
 			return true
 		end
@@ -2706,7 +2712,7 @@ end
 local dplc=Duel.PayLPCost
 function Duel.PayLPCost(player,lp)
 	local ce=Duel.GetChainInfo(0,CHAININFO_TRIGGERING_EFFECT)
-	if ce and ce:IsHasType(EFFECT_TYPE_ACTIVATE) and ce:IsActiveType(TYPE_COUNTER) then
+	if type(ce)=="Effect" and ce:IsHasType(EFFECT_TYPE_ACTIVATE) and ce:IsActiveType(TYPE_COUNTER) then
 		if dipabe(player,EFFECT_NIGHT_FEVER_PAYLP_TO_RECOVER) then
 			local eset={dipabe(player,EFFECT_NIGHT_FEVER_PAYLP_TO_RECOVER)}
 			local te=eset[1]
@@ -2745,7 +2751,9 @@ function Duel.SpecialSummon(g,...)
 		tc=g:GetNext()
 	end
 	local ce=Duel.GetChainInfo(0,CHAININFO_TRIGGERING_EFFECT)
-	Duel.RaiseEvent(g,EVENT_SPSUMMON_EFFECT,ce,REASON_EFFECT,t[2],t[2],0)
+	if type(ce)=="Effect" then
+		Duel.RaiseEvent(g,EVENT_SPSUMMON_EFFECT,ce,REASON_EFFECT,t[2],t[2],0)
+	end
 	local sg=aux.SpecialSummonByEffectNegatedGroup
 	if sg then
 		g:Sub(sg)
@@ -2775,7 +2783,7 @@ function Duel.SpecialSummonComplete()
 	else
 		local ce,cp=Duel.GetChainInfo(0,CHAININFO_TRIGGERING_EFFECT,CHAININFO_TRIGGERING_PLAYER)
 		local g=aux.SpecialSummonByEffectWaitingGroup
-		if ce and cp then
+		if type(ce)=="Effect" and cp then
 			Duel.RaiseEvent(g,EVENT_SPSUMMON_EFFECT,ce,REASON_EFFECT,cp,cp,0)
 		end
 		g:DeleteGroup()
@@ -3196,6 +3204,128 @@ function Auxiliary.NewHeavenAndEarth()
 end
 
 Auxiliary.NewHeavenAndEarth()
+
+EFFECT_AVANT_GARDE=18453899
+
+local cregeff=Card.RegisterEffect
+function Card.RegisterEffect(c,e,forced,...)
+	cregeff(c,e,forced,...)
+	local code=e:GetCode()
+	if code==EFFECT_DISABLE or code==EFFECT_DISABLE_EFFECT then
+		if e:IsHasType(EFFECT_TYPE_SINGLE) then
+			local con=e:GetCondition()
+			e:SetCondition(function(e,...)
+				local c=e:GetHandler()
+				local eset={c:IsHasEffect(EFFECT_AVANT_GARDE)}
+				for _,te in ipairs(eset) do
+					if e:GetFieldID()<te:GetFieldID() then
+						return false
+					end
+				end
+				return not con or con(e,...)
+			end)
+		elseif e:IsHasType(EFFECT_TYPE_FIELD) then
+			local tg=e:GetTarget()
+			e:SetTarget(function(e,c,...)
+				local eset={c:IsHasEffect(EFFECT_AVANT_GARDE)}
+				for _,te in ipairs(eset) do
+					if e:GetFieldID()<te:GetFieldID() then
+						return false
+					end
+				end
+				return not tg or tg(e,c,...)
+			end)
+		end
+	end
+end
+
+local dregeff=Duel.RegisterEffect
+function Duel.RegisterEffect(e,...)
+	dregeff(e,...)
+	local code=e:GetCode()
+	if code==EFFECT_DISABLE or code==EFFECT_DISABLE_EFFECT then
+		if e:IsHasType(EFFECT_TYPE_SINGLE) then
+			local con=e:GetCondition()
+			e:SetCondition(function(e,...)
+				local c=e:GetHandler()
+				local eset={c:IsHasEffect(EFFECT_AVANT_GARDE)}
+				for _,te in ipairs(eset) do
+					if e:GetFieldID()<te:GetFieldID() then
+						return false
+					end
+				end
+				return not con or con(e,...)
+			end)
+		elseif e:IsHasType(EFFECT_TYPE_FIELD) then
+			local tg=e:GetTarget()
+			e:SetTarget(function(e,c,...)
+				local eset={c:IsHasEffect(EFFECT_AVANT_GARDE)}
+				for _,te in ipairs(eset) do
+					if e:GetFieldID()<te:GetFieldID() then
+						return false
+					end
+				end
+				return not tg or tg(e,c,...)
+			end)
+		end
+	end
+end
+
+EFFECT_CANNOT_REWIND_TIME=18453920
+EFFECT_CANNOT_SKIP_TIME=18453921
+EFFECT_CANNOT_ACCEL_IDLE=18453922
+
+local cregeff=Card.RegisterEffect
+function Card.RegisterEffect(c,e,forced,...)
+	cregeff(c,e,forced,...)
+	local code=e:GetCode()
+	if code==EFFECT_SKIP_DP
+		or code==EFFECT_SKIP_SP
+		or code==EFFECT_SKIP_M1
+		or code==EFFECT_SKIP_BP
+		or code==EFFECT_SKIP_M2
+		or code==EFFECT_SKIP_EP
+		or code==EFFECT_SKIP_TURN then
+		local con=e:GetCondition()
+		e:SetCondition(function(e,...)
+			local tp=e:GetHandlerPlayer()
+			if Duel.IsPlayerAffectedByEffect(tp,EFFECT_CANNOT_SKIP_TIME) then
+				return false
+			end
+			return not con or con(e,...)
+		end)
+	end
+end
+
+local dregeff=Duel.RegisterEffect
+function Duel.RegisterEffect(e,...)
+	dregeff(e,...)
+	local code=e:GetCode()
+	if code==EFFECT_SKIP_DP
+		or code==EFFECT_SKIP_SP
+		or code==EFFECT_SKIP_M1
+		or code==EFFECT_SKIP_BP
+		or code==EFFECT_SKIP_M2
+		or code==EFFECT_SKIP_EP
+		or code==EFFECT_SKIP_TURN then
+		local con=e:GetCondition()
+		e:SetCondition(function(e,...)
+			local tp=e:GetHandlerPlayer()
+			if Duel.IsPlayerAffectedByEffect(tp,EFFECT_CANNOT_SKIP_TIME) then
+				return false
+			end
+			return not con or con(e,...)
+		end)
+	end
+end
+
+function Duel.IsTimeRewindable(player)
+	return not Duel.IsPlayerAffectedByEffect(player,EFFECT_CANNOT_REWIND_TIME)
+end
+
+function Duel.IsIdleAccelable(player)
+	return not Duel.IsPlayerAffectedByEffect(player,EFFECT_CANNOT_ACCEL_IDLE)
+end
 
 pcall(dofile,"expansions/script/proc_braveex.lua")
 

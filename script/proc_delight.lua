@@ -235,8 +235,9 @@ function Auxiliary.GetDelightMaterials(tp,f,dc)
 	return mg
 end
 function Auxiliary.DelCheckGoal(sg,e,tp,dc,gf)
-	return Duel.GetLocationCountFromEx(tp,tp,sg,dc)>0 and (not gf or gf(sg))
+	return (not gf or gf(sg))
 		and sg:FilterCount(Card.IsLocation,nil,LOCATION_MZONE)<=Duel.GetTurnCount()
+		and Duel.GetLocationCountFromEx(tp,tp,sg,dc)>0
 		and dc:IsCanBeSpecialSummoned(e,SUMMON_TYPE_DELIGHT,tp,false,false)
 end
 function Auxiliary.DelightCondition(f,min,max,gf,mgf)
@@ -252,8 +253,17 @@ function Auxiliary.DelightCondition(f,min,max,gf,mgf)
 				return false
 			end
 			Duel.SetSelectedCard(fg)
-			return (not mgf or mgf(mg))
-				and mg:CheckSubGroup(Auxiliary.DelCheckGoal,min,max,e,tp,c,gf)
+			if mgf and not mgf(mg) then
+				return false
+			end
+			local res=false
+			for i=min,#mg do
+				res=mg:CheckSubGroup(Auxiliary.DelCheckGoal,i,i,e,tp,c,gf)
+				if res then
+					break
+				end
+			end
+			return res
 		end
 end
 function Auxiliary.DelightOperation(f,min,max,gf,mgf)

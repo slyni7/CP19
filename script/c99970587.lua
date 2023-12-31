@@ -15,7 +15,7 @@ end
 
 --특소 + 데미지
 function cm.filter2(c,e,tp) 
-	return c:IsCanBeSpecialSummoned(e,0,tp,false,false) and c:IsSetCard(0xcbb)
+	return c:IsCanBeSpecialSummoned(e,0,tp,false,false) and c:IsSetCard(0xe16)
 end
 function cm.tar1(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0

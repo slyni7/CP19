@@ -10,7 +10,7 @@ function s.initial_effect(c)
 end
 s.listed_names={30914564}
 function s.tfil1(c)
-	return (c:IsCode(30914564) or aux.IsCodeListed(c,30914564)) and c:IsAbleToHand()
+	return (c:IsCode(30914564) or aux.IsCodeListed(c,30914564)) and c:IsAbleToHand() and not c:IsCode(id)
 end
 function s.tar1(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then

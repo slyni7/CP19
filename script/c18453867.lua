@@ -1,7 +1,7 @@
 --그레이트 블루머
 local s,id=GetID()
 function s.initial_effect(c)
-	Xyz.AddProcedure(c,nil,4,2,s.pfil1,aux.Stringid(id,0),2)
+	Xyz.AddProcedure(c,nil,4,2,s.pfil1,aux.Stringid(id,2),2)
 	c:EnableReviveLimit()
 	local e1=MakeEff(c,"STo")
 	e1:SetCode(EVENT_SPSUMMON_SUCCESS)

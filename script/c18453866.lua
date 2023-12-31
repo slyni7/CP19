@@ -1,4 +1,4 @@
---ë ˆì´íŠ¸ ë¸”ë£¨ì˜¤ì…˜
+--·¹ÀÌÆ® ºí·ç¿À¼Ç
 local s,id=GetID()
 function s.initial_effect(c)
 	local e1=MakeEff(c,"Qo","HM")
@@ -83,7 +83,7 @@ function s.ocost11(e,tp,eg,ep,ev,re,r,rp,chk)
 	end
 end
 function s.otfil11(c)
-	return c:IsSetCard("ë ˆì´íŠ¸ ë¸”ë£¨")
+	return c:IsSetCard("·¹ÀÌÆ® ºí·ç")
 		and (c:GetType()==TYPE_SPELL+TYPE_QUICKPLAY or c:GetType()==TYPE_TRAP)
 		and (c:IsAbleToHand() or c:IsSSetable())
 end
@@ -111,7 +111,7 @@ function s.oop11(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function s.onfil12(c)
-	return c:IsSetCard("ë ˆì´íŠ¸ ë¸”ë£¨") and c:IsFaceup()
+	return c:IsSetCard("·¹ÀÌÆ® ºí·ç") and c:IsFaceup()
 end
 function s.otar12(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then

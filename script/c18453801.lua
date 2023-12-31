@@ -29,35 +29,6 @@ function s.initial_effect(c)
 	e4:SetLabelObject(e5)
 	WriteEff(e5,5,"O")
 	c:RegisterEffect(e5)
-	if not s.global_check then
-		s.global_check=true
-		local ge1=MakeEff(c,"FC")
-		ge1:SetCode(EVENT_TO_GRAVE)
-		ge1:SetOperation(s.gop1)
-		Duel.RegisterEffect(ge1,0)
-	end
-end
-function s.gop1(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	local tc=eg:GetFirst()
-	while tc do
-		local tatk=tc:GetTextAttack()
-		local trc=tc:GetReasonCard()
-		local tre=tc:GetReasonEffect()
-		if not trc and tre:GetCode()==EFFECT_SPSUMMON_PROC then
-			trc=tre:GetHandler()
-		end
-		if (tc:GetPreviousAttributeOnField()&ATTRIBUTE_LIGHT>0
-			or (tc:GetPreviousLocation()&LOCATION_ONFIELD==0 and tc:GetOriginalAttribute()&ATTRIBUTE_LIGHT>0))
-			and trc and tatk>0 then
-			local e1=MakeEff(c,"S")
-			e1:SetCode(id)
-			e1:SetReset(RESET_EVENT+RESETS_STANDARD-RESET_TOFIELD)
-			e1:SetValue(tatk)
-			trc:RegisterEffect(e1)
-		end
-		tc=eg:GetNext()
-	end
 end
 function s.tar3(e,c)
 	return c:IsSummonType(SUMMON_TYPE_SPECIAL)

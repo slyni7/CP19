@@ -87,6 +87,6 @@ function s.op1(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SendtoGrave(tc,REASON_EFFECT)
 	end
 	if used<ct and dd and (used==0 or Duel.SelectYesNo(tp,aux.Stringid(id,1))) then
-		Duel.DIscardDeck(tp,3,REASON_EFFECT)
+		Duel.DiscardDeck(tp,3,REASON_EFFECT)
 	end
 end

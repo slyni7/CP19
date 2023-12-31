@@ -83,7 +83,8 @@ s.timelord_list={
 18453696,
 18453729,
 18453096,
-52644007}
+52644007,
+18453920}
 s.timelord_code={}
 for i=1,#s.timelord_list do
 	local code=s.timelord_list[i]

@@ -136,9 +136,11 @@ function s.gop2(e,tp,eg,ep,ev,re,r,rp)
 end
 function s.con1(e,tp,eg,ep,ev,re,r,rp)
 	return s[3] and #s[3]>0
+		and Duel.IsTimeRewindable(tp)
 end
 function s.con2(e,tp,eg,ep,ev,re,r,rp)
 	return s[3] and #s[3]>0 and Duel.CheckEvent(id+EVENT_CUSTOM)
+		and Duel.IsTimeRewindable(tp)
 end
 function s.cfil2(c,tp)
 	if c:IsLoc("H") then
@@ -178,6 +180,9 @@ function s.tar2(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function s.op2(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetCurrentChain()==0 then
+		return
+	end
+	if not Duel.IsTimeRewindable(tp) then
 		return
 	end
 	local c=e:GetHandler()

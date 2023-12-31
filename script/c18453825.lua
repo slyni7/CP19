@@ -7,6 +7,10 @@ function s.initial_effect(c)
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	WriteEff(e1,1,"NCTO")
 	c:RegisterEffect(e1)
+	local e4=e1:Clone()
+	e4:SetCode(EVENT_CHAINING)
+	WriteEff(e4,4,"N")
+	c:RegisterEffect(e4)
 	local e2=MakeEff(c,"STo")
 	e2:SetCode(EVENT_SUMMON_SUCCESS)
 	e2:SetProperty(EFFECT_FLAG_DELAY)
@@ -22,11 +26,11 @@ function s.nfil1(c)
 end
 function s.con1(e,tp,eg,ep,ev,re,r,rp)
 	local cc=Duel.GetCurrentChain()
-	if cc>0 then
-		local te=Duel.GetChainInfo(0,CHAININFO_TRIGGERING_EFFECT)
-		if te:GetHandler():IsCode(id) then
-			return false
-		end
+	return cc==0 and not Duel.IEMCard(s.nfil1,tp,"M",0,1,nil)
+end
+function s.con4(e,tp,eg,ep,ev,re,r,rp)
+	if re:GetHandler():IsCode(id) then
+		return false
 	end
 	return not Duel.IEMCard(s.nfil1,tp,"M",0,1,nil)
 end
@@ -70,7 +74,7 @@ end
 function s.tfil2(c)
 	local atk=c:GetAttack()
 	return (c:IsRace(RACE_PLANT) or c:IsAttribute(ATTRIBUTE_FIRE)) and (c:IsAbleToHand() or c:IsAbleToGrave())
-		and (math.floor(atk/1850)*1850==atk or c:IsCode(18453842))
+		and (math.floor(atk/1850)*1850==atk or (c:IsCode(18453842) and c:IsAbleToHand()))
 end
 function s.tar2(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
@@ -82,5 +86,10 @@ end
 function s.op2(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
 	local tc=Duel.SMCard(tp,s.tfil2,tp,"D",0,1,1,nil):GetFirst()
-	aux.ToHandOrElse(tc,tp)
+	if tc:IsCode(18453842) then
+		Duel.SendtoHand(tc,nil,REASON_EFFECT)
+		Duel.ConfirmCards(1-tp,tc)
+	else
+		aux.ToHandOrElse(tc,tp)
+	end
 end

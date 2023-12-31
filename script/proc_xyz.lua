@@ -83,6 +83,7 @@ function Xyz.AddProcedure(c,f,lv,ct,alterf,desc,maxct,op,mustbemat,exchk)
 		e3:SetOperation(Xyz.MatGenerate)
 		Duel.RegisterEffect(e3,0)
 	end
+	return e1
 end
 function Xyz.MatGenerate(e,tp,eg,ep,ev,re,r,rp)
 	local tck0=Duel.CreateToken(0,946)

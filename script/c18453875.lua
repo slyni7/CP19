@@ -31,7 +31,7 @@ end
 s.listed_names={CARD_NEW_HEAVEN_AND_EARTH}
 function s.con1(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return c:IsSummonType(SUMMON_TYPE_LINK)
+	return c:IsSummonType(SUMMON_TYPE_LINK) and c:IsLoc("M")
 end
 function s.tfil1(c,tp)
 	return c:IsCode(CARD_NEW_HEAVEN_AND_EARTH) and c:GetActivateEffect() and c:GetActivateEffect():IsActivatable(tp,true,true)

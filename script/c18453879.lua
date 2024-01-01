@@ -58,6 +58,7 @@ function s.tar2(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
 	if chk==0 then
 		return c:IsCanBeSpecialSummoned(e,0,tp,false,false) and Duel.GetLocCount(tp,"M")>0
+			and Duel.IEMCard(s.onfil21,tp,"D",0,1,nil)
 	end
 	Duel.SOI(0,CATEGORY_SPECIAL_SUMMON,c,1,tp,"D")
 end
@@ -66,24 +67,12 @@ function s.op2(e,tp,eg,ep,ev,re,r,rp)
 	if c:IsRelateToEffect(e) then
 		Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)
 	end
-	local e1=MakeEff(c,"FC")
-	e1:SetCode(EVENT_PHASE+PHASE_END)
-	e1:SetReset(RESET_PHASE+PHASE_END)
-	e1:SetCL(1)
-	e1:SetCondition(s.ocon21)
-	e1:SetOperation(s.oop21)
-	Duel.RegisterEffect(e1,tp)
-end
-function s.onfil21(c)
-	return not c:IsCode(id) and c:IsSetCard("신천지") and c:IsAbleToGrave()
-end
-function s.ocon21(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.IEMCard(s.onfil21,tp,"D",0,1,nil)
-end
-function s.oop21(e,tp,eg,ep,ev,re,r,rp)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
 	local g=Duel.SMCard(tp,s.onfil21,tp,"D",0,1,1,nil)
 	if #g>0 then
 		Duel.SendtoGrave(g,REASON_EFFECT)
 	end
+end
+function s.onfil21(c)
+	return not c:IsCode(id) and c:IsSetCard("신천지") and c:IsAbleToGrave()
 end

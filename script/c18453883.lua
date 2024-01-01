@@ -70,14 +70,18 @@ function s.op1(e,tp,eg,ep,ev,re,r,rp)
 		local g=Duel.GMGroup(s.ofil11,tp,0,"M",nil)
 		if #g>0 then
 			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
-			local tc=Duel.SMCard(tp,s.ofil12,tp,"M",0,0,1,nil)
+			local tc=Duel.SMCard(tp,s.ofil12,tp,"M",0,0,1,nil):GetFirst()
 			if tc then
+				local atk=tc:GetAttack()
+				if atk<0 then
+					atk=0
+				end
 				local sc=g:GetFirst()
 				while sc do
 					local e1=MakeEff(c,"S","M")
 					e1:SetCode(CARD_NEW_HEAVEN_AND_EARTH)
 					e1:SetReset(RESET_EVENT+RESETS_STANDARD)
-					e1:SetValue(math.max(tc:GetAttack(),0))
+					e1:SetValue(atk)
 					sc:RegisterEffect(e1)
 					sc=g:GetNext()
 				end

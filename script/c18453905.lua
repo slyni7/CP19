@@ -30,6 +30,7 @@ function s.tar1(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	end
 	local tg=g:SelectSubGroup(tp,s.tfun12,false,1,2,#sg>0)
 	e:SetLabel(#tg)
+	Duel.SetTargetCard(tg)
 	if #tg==1 then
 		e:SetCategory(CATEGORY_TOHAND)
 		Duel.SOI(0,CATEGORY_TOHAND,nil,1,tp,"DG")

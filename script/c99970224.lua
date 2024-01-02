@@ -1,4 +1,4 @@
---Mystic Orchestra O ¡¸Opening¡¹
+--Mystic Orchestra O ã€ŒOpeningã€
 local m=99970224
 local cm=_G["c"..m]
 function cm.initial_effect(c)
@@ -11,7 +11,7 @@ function cm.initial_effect(c)
 	WriteEff(e1,1,"CTO")
 	c:RegisterEffect(e1)
 	
-	--¼¼Æ®
+	--ì„¸íŠ¸
 	local e2=MakeEff(c,"STo")
 	e2:SetCode(EVENT_SPSUMMON_SUCCESS)
 	e2:SetProperty(spinel.delay)
@@ -19,7 +19,7 @@ function cm.initial_effect(c)
 	WriteEff(e2,2,"TO")
 	c:RegisterEffect(e2)
 	
-	--È¸¼ö
+	--íšŒìˆ˜
 	local e3=MakeEff(c,"Qo","M")
 	e3:SetCategory(CATEGORY_TOHAND)
 	e3:SetProperty(EFFECT_FLAG_CARD_TARGET)
@@ -28,8 +28,8 @@ function cm.initial_effect(c)
 	WriteEff(e3,0,"N")
 	WriteEff(e3,3,"TO")
 	c:RegisterEffect(e3)
-
-	--¸¶¹ı & ÇÔÁ¤ Á¸ ¹ßµ¿
+--[[
+	--ë§ˆë²• & í•¨ì • ì¡´ ë°œë™
 	local e0=MakeEff(c,"F","E")
 	e0:SetCode(EFFECT_ACTIVATE_COST)
 	e0:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_PLAYER_TARGET)
@@ -38,7 +38,7 @@ function cm.initial_effect(c)
 	e0:SetTarget(cm.tar0)
 	e0:SetOperation(cm.op0)
 	c:RegisterEffect(e0)
-	
+	]]
 end
 
 --Info
@@ -70,12 +70,12 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 
---È¿°ú Àû¿ë
+--íš¨ê³¼ ì ìš©
 function cm.con0(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():GetSummonType()==SUMMON_TYPE_RITUAL+1
 end
 
---¼¼Æ®
+--ì„¸íŠ¸
 function cm.filter(c)
 	return c:IsSetCard(0xd3f) and c:IsType(YuL.ST) and c:IsSSetable()
 end
@@ -92,7 +92,7 @@ function cm.op2(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 
---È¸¼ö
+--íšŒìˆ˜
 function cm.thfilter(c)
 	return c:IsSetCard(0xd3f) and c:IsAbleToHand()
 end
@@ -110,7 +110,7 @@ function cm.op3(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 
---¸¶¹ı & ÇÔÁ¤ Á¸ ¹ßµ¿
+--ë§ˆë²• & í•¨ì • ì¡´ ë°œë™
 function cm.cost0(e,te,tp)
 	return Duel.GetLocationCount(tp,LOCATION_SZONE)>0
 end

@@ -1,4 +1,4 @@
---Mystic Orchestra XIII ¡¸Occult¡¹
+--Mystic Orchestra XIII ã€ŒOccultã€
 local m=99970223
 local cm=_G["c"..m]
 function cm.initial_effect(c)
@@ -11,7 +11,7 @@ function cm.initial_effect(c)
 	WriteEff(e1,1,"NCTO")
 	c:RegisterEffect(e1)
 	
-	--°ø¼ö Áõ°¡
+	--ê³µìˆ˜ ì¦ê°€
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE)
 	e2:SetCode(EFFECT_UPDATE_ATTACK)
@@ -24,7 +24,7 @@ function cm.initial_effect(c)
 	e3:SetCode(EFFECT_UPDATE_DEFENSE)
 	c:RegisterEffect(e3)
 	
-	--¼­Ä¡ / »øºñÁö
+	--ì„œì¹˜ / ìƒë¹„ì§€
 	local e4=MakeEff(c,"Qo","M")
 	e4:SetCategory(CATEGORY_TOHAND+CATEGORY_SEARCH+CATEGORY_TODECK)
 	e4:SetProperty(EFFECT_FLAG_CARD_TARGET)
@@ -34,15 +34,15 @@ function cm.initial_effect(c)
 	WriteEff(e4,4,"TO")
 	c:RegisterEffect(e4)
 	
-	--¹«È¿
+	--ë¬´íš¨
 	local e5=MakeEff(c,"Qo","M")
 	e5:SetCategory(CATEGORY_NEGATE)
 	e5:SetCode(EVENT_CHAINING)
 	e5:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
 	WriteEff(e5,5,"NCTO")
 	c:RegisterEffect(e5)
-	
-	--¸¶¹ı & ÇÔÁ¤ Á¸ ¹ßµ¿
+--[[	
+	--ë§ˆë²• & í•¨ì • ì¡´ ë°œë™
 	local e0=MakeEff(c,"F","E")
 	e0:SetCode(EFFECT_ACTIVATE_COST)
 	e0:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_PLAYER_TARGET)
@@ -51,7 +51,7 @@ function cm.initial_effect(c)
 	e0:SetTarget(cm.tar0)
 	e0:SetOperation(cm.op0)
 	c:RegisterEffect(e0)
-	
+	]]
 end
 
 --Info
@@ -94,12 +94,12 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 
---È¿°ú Àû¿ë
+--íš¨ê³¼ ì ìš©
 function cm.con0(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():GetSummonType()==SUMMON_TYPE_RITUAL+1
 end
 
---°ø¼ö Áõ°¡
+--ê³µìˆ˜ ì¦ê°€
 function cm.atkfilter(c)
 	return c:IsSetCard(0xd3f)
 end
@@ -108,7 +108,7 @@ function cm.atkval(e,c)
 	return g:GetSum(function(c) return c.mystic_orchestra_num end)*100
 end
 
---¼­Ä¡ / »øºñÁö
+--ì„œì¹˜ / ìƒë¹„ì§€
 function cm.tgfilter(c)
 	local Mus=_G["c"..c:GetCode()]
 	return c:IsFaceup() and c:IsSetCard(0xd3f) and not c:IsCode(99970224,99970262) and Mus
@@ -139,7 +139,7 @@ function cm.op4(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 
---¹«È¿
+--ë¬´íš¨
 function cm.negfilter(c,tp)
 	return c:IsFaceup() and c:IsSetCard(0xd3f) and c:IsControler(tp)
 end
@@ -165,7 +165,7 @@ function cm.op5(e,tp,eg,ep,ev,re,r,rp)
 	Duel.NegateActivation(ev)
 end
 
---¸¶¹ı & ÇÔÁ¤ Á¸ ¹ßµ¿
+--ë§ˆë²• & í•¨ì • ì¡´ ë°œë™
 function cm.cost0(e,te,tp)
 	return Duel.GetLocationCount(tp,LOCATION_SZONE)>0
 end

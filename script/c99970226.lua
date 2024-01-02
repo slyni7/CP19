@@ -13,7 +13,7 @@ function cm.initial_effect(c)
 	
 	--자가 회수
 	local e2=MakeEff(c,"I","G")
-	e2:SetCategory(CATEGOTY_TOHAND)
+	e2:SetCategory(CATEGORY_TOHAND)
 	WriteEff(e2,2,"CTO")
 	c:RegisterEffect(e2)
 	

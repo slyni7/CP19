@@ -9,7 +9,7 @@ function s.initial_effect(c)
 	c:RegisterEffect(e1)	
 end
 function s.tfil1(c)
-	return c:IsCode(18453527) and c:IsSummonable(true,nil)
+	return c:IsLevel(10) and c:IsSummonable(true,nil)
 end
 function s.tar1(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()

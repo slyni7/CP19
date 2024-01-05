@@ -2,7 +2,7 @@
 local s,id=GetID()
 function s.initial_effect(c)
 	c:EnableReviveLimit()
-	aux.AddDelightProcedure(c,nil,2,99,s.pfun1)
+	aux.AddDelightProcedure(c,nil,2,99,s.pfun1,s.pfun3)
 	local e1=MakeEff(c,"FC","M")
 	e1:SetCode(EVENT_CHAIN_SOLVING)
 	WriteEff(e1,1,"O")
@@ -19,7 +19,27 @@ s.square_mana={ATTRIBUTE_LIGHT,ATTRIBUTE_LIGHT,ATTRIBUTE_LIGHT,
 s.custom_type=CUSTOMTYPE_SQUARE+CUSTOMTYPE_DELIGHT
 function s.pfun1(g)
 	local st=s.square_mana
-	return aux.IsFitSquare(g,st)
+	--[[Debug.Message(g:GetSum(s.pfun2,ATTRIBUTE_LIGHT)..","..g:GetSum(s.pfun2,ATTRIBUTE_WIND)..","..g:GetSum(s.pfun2,ATTRIBUTE_DARK))]]--
+	return g:GetSum(s.pfun2,ATTRIBUTE_LIGHT)>=3
+		and g:GetSum(s.pfun2,ATTRIBUTE_WIND)>=3
+		and g:GetSum(s.pfun2,ATTRIBUTE_DARK)>=3
+		and aux.IsFitSquare(g,st)
+end
+function s.pfun2(c,att)
+	local val1=0
+	if c:IsAttribute(att) then
+		val1=c:GetLevel()
+	end
+	local val2=c:GetManaCount(att)
+	return math.max(val1,val2)
+end
+function s.pfun3(g)
+	local st=s.square_mana
+	--[[Debug.Message(g:GetSum(s.pfun2,ATTRIBUTE_LIGHT)..","..g:GetSum(s.pfun2,ATTRIBUTE_WIND)..","..g:GetSum(s.pfun2,ATTRIBUTE_DARK))]]--
+	return g:GetSum(s.pfun2,ATTRIBUTE_LIGHT)>=3
+		and g:GetSum(s.pfun2,ATTRIBUTE_WIND)>=3
+		and g:GetSum(s.pfun2,ATTRIBUTE_DARK)>=3
+		and aux.IsFitSquare(g,st)
 end
 function s.op1(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
@@ -56,7 +76,7 @@ function s.cost2(e,tp,eg,ep,ev,re,r,rp,chk)
 	end
 	Duel.SendtoDeck(c,nil,2,REASON_COST)
 end
-function s.tar3(e,tp,eg,ep,ev,re,r,rp,chk)
+function s.tar2(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
 		return Duel.IsPlayerCanDraw(tp,3)
 	end
@@ -65,7 +85,7 @@ function s.tar3(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SOI(0,CATEGORY_DRAW,nil,0,tp,3)
 	Duel.SOI(0,CATEGORY_HANDES,nil,0,tp,2)
 end
-function s.op3(e,tp,eg,ep,ev,re,r,rp)
+function s.op2(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.Draw(tp,3,REASON_EFFECT)==3 then
 		Duel.ShuffleHand(tp)
 		Duel.BreakEffect()

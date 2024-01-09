@@ -108,7 +108,7 @@ function c17290015.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	c:RegisterEffect(e1)
 end
 function c17290015.spfilter(c,e,tp)
-	return c:IsSetCard(0x2c3) and c:IsSetCard(0x8) and not c:IsCode(17290015)
+	return c:IsSetCard(0x2c3) and c:IsSetCard(0x8) and not c:IsCode(17290015) and c:IsType(TYPE_RITUAL)
 		and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_RITUAL,tp,false,true)
 end
 function c17290015.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)

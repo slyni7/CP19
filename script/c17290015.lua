@@ -85,7 +85,7 @@ function c17290015.tg7(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function c17290015.op7(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	Duel.Recover(1-tp,3000,REASON_EFFECT)
+	Duel.Damage(1-tp,3000,REASON_EFFECT)
 	if c:IsRelateToEffect(e) and c:IsFaceup() then
 		local e1=Effect.CreateEffect(c)
 		e1:SetType(EFFECT_TYPE_SINGLE)

@@ -116,7 +116,7 @@ function s.cost2(e,tp,eg,ep,ev,re,r,rp,chk)
 	local g2=Duel.SMCard(tp,s.cfil2,tp,"G",0,1,1,nil,18453949)
 	g1:Merge(g2)
 	g1:AddCard(c)
-	Duel.Remove(g,POS_FACEUP,REASON_COST)
+	Duel.Remove(g1,POS_FACEUP,REASON_COST)
 end
 function s.tfil2(c)
 	return c:IsCode(18453939) and c:IsAbleToHand()

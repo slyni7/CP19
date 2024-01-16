@@ -62,7 +62,9 @@ function Auxiliary.DelayByTurn(c,tp,ct,lab)
 	e6:SetType(EFFECT_TYPE_SINGLE)
 	e6:SetCode(EFFECT_DELAY_TURN)
 	e6:SetProperty(EFFECT_FLAG_IGNORE_RANGE)
-	e6:SetLabel(lab)
+	if lab then
+		e6:SetLabel(lab)
+	end
 	e6:SetValue(rct)
 	e4:SetLabelObject(e6)
 	e5:SetLabelObject(e6)

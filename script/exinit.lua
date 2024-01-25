@@ -95,6 +95,9 @@ function Auxiliary.NonTunerEx(f,a,b,c)
 			return target:IsNotTuner(scard,tp) and (not f or f(target,a,b,c))
 		end
 end
+
+if not global_eff_count_limit_max then
+
 local setcl=Effect.SetCountLimit
 global_eff_count_limit_max={}
 global_eff_count_limit_code={}
@@ -136,6 +139,9 @@ end
 function Effect.GetRange(e)
 	return global_eff_rang[e]
 end
+
+end
+
 if YGOPRO_VERSION~="Percy/EDO" then
 	function Auxiliary.FilterFaceupFunction(f,...)
 		local params={...}

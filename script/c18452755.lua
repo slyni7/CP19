@@ -81,7 +81,7 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 	if #g>0 and Duel.SendtoHand(g,nil,REASON_EFFECT)>0 then
 		Duel.ConfirmCards(1-tp,g)
 		local tg=Duel.GMGroup(cm.ofil1,tp,"G",0,nil)
-		if e:GetLabel()==100 and #tg>0 and Duel.SelectYesNo(tp,16*m) then
+		if e:GetLabel()==100 and #tg>0 and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
 			Duel.BreakEffect()
 			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
 			local sg=tg:Select(tp,1,1,nil)

@@ -109,7 +109,7 @@ function cm.op6(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if c:IsRelateToEffect(e) and Duel.SendtoHand(c,nil,REASON_EFFECT)>0 then
 		local tc=Duel.GetFirstTarget()
-		if tc:IsRelateToEffect(e) and tc:IsAbleToDeck() and Duel.SelectYesNo(tp,aux.Stringid(m,1)) then
+		if tc:IsRelateToEffect(e) and tc:IsAbleToDeck() and Duel.SelectYesNo(tp,aux.Stringid(m,01)) then
 			Duel.BreakEffect()
 			Duel.SendtoDeck(tc,nil,2,REASON_EFFECT)
 			Duel.ShuffleDeck(tp)

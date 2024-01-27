@@ -22,7 +22,7 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 		local token=Duel.CreateToken(tp,m+1)
 		Duel.SpecialSummonStep(token,0,tp,tp,false,false,POS_FACEUP)
 		Duel.SpecialSummonComplete()
-		if Duel.IsPlayerCanProcedureSummonGroup(tp,SUMMON_TYPE_SKULL) and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+		if Duel.IsPlayerCanProcedureSummonGroup(tp,SUMMON_TYPE_SKULL) and Duel.SelectYesNo(tp,aux.Stringid(m,00)) then
 			Duel.BreakEffect()
 			Duel.ProcedureSummonGroup(tp,SUMMON_TYPE_SKULL)
 		end

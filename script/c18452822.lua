@@ -76,7 +76,7 @@ function cm.op3(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not Duel.IEMCard(cm.tfil31,tp,"D",0,1,nil)
 		or (e:GetLabel()>0 and Duel.GetFlagEffect(tp,m)<1 and Duel.GetLocCount(tp,"M")>0
-			and Duel.IEMCard(cm.tfil32,tp,"D",0,1,nil,e,tp)	and Duel.SelectYesNo(tp,aux.Stringid(m,0))) then
+			and Duel.IEMCard(cm.tfil32,tp,"D",0,1,nil,e,tp)	and Duel.SelectYesNo(tp,aux.Stringid(m,00))) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 		local g=Duel.SMCard(tp,cm.tfil32,tp,"D",0,1,1,nil,e,tp)
 		Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP)

@@ -50,7 +50,7 @@ function cm.op2(e,tp,eg,ep,ev,re,r,rp)
 	e2:SetCode(EFFECT_CANNOT_DISABLE_SPSUMMON)
 	Duel.RegisterEffect(e2,tp)
 	local tg=Duel.GMGroup(cm.ofil2,tp,"M",0,nil)
-	if #tg>0 and Duel.GetFlagEffect(tp,m)<1 and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+	if #tg>0 and Duel.GetFlagEffect(tp,m)<1 and Duel.SelectYesNo(tp,aux.Stringid(m,00)) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
 		local sg=tg:Select(tp,1,1,nil)
 		local sc=sg:GetFirst()

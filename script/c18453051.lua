@@ -68,18 +68,18 @@ end
 function cm.op2(e,tp,eg,ep,ev,re,r,rp)
 	local te=e:GetLabelObject()
 	local label=te:GetLabel()
-	if label&1>0 and Duel.IsPlayerCanDraw(tp,1) and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+	if label&1>0 and Duel.IsPlayerCanDraw(tp,1) and Duel.SelectYesNo(tp,aux.Stringid(m,00)) then
 		Duel.Draw(tp,1,REASON_EFFECT)
 	end
 	local dg=Duel.GMGroup(aux.TRUE,tp,0,"O",nil)
-	if label&2>0 and #dg>0 and Duel.SelectYesNo(tp,aux.Stringid(m,1)) then
+	if label&2>0 and #dg>0 and Duel.SelectYesNo(tp,aux.Stringid(m,01)) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
 		local og=dg:Select(tp,1,1,nil)
 		Duel.HintSelection(og)
 		Duel.Destroy(og,REASON_EFFECT)
 	end
 	local sg=Duel.GMGroup(cm.ofil2,tp,"HG",0,nil,e,tp)
-	if label&4>0 and #sg>0 and Duel.GetLocCount(tp,"M")>0 and Duel.SelectYesNo(tp,aux.Stringid(m,2)) then
+	if label&4>0 and #sg>0 and Duel.GetLocCount(tp,"M")>0 and Duel.SelectYesNo(tp,aux.Stringid(m,02)) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 		local og=sg:Select(tp,1,1,nil)
 		Duel.SpecialSummon(og,0,tp,tp,false,false,POS_FACEUP_DEFENSE)

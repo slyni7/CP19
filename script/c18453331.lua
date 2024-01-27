@@ -310,19 +310,19 @@ function cm.op4(e,tp,eg,ep,ev,re,r,rp)
 		local g2=Duel.GMGroup(Card.IsAbleToDeck,tp,0,"G",nil)
 		local g3=Duel.GMGroup(Card.IsAbleToDeck,tp,0,"H",nil)
 		local sg=Group.CreateGroup()
-		if #g1>0 and ((#g2==0 and #g2==0) or Duel.SelectYesNo(tp,aux.Stringid(m,4))) then
+		if #g1>0 and ((#g2==0 and #g2==0) or Duel.SelectYesNo(tp,aux.Stringid(m,04))) then
 			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
 			local sg1=g1:Select(tp,1,1,nil)
 			Duel.HintSelection(sg1)
 			sg:Merge(sg1)
 		end
-		if #g2>0 and ((#sg==0 and #g3==0) or Duel.SelectYesNo(tp,aux.Stringid(m,5))) then
+		if #g2>0 and ((#sg==0 and #g3==0) or Duel.SelectYesNo(tp,aux.Stringid(m,05))) then
 			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
 			local sg2=g2:Select(tp,1,1,nil)
 			Duel.HintSelection(sg2)
 			sg:Merge(sg2)
 		end
-		if #g3>0 and (#sg==0 or Duel.SelectYesNo(tp,aux.Stringid(m,6))) then
+		if #g3>0 and (#sg==0 or Duel.SelectYesNo(tp,aux.Stringid(m,06))) then
 			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
 			local sg3=g3:RandomSelect(tp,1)
 			sg:Merge(sg3)

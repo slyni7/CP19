@@ -30,7 +30,7 @@ function cm.tar1(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chk==0 then
 		return true
 	end
-	if Duel.IETarget(cm.tfil1,tp,"G",0,1,nil,e,tp) and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+	if Duel.IETarget(cm.tfil1,tp,"G",0,1,nil,e,tp) and Duel.SelectYesNo(tp,aux.Stringid(m,00)) then
 		e:SetProperty(EFFECT_FLAG_CARD_TARGET)
 		e:SetCategory(CATEGORY_SPECIAL_SUMMON+CATEGORY_TOHAND)
 		e:SetOperation(cm.op1)

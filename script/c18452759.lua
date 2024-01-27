@@ -41,7 +41,7 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 		return
 	end
 	local g=Duel.GMGroup(cm.ofil1,tp,"HD",0,nil,e,tp)
-	if #g>0 and Duel.SelectYesNo(tp,16*m) then
+	if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
 		local sg=g:Select(tp,1,1,nil)
 		local tc=sg:GetFirst()

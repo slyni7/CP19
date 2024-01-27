@@ -14,7 +14,7 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	Duel.Hint(HINT_CARD,0,m)
 	local res=Duel.RockPaperScissors()
-	if res==tp and Duel.IsPlayerCanDraw(rp,1) and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+	if res==tp and Duel.IsPlayerCanDraw(rp,1) and Duel.SelectYesNo(tp,aux.Stringid(m,00)) then
 		Duel.HintSelection(Group.FromCards(c))
 		local g=Group.CreateGroup()
 		Duel.ChangeTargetCard(ev,g)

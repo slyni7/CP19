@@ -44,7 +44,7 @@ function cm.op2(e,tp,eg,ep,ev,re,r,rp)
 		return
 	end
 	local g=Duel.GMGroup(cm.ofil2,tp,"D",0,nil)
-	if g:GetCount()>0 and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+	if g:GetCount()>0 and Duel.SelectYesNo(tp,aux.Stringid(m,00)) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
 		local sg=g:Select(tp,1,1,nil)
 		Duel.SendtoHand(sg,nil,REASON_EFFECT)

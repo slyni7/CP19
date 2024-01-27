@@ -32,7 +32,7 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 		local og=Duel.GetOperatedGroup()
 		local dc=og:GetFirst()
 		if dc:IsSetCard("연금생물") and dc:IsCanBeSpecialSummoned(e,0,tp,false,false) and Duel.GetLocCount(tp,"M")>0
-			and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+			and Duel.SelectYesNo(tp,aux.Stringid(m,00)) then
 			Duel.BreakEffect()
 			Duel.SpecialSummon(dc,0,tp,tp,false,false,POS_FACEUP)
 		end

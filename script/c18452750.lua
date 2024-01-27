@@ -38,7 +38,7 @@ function cm.op2(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
 	if c:IsRelateToEffect(e) and tc:IsRelateToEffect(e) then
-		if tc:IsAbleToHand() and Duel.IEMCard(cm.ofil2,tp,"M",0,1,nil) and Duel.SelectYesNo(tp,aux.Stringid(m,2)) then
+		if tc:IsAbleToHand() and Duel.IEMCard(cm.ofil2,tp,"M",0,1,nil) and Duel.SelectYesNo(tp,aux.Stringid(m,02)) then
 			Duel.SendtoHand(tc,nil,REASON_EFFECT)
 		else
 			Duel.SendtoGrave(tc,REASON_EFFECT+REASON_RETURN)

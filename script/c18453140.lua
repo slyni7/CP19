@@ -83,7 +83,7 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 	end
 	local g=Duel.GMGroup(cm.ofil1,tp,"E",0,nil,e,tp,c)
 	if c:IsRelateToEffect(e) and aux.MustMaterialCheck(c,tp,EFFECT_MUST_BE_XMATERIAL)
-		and c:IsFaceup() and c:IsSummonType(SUMMON_TYPE_SYNCHRO) and #g>0 and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+		and c:IsFaceup() and c:IsSummonType(SUMMON_TYPE_SYNCHRO) and #g>0 and Duel.SelectYesNo(tp,aux.Stringid(m,00)) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 		local sg=g:Select(tp,1,1,nil)
 		local tc=sg:GetFirst()

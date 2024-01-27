@@ -19,7 +19,7 @@ function cm.initial_effect(c)
 	e3:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e3:SetCategory(CATEGORY_DESTROY)
 	e3:SetCountLimit(1)
-	e3:SetDescription(16*m+3)
+	e3:SetD(m,3)
 	WriteEff(e3,3,"CTO")
 	c:RegisterEffect(e3)
 	local e4=MakeEff(c,"Qo","M")
@@ -27,7 +27,7 @@ function cm.initial_effect(c)
 	e4:SetProperty(EFFECT_FLAG_DAMAGE_STEP+EFFECT_FLAG_DAMAGE_CAL)
 	e4:SetCategory(CATEGORY_NEGATE+CATEGORY_DESTROY)
 	e4:SetCountLimit(1)
-	e4:SetDescription(16*m+4)
+	e4:SetD(m,4)
 	WriteEff(e4,4,"NCTO")
 	c:RegisterEffect(e4)
 end
@@ -109,13 +109,13 @@ function cm.op2(e,tp,eg,ep,ev,re,r,rp)
 	local opval={}
 	local mct=g:FilterCount(cm.tfil22,nil,e,tp)
 	if mct>0 and mft>0 then
-		ops[off]=16*m
+		ops[off]=m,
 		opval[off-1]=1
 		off=off+1
 	end
 	local sct=g:FilterCount(cm.tfil23,nil,ec)
 	if sct>0 and sft>0 then
-		ops[off]=16*m+1
+		ops[off]=m,+1
 		opval[off-1]=2
 		off=off+1
 	end
@@ -130,7 +130,7 @@ function cm.op2(e,tp,eg,ep,ev,re,r,rp)
 			g=g:Select(tp,mft,mft,nil)
 		end
 		Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP)
-		if ec and Duel.SelectYesNo(tp,16*m+2) then
+		if ec and Duel.SelectYesNo(tp,aux.Stringid(m,0+2) then
 			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_CONTROL)
 			local sg=g:Select(tp,1,1,nil)
 			local tc=sg:GetFirst()

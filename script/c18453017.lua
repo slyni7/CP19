@@ -49,7 +49,7 @@ function cm.op2(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if Duel.Draw(tp,1,REASON_EFFECT)>0 then
 		local tg=Duel.GMGroup(cm.ofil2,tp,"M",0,nil)
-		if #tg>0 and Duel.IsPlayerCanDraw(tp,1) and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+		if #tg>0 and Duel.IsPlayerCanDraw(tp,1) and Duel.SelectYesNo(tp,aux.Stringid(m,00)) then
 			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
 			local sg=tg:Select(tp,1,1,nil)
 			local sc=sg:GetFirst()

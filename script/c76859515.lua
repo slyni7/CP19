@@ -46,7 +46,7 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.SMCard(tp,cm.tfil1,tp,"DGR",0,1,1,nil)
 	local tc=g:GetFirst()
 	if tc then
-		if tc:IsAbleToHand() and Duel.SelectYesNo(tp,16*m) then
+		if tc:IsAbleToHand() and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
 			Duel.SendtoHand(g,nil,REASON_EFFECT)
 			Duel.ConfirmCards(1-tp,g)
 		else
@@ -122,7 +122,7 @@ end
 function cm.op4(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if tc:IsRelateToEffect(e) then
-		if tc:IsAbleToHand() and Duel.SelectYesNo(tp,16*m) then
+		if tc:IsAbleToHand() and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
 			Duel.SendtoHand(g,nil,REASON_EFFECT)
 			Duel.ConfirmCards(1-tp,g)
 		else

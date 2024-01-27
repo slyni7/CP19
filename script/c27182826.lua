@@ -135,7 +135,7 @@ function cm.op3(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if tc:IsRelateToEffect(e) and Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)>0 then
 		local g=Duel.GMGroup(cm.ofil3,tp,LOCATION_HAND+LOCATION_DECK+LOCATION_GRAVE+LOCATION_REMOVED,0,nil)
-		if tc:IsType(TYPE_XYZ) and g:CheckSubGroup(cm.ofun3,2,2) and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+		if tc:IsType(TYPE_XYZ) and g:CheckSubGroup(cm.ofun3,2,2) and Duel.SelectYesNo(tp,aux.Stringid(m,00)) then
 			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_OVERLAY)
 			local og=g:SelectSubGroup(tp,cm.ofun3,false,2,2)
 			Duel.Overlay(tc,og)

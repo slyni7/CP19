@@ -59,19 +59,19 @@ function cm.op4(e,tp,eg,ep,ev,re,r,rp)
 	local g2=Duel.GMGroup(Card.IsAbleToRemove,tp,0,"G",nil)
 	local g3=Duel.GMGroup(Card.IsAbleToRemove,tp,0,"H",nil)
 	local sg=Group.CreateGroup()
-	if #g1>0 and ((#g2==0 and #g3==0) or Duel.SelectYesNo(tp,aux.Stringid(m,0))) then
+	if #g1>0 and ((#g2==0 and #g3==0) or Duel.SelectYesNo(tp,aux.Stringid(m,00))) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
 		local sg1=g1:Select(tp,1,1,nil)
 		Duel.HintSelection(sg1)
 		sg:Merge(sg1)
 	end
-	if #g2>0 and ((#sg==0 and #g3==0) or Duel.SelectYesNo(tp,aux.Stringid(m,1))) then
+	if #g2>0 and ((#sg==0 and #g3==0) or Duel.SelectYesNo(tp,aux.Stringid(m,01))) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
 		local sg2=g2:Select(tp,1,1,nil)
 		Duel.HintSelection(sg2)
 		sg:Merge(sg2)
 	end
-	if #g3>0 and (#sg==0 or Duel.SelectYesNo(tp,aux.Stringid(m,2))) then
+	if #g3>0 and (#sg==0 or Duel.SelectYesNo(tp,aux.Stringid(m,02))) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
 		local sg3=g3:RandomSelect(tp,1)
 		sg:Merge(sg3)

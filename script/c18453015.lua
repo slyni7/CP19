@@ -48,7 +48,7 @@ function cm.op2(e,tp,eg,ep,ev,re,r,rp)
 	e2:SetCode(18452923)
 	Duel.RegisterEffect(e2,tp)
 	local tg=Duel.GMGroup(cm.ofil2,tp,"M",0,nil)
-	if #tg>0 and Duel.GetFlagEffect(tp,m)<1 and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+	if #tg>0 and Duel.GetFlagEffect(tp,m)<1 and Duel.SelectYesNo(tp,aux.Stringid(m,00)) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
 		local sg=tg:Select(tp,1,1,nil)
 		local sc=sg:GetFirst()
@@ -71,7 +71,7 @@ function cm.oop21(e,tp,eg,ep,ev,re,r,rp)
 	local rc=re:GetHandler()
 	if rc:IsSetCard("¾Ù¸®½º") and not rc:IsCode(m) and re:IsHasType(EFFECT_TYPE_ACTIVATE) and re:IsActiveType(TYPE_SPELL) then
 		local tg=re:GetTarget()
-		if (not tg or tg(e,tp,eg,ep,ev,re,r,rp,0)) and Duel.SelectYesNo(tp,aux.Stringid(m,1)) then
+		if (not tg or tg(e,tp,eg,ep,ev,re,r,rp,0)) and Duel.SelectYesNo(tp,aux.Stringid(m,01)) then
 			Duel.Hint(HINT_CARD,0,m)
 			if tg then
 				tg(e,tp,eg,ep,ev,re,r,rp,1)

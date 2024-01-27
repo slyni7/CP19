@@ -22,6 +22,7 @@ function cm.tar1(e,tp,eg,ep,ev,re,r,rp,chk)
 		local chkf=tp
 		local mg1=Duel.GetFusionMaterial(tp)
 		aux.FGoalCheckAdditional=cm.tfun1
+		Fusion.CheckAdditional=cm.tfun1
 		local res=Duel.IEMCard(cm.tfil1,tp,"E",0,1,nil,e,tp,mg1,nil,chkf)
 		if not res then
 			local ce=Duel.GetChainMaterial(tp)
@@ -33,6 +34,7 @@ function cm.tar1(e,tp,eg,ep,ev,re,r,rp,chk)
 			end
 		end
 		aux.FGoalCheckAdditional=nil
+		Fusion.CheckAdditional=nil
 		return res and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_RITUAL,tp,true,false)
 	end
 	Duel.SOI(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_EXTRA)
@@ -48,6 +50,7 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 	local chkf=tp
 	local mg1=Duel.GetFusionMaterial(tp):Filter(cm.ofil1,nil,e)
 	aux.FGoalCheckAdditional=cm.ofun1
+	Fusion.CheckAdditional=cm.ofun1
 	local sg1=Duel.GMGroup(cm.tfil1,tp,"E",0,nil,e,tp,mg1,nil,chkf)
 	local mg2=nil
 	local sg2=nil
@@ -79,6 +82,7 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 		end
 		tc:CompleteProcedure()
 		aux.FGoalCheckAdditional=nil
+		Fusion.CheckAdditional=nil
 		if c:IsRelateToEffect(e) and Duel.GetLocCount(tp,"M")>0 then
 			c:AddMonsterAttribute(TYPE_RITUAL)
 			Duel.SpecialSummon(c,SUMMON_TYPE_RITUAL,tp,tp,true,false,POS_FACEUP)

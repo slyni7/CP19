@@ -37,19 +37,19 @@ function cm.cost1(e,tp,eg,ep,ev,re,r,rp,chk)
 	end
 	local typ=0
 	local sg=Group.CreateGroup()
-	if #g1>0 and ((#g2<1 and #g3<1) or Duel.SelectYesNo(tp,16*m+1)) then
+	if #g1>0 and ((#g2<1 and #g3<1) or Duel.SelectYesNo(tp,aux.Stringid(m,0+1)) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_RELEASE)
 		local rg=g1:Select(tp,1,1,nil)
 		sg:Merge(rg)
 		typ=typ|1
 	end
-	if #g2>0 and ((#sg<1 and #g3<1) or Duel.SelectYesNo(tp,16*m+2)) then
+	if #g2>0 and ((#sg<1 and #g3<1) or Duel.SelectYesNo(tp,aux.Stringid(m,0+2)) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_RELEASE)
 		local rg=g2:Select(tp,1,1,nil)
 		sg:Merge(rg)
 		typ=typ|2
 	end
-	if #g3>0 and (#sg<1 or Duel.SelectYesNo(tp,16*m+3)) then
+	if #g3>0 and (#sg<1 or Duel.SelectYesNo(tp,aux.Stringid(m,0+3)) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_RELEASE)
 		local rg=g3:Select(tp,1,1,nil)
 		sg:Merge(rg)
@@ -166,7 +166,7 @@ function cm.op2(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.SMCard(tp,cm.tfil2,tp,"D",0,1,1,nil)
 	local tc=g:GetFirst()
 	if tc then
-		if not tc:IsAbleToGrave() or Duel.SelectYesNo(tp,16*m) then
+		if not tc:IsAbleToGrave() or Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
 			Duel.SendtoHand(g,nil,REASON_EFFECT)
 			Duel.ConfirmCards(1-tp,g)
 		else

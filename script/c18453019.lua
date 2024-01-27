@@ -236,7 +236,7 @@ function cm.op4(e,tp,eg,ep,ev,re,r,rp)
 		e:SetProperty(0)
 		Duel.RaiseEvent(tc,18452923,te,0,tp,tp,Duel.GetCurrentChain())
 	end
-	if Duel.IEMCard(cm.ofil4,tp,"M",0,1,nil) and Duel.IsPlayerCanDraw(tp,1) and Duel.SelectYesNo(tp,aux.Stringid(m,1)) then
+	if Duel.IEMCard(cm.ofil4,tp,"M",0,1,nil) and Duel.IsPlayerCanDraw(tp,1) and Duel.SelectYesNo(tp,aux.Stringid(m,01)) then
 		Duel.Draw(tp,1,REASON_EFFECT)
 	end
 	if c:IsRelateToEffect(e) then

@@ -66,7 +66,7 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 	if not g or #g<1 then
 		return
 	end
-	if g:IsContains(c) and c:CheckRemoveOverlayCard(tp,1,REASON_EFFECT) and Duel.SelectYesNo(tp,aux.Stringid(m,1)) then
+	if g:IsContains(c) and c:CheckRemoveOverlayCard(tp,1,REASON_EFFECT) and Duel.SelectYesNo(tp,aux.Stringid(m,01)) then
 		c:ReleaseEffectRelation(re)
 		c:RemoveOverlayCard(tp,1,1,REASON_EFFECT)
 	end

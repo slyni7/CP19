@@ -229,7 +229,7 @@ function cm.op5(e,tp,eg,ep,ev,re,r,rp)
 				oc=omat:GetNext()
 			end
 			local rg=mat:Filter(Card.IsLoc,nil,"R")
-			if #rg>0 and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+			if #rg>0 and Duel.SelectYesNo(tp,aux.Stringid(m,00)) then
 				Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_EQUIP)
 				local fg=rg:Select(tp,1,1,nil)
 				local fc=fg:GetFirst()

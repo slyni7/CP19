@@ -37,12 +37,12 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 	local opval={}
 	local og=e:GetLabelObject()
 	if Duel.IEMCard(cm.ofil11,tp,"D",0,1,nil,og) then
-		ops[off]=16*m
+		ops[off]=m,
 		opval[off-1]=1
 		off=off+1
 	end
 	if Duel.GetFlagEffect(tp,m)<1 and Duel.IEMCard(cm.ofil12,tp,"E",0,1,nil) then
-		ops[off]=16*m+1
+		ops[off]=m,+1
 		opval[off-1]=2
 		off=off+1
 	end

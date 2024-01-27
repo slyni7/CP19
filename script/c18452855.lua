@@ -26,7 +26,7 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if c:IsRelateToEffect(e) and Duel.GetLocCount(tp,"M")>0
 		and Duel.IsPlayerCanSpecialSummonMonster(tp,m+1,0,0x80004011,300,200,1,RACE_PYRO,ATTRIBUTE_FIRE)
-		and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+		and Duel.SelectYesNo(tp,aux.Stringid(m,00)) then
 		local token=Duel.CreateToken(tp,m+1)
 		Duel.SpecialSummonStep(token,0,tp,tp,false,false,POS_FACEUP)
 		local e1=MakeEff(c,"F","M")

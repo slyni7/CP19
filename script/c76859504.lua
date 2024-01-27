@@ -16,13 +16,13 @@ function cm.initial_effect(c)
 	e3:SetCode(EVENT_FREE_CHAIN)
 	e3:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e3:SetCategory(CATEGORY_DISABLE)
-	e3:SetDescription(16*m+1)
+	e3:SetD(m,1)
 	e3:SetCountLimit(1)
 	WriteEff(e3,3,"TO")
 	c:RegisterEffect(e3)
 	local e4=e3:Clone()
 	e4:SetCategory(0)
-	e4:SetDescription(16*m+2)
+	e4:SetD(m,2)
 	WriteEff(e4,4,"TO")
 	c:RegisterEffect(e4)
 end
@@ -47,7 +47,7 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.SMCard(tp,cm.tfil1,tp,"DGR",0,1,1,nil)
 	local tc=g:GetFirst()
 	if tc then
-		if tc:IsAbleToHand() and Duel.SelectYesNo(tp,16*m) then
+		if tc:IsAbleToHand() and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
 			Duel.SendtoHand(g,nil,REASON_EFFECT)
 			Duel.ConfirmCards(1-tp,g)
 		else

@@ -58,7 +58,7 @@ function cm.op4(e,tp,eg,ep,ev,re,r,rp)
 	local ct=0
 	local g=Duel.GMGroup(cm.ofil4,tp,"D",0,nil)
 	local b1=#g>0
-	if b1 and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+	if b1 and Duel.SelectYesNo(tp,aux.Stringid(m,00)) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
 		local sg=g:Select(tp,1,1,nil)
 		Duel.SendtoHand(sg,nil,REASON_EFFECT)
@@ -67,7 +67,7 @@ function cm.op4(e,tp,eg,ep,ev,re,r,rp)
 	end
 	local tc=e:GetLabelObject()
 	local b2=tc:CheckActivateEffect(false,true,false)
-	if b2 and Duel.SelectYesNo(tp,aux.Stringid(m,1)) then
+	if b2 and Duel.SelectYesNo(tp,aux.Stringid(m,01)) then
 		local te,ceg,cep,cev,cre,cr,crp=tc:CheckActivateEffect(false,true,true)
 		e:SetProperty(te:GetProperty())
 		e:SetCategory(te:GetCategory())

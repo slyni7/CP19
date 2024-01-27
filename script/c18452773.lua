@@ -92,19 +92,19 @@ function cm.op2(e,tp,eg,ep,ev,re,r,rp)
 	end
 	local label=e:GetLabel()
 	local g1=Duel.GMGroup(aux.TRUE,tp,"H",0,nil)
-	if #g1>0 and Duel.IsPlayerCanDraw(tp,2) and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+	if #g1>0 and Duel.IsPlayerCanDraw(tp,2) and Duel.SelectYesNo(tp,aux.Stringid(m,00)) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DISCARD)
 		local sg1=g1:Select(tp,1,1,nil)
 		Duel.SendtoGrave(sg1,REASON_DISCARD+REASON_EFFECT)
 		Duel.Draw(tp,2,REASON_EFFECT)
 	end
 	local g2=Duel.GMGroup(cm.ofil2,tp,"E",0,nil)
-	if #g2>0 and label&1>0 and Duel.SelectYesNo(tp,aux.Stringid(m,1)) then
+	if #g2>0 and label&1>0 and Duel.SelectYesNo(tp,aux.Stringid(m,01)) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
 		local sg2=g2:Select(tp,1,1,nil)
 		Duel.SendtoGrave(sg2,REASON_EFFECT)
 	end
-	if label&2>0 and Duel.SelectYesNo(tp,aux.Stringid(m,2)) then
+	if label&2>0 and Duel.SelectYesNo(tp,aux.Stringid(m,02)) then
 		local e1=MakeEff(c,"F")
 		e1:SetCode(EFFECT_UPDATE_ATTACK)
 		e1:SetTR("M",0)

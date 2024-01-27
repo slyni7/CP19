@@ -17,7 +17,7 @@ function cm.tfil12(c,code)
 end
 function cm.tar1(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
-		return Duel.IEMCard(cm.tfil11,tp,"D",0,1,nil)
+		return Duel.IEMCard(cm.tfil11,tp,"D",0,1,nil,tp)
 	end
 	Duel.SOI(0,CATEGORY_TOHAND,nil,1,tp,"D")
 end

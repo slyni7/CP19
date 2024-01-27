@@ -48,7 +48,7 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.SMCard(tp,cm.tfil1,tp,"DGR",0,1,1,nil)
 	local tc=g:GetFirst()
 	if tc then
-		if tc:IsAbleToHand() and Duel.SelectYesNo(tp,16*m) then
+		if tc:IsAbleToHand() and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
 			Duel.SendtoHand(g,nil,REASON_EFFECT)
 			Duel.ConfirmCards(1-tp,g)
 		else
@@ -114,7 +114,7 @@ function cm.op3(e,tp,eg,ep,ev,re,r,rp)
 		local te=tc:CheckActivateEffect(false,false,false)
 		local b1=tc:IsAbleToHand()
 		local b2=te:IsActivatable(tp,true,true)
-		if b1 and (not b2 or Duel.SelectYesNo(tp,16*m)) then
+		if b1 and (not b2 or Duel.SelectYesNo(tp,aux.Stringid(m,0))) then
 			Duel.SendtoHand(tc,nil,REASON_EFFECT)
 			Duel.ConfirmCards(1-tp,tc)
 		else
@@ -194,7 +194,7 @@ end
 function cm.op4(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if tc:IsRelateToEffect(e) and tc:IsAbleToGrave() and
-		(not Duel.IsPlayerCanDraw(tp,1) or Duel.SelectYesNo(tp,16*m+1)) then
+		(not Duel.IsPlayerCanDraw(tp,1) or Duel.SelectYesNo(tp,aux.Stringid(m,1))) then
 		Duel.SendtoGrave(tc,REASON_EFFECT)
 	else
 		Duel.Draw(tp,1,REASON_EFFECT)

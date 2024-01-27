@@ -8,7 +8,7 @@ function s.initial_effect(c)
 	local e2=MakeEff(c,"A")
 	e2:SetCode(EVENT_CHAINING)
 	e2:SetCL(1,id,EFFECT_COUNT_CODE_OATH)
-	e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_NEGATE)
+	e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_CANNOT_NEGATE+EFFECT_FLAG_CANNOT_INACTIVATE)
 	WriteEff(e2,2,"TO")
 	c:RegisterEffect(e2)
 end

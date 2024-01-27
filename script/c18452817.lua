@@ -38,7 +38,7 @@ function cm.con1(e,tp,eg,ep,ev,re,r,rp)
 end
 function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+	if Duel.SelectYesNo(tp,aux.Stringid(m,00)) then
 		local e1=MakeEff(c,"S")
 		e1:SetCode(EFFECT_PUBLIC)
 		e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_MAIN1)

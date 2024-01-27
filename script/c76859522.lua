@@ -11,13 +11,13 @@ function cm.initial_effect(c)
 	local e2=MakeEff(c,"I","F")
 	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e2:SetCategory(CATEGORY_SPECIAL_SUMMON+CATEGORY_DESTROY)
-	e2:SetDescription(16*m+1)
+	e2:SetD(m,1)
 	WriteEff(e2,2,"CTO")
 	c:RegisterEffect(e2)
 	local e3=e2:Clone()
 	e3:SetType(EFFECT_TYPE_QUICK_O)
 	e3:SetCode(EVENT_FREE_CHAIN)
-	e3:SetDescription(16*m+2)
+	e3:SetD(m,2)
 	WriteEff(e3,3,"NC")
 	c:RegisterEffect(e3)
 	local e4=MakeEff(c,"F","F")
@@ -51,7 +51,7 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 	if not c:IsRelateToEffect(e) then
 		return
 	end
-	if Duel.IEMCard(cm.ofil1,tp,"D",0,1,nil) and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+	if Duel.IEMCard(cm.ofil1,tp,"D",0,1,nil) and Duel.SelectYesNo(tp,aux.Stringid(m,00)) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
 		local g=Duel.SMCard(tp,cm.ofil1,tp,"D",0,1,1,nil)
 		Duel.SendtoGrave(g,REASON_EFFECT)

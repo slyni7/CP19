@@ -50,14 +50,14 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 	end
 	local code=e:GetLabel()
 	local g=Duel.GMGroup(Card.IsAbleToGrave,tp,"O","O",nil)
-	if code==18453348 and #g>0 and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+	if code==18453348 and #g>0 and Duel.SelectYesNo(tp,aux.Stringid(m,00)) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
 		local sg=g:Select(tp,1,1,nil)
 		Duel.HintSelection(sg)
 		Duel.SendtoGrave(sg,REASON_EFFECT)
-	elseif code==18453349 and Duel.IsPlayerCanDraw(tp,1) and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+	elseif code==18453349 and Duel.IsPlayerCanDraw(tp,1) and Duel.SelectYesNo(tp,aux.Stringid(m,00)) then
 		Duel.Draw(tp,1,REASON_EFFECT)
-	elseif code==18453350 and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+	elseif code==18453350 and Duel.SelectYesNo(tp,aux.Stringid(m,00)) then
 		local e1=MakeEff(c,"F")
 		e1:SetCode(EFFECT_DISABLE)
 		e1:SetTR("O","O")

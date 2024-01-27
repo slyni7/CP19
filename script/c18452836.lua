@@ -126,7 +126,7 @@ function cm.con6(e,tp,eg,ep,ev,re,r,rp)
 end
 function cm.op6(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+	if Duel.SelectYesNo(tp,aux.Stringid(m,00)) then
 		c:RegisterFlagEffect(m,RESET_PHASE+PHASE_END+RESET_EVENT+0x1ec0000,0,1)
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
 		local g1=Duel.SMCard(tp,cm.tfil51,tp,"D",0,1,1,nil,tp)
@@ -173,7 +173,7 @@ function cm.ofun7(g)
 end
 function cm.op7(e,tp,eg,ep,ev,re,r,rp)
 	local g=Duel.GMGroup(cm.tfil72,tp,"M",0,nil)
-	if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(m,1)) then
+	if #g>0 and Duel.SelectYesNo(tp,aux.Stringid(m,01)) then
 		Duel.ChangePosition(g,POS_FACEUP_DEFENSE)
 	end
 	local tc=Duel.GetFirstTarget()

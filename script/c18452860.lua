@@ -37,7 +37,7 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 		if tc then
 			local te=tc:CheckActivateEffect(false,false,false)
 			local ft=Duel.GetLocCount(tp,"S")
-			if not tc:IsAbleToHand() or (te and ft>0 and te:IsActivatable(tp) and Duel.SelectYesNo(tp,aux.Stringid(m,0))) then
+			if not tc:IsAbleToHand() or (te and ft>0 and te:IsActivatable(tp) and Duel.SelectYesNo(tp,aux.Stringid(m,00))) then
 				local tpe=tc:GetType()
 				local te=tc:GetActivateEffect()
 				local co=te:GetCost()

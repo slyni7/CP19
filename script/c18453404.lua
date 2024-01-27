@@ -42,7 +42,7 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 	local sg=g:Select(tp,2,2,nil)
 	if Duel.SendtoGrave(sg,REASON_EFFECT)>0 and Duel.Recover(tp,1225,REASON_EFFECT)>0 then
 		local fg=Duel.GMGroup(cm.ofil1,tp,"E",0,nil,e,tp,sg)
-		if #fg>0 and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+		if #fg>0 and Duel.SelectYesNo(tp,aux.Stringid(m,00)) then
 			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 			local tc=fg:Select(tp,1,1,nil):GetFirst()
 			Duel.BreakEffect()

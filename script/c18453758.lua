@@ -76,7 +76,7 @@ function s.gop2(e,tp,eg,ep,ev,re,r,rp)
 	s[2]=nil
 end
 function s.con2(e,tp,eg,ep,ev,re,r,rp)
-	return s[3] and #s[3]>0
+	return s[3] and #s[3]>0 and Duel.IsTimeRewindable(tp)
 end
 function s.tar2(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
@@ -85,6 +85,9 @@ function s.tar2(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function s.op2(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetCurrentChain()==0 then
+		return
+	end
+	if not Duel.IsTimeRewindable(tp) then
 		return
 	end
 	local c=e:GetHandler()

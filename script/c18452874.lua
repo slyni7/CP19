@@ -31,7 +31,7 @@ function cm.con1(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IEMCard(cm.nfil1,tp,"O",0,1,nil,re:GetTarget(),re,rp,ceg,cep,cev,cre,cr,crp)
 end
 function cm.op1(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+	if Duel.SelectYesNo(tp,aux.Stringid(m,00)) then
 		local ceg,cep,cev,cre,cr,crp=Duel.GetChainEvent(ev)
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
 		local tg=Duel.SMCard(tp,cm.nfil1,tp,"O",0,1,1,nil,re:GetTarget(),re,rp,ceg,cep,cev,cre,cr,crp)

@@ -14,7 +14,7 @@ function s.initial_effect(c)
 	local e3=MakeEff(c,"STo")
 	e3:SetCode(EVENT_SPSUMMON_SUCCESS)
 	e3:SetProperty(EFFECT_FLAG_DELAY)
-	WriteEff(e3,3,"O")
+	WriteEff(e3,3,"NO")
 	c:RegisterEffect(e3)
 	local e4=MakeEff(c,"I","M")
 	e4:SetProperty(EFFECT_FLAG_CARD_TARGET)
@@ -39,6 +39,9 @@ function s.op2(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetCurrentChain()>0 then
 		Duel.ProcessQuickEffect(1-tp)
 	end
+end
+function s.con3(e,tp,eg,ep,ev,re,r,rp)
+	return Duel.IsIdleAccelable(tp)
 end
 function s.op3(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
@@ -68,6 +71,7 @@ function s.ocon32(e,tp,eg,ep,ev,re,r,rp)
 	end
 	local te=e:GetLabelObject()
 	return te:GetLabel()&0xff==e:GetLabel() and Duel.GetIdleCmdPlayer()==PLAYER_NONE
+		and Duel.IsIdleAccelable(tp)
 end
 function s.oop32(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()

@@ -57,7 +57,7 @@ function cm.op3(e,tp,eg,ep,ev,re,r,rp)
 		return
 	end
 	local tg=g:Filter(cm.ofil3,nil,tp)
-	if #tg>0 and c:IsAbleToGrave() and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+	if #tg>0 and c:IsAbleToGrave() and Duel.SelectYesNo(tp,aux.Stringid(m,00)) then
 		local tc=tg:GetFirst()
 		while tc do
 			tc:ReleaseEffectRelation(re)

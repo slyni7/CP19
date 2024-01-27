@@ -174,7 +174,7 @@ function cm.op7(e,tp,eg,ep,ev,re,r,rp)
 		if off<2 then
 			break
 		end
-		if sel>0 and Duel.SelectYesNo(tp,aux.Stringid(m,1)) then
+		if sel>0 and Duel.SelectYesNo(tp,aux.Stringid(m,01)) then
 			break
 		end
 		local op=Duel.SelectOption(tp,table.unpack(ops))

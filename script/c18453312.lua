@@ -28,7 +28,7 @@ function cm.tar1(e,tp,eg,ep,ev,re,r,rp,chk)
 		end
 		e:SetLabel(0)
 		return Duel.GetLocCount(tp,"M")>0
-			and Duel.IsPlayerCanSpecialSummonMonster(tp,m,0x2c4,0x11,700,2000,7,RACE_FAIRYT,ATTRIBUTE_DARK) end
+			and Duel.IsPlayerCanSpecialSummonMonster(tp,m,0x2c4,0x11,700,2000,7,RACE_FAIRY,ATTRIBUTE_DARK) end
 	e:SetLabel(0)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,c,1,0,0)
 end
@@ -37,7 +37,7 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetLocCount(tp,"M")<1 then
 		return
 	end
-	if c:IsRelateToEffect(e) and Duel.IsPlayerCanSpecialSummonMonster(tp,m,0x2c4,0x11,700,2000,7,RACE_FAIRYT,ATTRIBUTE_DARK) then
+	if c:IsRelateToEffect(e) and Duel.IsPlayerCanSpecialSummonMonster(tp,m,0x2c4,0x11,700,2000,7,RACE_FAIRY,ATTRIBUTE_DARK) then
 		c:AddMonsterAttribute(TYPE_NORMAL)
 		Duel.SpecialSummon(c,0,tp,tp,true,false,POS_FACEUP_DEFENSE)
 	end
@@ -66,7 +66,7 @@ end
 function cm.op2(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
-	if tc:IsRelateToEffect(e) and Duel.SendtoHand(tc,nil,REASON_EFFECT)>0 and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+	if tc:IsRelateToEffect(e) and Duel.SendtoHand(tc,nil,REASON_EFFECT)>0 and Duel.SelectYesNo(tp,aux.Stringid(m,00)) then
 		Duel.BreakEffect()
 		local off=1
 		local ops={}

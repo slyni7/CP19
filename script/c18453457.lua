@@ -55,7 +55,7 @@ function cm.op2(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SendtoHand(g,nil,REASON_EFFECT)
 		Duel.ConfirmCards(1-tp,g)
 		if Duel.GetFlagEffect(tp,m)==0 and Duel.IEMCard(cm.ofil2,tp,"H",0,1,nil)
-			and Duel.SelectYesNo(tp,aux.Stringid(m,0)) then
+			and Duel.SelectYesNo(tp,aux.Stringid(m,00)) then
 			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SUMMON)
 			local sg=Duel.SMCard(tp,cm.ofil2,tp,"H",0,1,1,nil)
 			local tc=sg:GetFirst()

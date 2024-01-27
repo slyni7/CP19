@@ -137,6 +137,8 @@ e1:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
 end)
 Duel.RegisterEffect(e1,0)
 
+if not aux.GlobalCurrentSequences then
+
 Auxiliary.GlobalCurrentSequences={}
 Auxiliary.GlobalCurrentSequences[0]={}
 Auxiliary.GlobalCurrentSequences[1]={}
@@ -177,6 +179,8 @@ end)
 Duel.RegisterEffect(e2,0)
 local e3=e2:Clone()
 Duel.RegisterEffect(e3,1)
+
+end
 
 Auxiliary.GlobalSequenceProcedures={}
 
@@ -350,6 +354,8 @@ function Auxiliary.SequenceOperation(e,tp,eg,ep,ev,re,r,rp,c,sg,ischain)
 	local tg=g:SelectSubGroup(tp,Auxiliary.SequenceFunction,ischain,1,max,tp,inc)
 	if tg then
 		sg:Merge(tg)
+		aux.GlobalCurrentSequences[tp]={}
+		aux.GlobalSavedSequences[tp]={}
 	else
 		for p=0,1 do
 			for i=1,#aux.GlobalCurrentSequences[p] do

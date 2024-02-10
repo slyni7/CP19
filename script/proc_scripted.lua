@@ -29,5 +29,5 @@ if YGOPRO_VERSION~="Core" then
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e1:SetCode(EVENT_ADJUST)
 	e1:SetOperation(Auxiliary.ScriptedOperation)
-	Duel.RegisterEffect(e1,0)
+	--Duel.RegisterEffect(e1,0)
 end

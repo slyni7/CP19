@@ -855,7 +855,7 @@ function Auxiliary.IsMaterialListSetCard(c,setcode)
 	return false
 end
 
-RACE_ALCHEMIST=0x10000000
+RACE_ALCHEMIST=0x10000000000
 
 GlobalAttributeEvent=false
 EVENT_ATTRIBUTE_CHANGE=EVENT_CUSTOM+18452940
@@ -3340,50 +3340,52 @@ function Card.RegisterEffect(c,e,forced,...)
 		local cost=e:GetCost()
 		local tg=e:GetTarget()
 		local op=e:GetOperation()
-		e:SetCost(function(e,tp,eg,ep,ev,re,r,rp,chk)
-			if chk==0 then
-				return not cost or cost(e,tp,eg,ep,ev,re,r,rp,0)
-			end
-			local coinbeat_misfire=false
-			local eset={Duel.IsPlayerAffectedByEffect(tp,EFFECT_COINBEAT_EFFECT)}
-			for _,te in ipairs(eset) do
-				local tep=te:GetHandlerPlayer()
-				local tc=te:GetHandler()
-				Duel.HintSelection(tc)
-				if Duel.AnnounceCoin(tp)~=Duel.TossCoin(1-tep,1) then
-					local top=te:GetOperation()
-					local tres=top(e,tp)
-					if not tres
-						or (con and not con(e,tp,eg,ep,ev,re,r,rp))
-						or (cost and not cost(e,tp,eg,ep,ev,re,r,rp,0))
-						or (tg and not tg(e,tp,eg,ep,ev,re,r,rp,0)) then
-						coinbeat_misfire=true
+		if tg or op then
+			e:SetCost(function(e,tp,eg,ep,ev,re,r,rp,chk)
+				if chk==0 then
+					return not cost or cost(e,tp,eg,ep,ev,re,r,rp,0)
+				end
+				local coinbeat_misfire=false
+				local eset={Duel.IsPlayerAffectedByEffect(tp,EFFECT_COINBEAT_EFFECT)}
+				for _,te in ipairs(eset) do
+					local tep=te:GetHandlerPlayer()
+					local tc=te:GetHandler()
+					Duel.HintSelection(tc)
+					if Duel.AnnounceCoin(tp)~=Duel.TossCoin(1-tep,1) then
+						local top=te:GetOperation()
+						local tres=top(e,tp)
+						if not tres
+							or (con and not con(e,tp,eg,ep,ev,re,r,rp))
+							or (cost and not cost(e,tp,eg,ep,ev,re,r,rp,0))
+							or (tg and not tg(e,tp,eg,ep,ev,re,r,rp,0)) then
+							coinbeat_misfire=true
+						end
 					end
 				end
-			end
-			if coinbeat_misfire then
-				local e1=Effect.CreateEffect(e:GetHandler())
-				e1:SetType(EFFECT_TYPE_FIELD)
-				e1:SetCode(EFFECT_COINBEAT_MISFIRE)
-				e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-				e1:SetTargetRange(1,1)
-				e1:SetValue(Duel.GetCurrentChain())
-				e1:SetLabelObject(e)
-				e1:SetReset(RESET_CHAIN)
-				Duel.RegisterEffect(e1,tp)
-			end
-			local eset2={Duel.IsPlayerAffectedByEffect(tp,EFFECT_COINBEAT_MISFIRE)}
-			for _,te in ipairs(eset2) do
-				local val=te:GetValue()
-				local lo=te:GetLabelObject()
-				if lo==e and val==Duel.GetCurrentChain() then
-					return
+				if coinbeat_misfire then
+					local e1=Effect.CreateEffect(e:GetHandler())
+					e1:SetType(EFFECT_TYPE_FIELD)
+					e1:SetCode(EFFECT_COINBEAT_MISFIRE)
+					e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+					e1:SetTargetRange(1,1)
+					e1:SetValue(Duel.GetCurrentChain())
+					e1:SetLabelObject(e)
+					e1:SetReset(RESET_CHAIN)
+					Duel.RegisterEffect(e1,tp)
 				end
-			end
-			if cost then
-				cost(e,tp,eg,ep,ev,re,r,rp,1)
-			end
-		end)
+				local eset2={Duel.IsPlayerAffectedByEffect(tp,EFFECT_COINBEAT_MISFIRE)}
+				for _,te in ipairs(eset2) do
+					local val=te:GetValue()
+					local lo=te:GetLabelObject()
+					if lo==e and val==Duel.GetCurrentChain() then
+						return
+					end
+				end
+				if cost then
+					cost(e,tp,eg,ep,ev,re,r,rp,1)
+				end
+			end)
+		end
 		if tg then
 			e:SetTarget(function(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 				if chkc then
@@ -3427,50 +3429,52 @@ function Duel.RegisterEffect(e,...)
 		local cost=e:GetCost()
 		local tg=e:GetTarget()
 		local op=e:GetOperation()
-		e:SetCost(function(e,tp,eg,ep,ev,re,r,rp,chk)
-			if chk==0 then
-				return not cost or cost(e,tp,eg,ep,ev,re,r,rp,0)
-			end
-			local coinbeat_misfire=false
-			local eset={Duel.IsPlayerAffectedByEffect(tp,EFFECT_COINBEAT_EFFECT)}
-			for _,te in ipairs(eset) do
-				local tep=te:GetHandlerPlayer()
-				local tc=te:GetHandler()
-				Duel.HintSelection(tc)
-				if Duel.AnnounceCoin(tp)~=Duel.TossCoin(1-tep,1) then
-					local top=te:GetOperation()
-					local tres=top(e,tp)
-					if not tres
-						or (con and not con(e,tp,eg,ep,ev,re,r,rp))
-						or (cost and not cost(e,tp,eg,ep,ev,re,r,rp,0))
-						or (tg and not tg(e,tp,eg,ep,ev,re,r,rp,0)) then
-						coinbeat_misfire=true
+		if tg or op then
+			e:SetCost(function(e,tp,eg,ep,ev,re,r,rp,chk)
+				if chk==0 then
+					return not cost or cost(e,tp,eg,ep,ev,re,r,rp,0)
+				end
+				local coinbeat_misfire=false
+				local eset={Duel.IsPlayerAffectedByEffect(tp,EFFECT_COINBEAT_EFFECT)}
+				for _,te in ipairs(eset) do
+					local tep=te:GetHandlerPlayer()
+					local tc=te:GetHandler()
+					Duel.HintSelection(tc)
+					if Duel.AnnounceCoin(tp)~=Duel.TossCoin(1-tep,1) then
+						local top=te:GetOperation()
+						local tres=top(e,tp)
+						if not tres
+							or (con and not con(e,tp,eg,ep,ev,re,r,rp))
+							or (cost and not cost(e,tp,eg,ep,ev,re,r,rp,0))
+							or (tg and not tg(e,tp,eg,ep,ev,re,r,rp,0)) then
+							coinbeat_misfire=true
+						end
 					end
 				end
-			end
-			if coinbeat_misfire then
-				local e1=Effect.CreateEffect(e:GetHandler())
-				e1:SetType(EFFECT_TYPE_FIELD)
-				e1:SetCode(EFFECT_COINBEAT_MISFIRE)
-				e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-				e1:SetTargetRange(1,1)
-				e1:SetValue(Duel.GetCurrentChain())
-				e1:SetLabelObject(e)
-				e1:SetReset(RESET_CHAIN)
-				Duel.RegisterEffect(e1,tp)
-			end
-			local eset2={Duel.IsPlayerAffectedByEffect(tp,EFFECT_COINBEAT_MISFIRE)}
-			for _,te in ipairs(eset2) do
-				local val=te:GetValue()
-				local lo=te:GetLabelObject()
-				if lo==e and val==Duel.GetCurrentChain() then
-					return
+				if coinbeat_misfire then
+					local e1=Effect.CreateEffect(e:GetHandler())
+					e1:SetType(EFFECT_TYPE_FIELD)
+					e1:SetCode(EFFECT_COINBEAT_MISFIRE)
+					e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
+					e1:SetTargetRange(1,1)
+					e1:SetValue(Duel.GetCurrentChain())
+					e1:SetLabelObject(e)
+					e1:SetReset(RESET_CHAIN)
+					Duel.RegisterEffect(e1,tp)
 				end
-			end
-			if cost then
-				cost(e,tp,eg,ep,ev,re,r,rp,1)
-			end
-		end)
+				local eset2={Duel.IsPlayerAffectedByEffect(tp,EFFECT_COINBEAT_MISFIRE)}
+				for _,te in ipairs(eset2) do
+					local val=te:GetValue()
+					local lo=te:GetLabelObject()
+					if lo==e and val==Duel.GetCurrentChain() then
+						return
+					end
+				end
+				if cost then
+					cost(e,tp,eg,ep,ev,re,r,rp,1)
+				end
+			end)
+		end
 		if tg then
 			e:SetTarget(function(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 				if chkc then
@@ -3504,6 +3508,151 @@ function Duel.RegisterEffect(e,...)
 			end)
 		end
 	end
+end
+
+function Auxiliary.RegisterIdealMatter(c,code)
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e1:SetCode(EVENT_ADJUST)
+	e1:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
+		local c=e:GetHandler()
+		local g=Duel.GetMatchingGroup(aux.TRUE,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil)
+		for tc in aux.Next(g) do
+			local p1=tc:GetControler()
+			local p2=tc:GetReasonPlayer()
+			if p1==p2 then
+				if tc:GetOriginalCodeRule()==code then
+					local e1=Effect.CreateEffect(c)
+					e1:SetType(EFFECT_TYPE_FIELD)
+					e1:SetProperty(EFFECT_FLAG_SET_AVAILABLE)
+					e1:SetCode(EFFECT_FORBIDDEN)
+					e1:SetTargetRange(0x7f,0)
+					e1:SetTarget(function(e,c)
+						return not c:IsSetCard("이상물질(아이딜 매터)")
+					end)
+					Duel.RegisterEffect(e1,p1)
+				elseif not tc:IsSetCard("이상물질(아이딜 매터)") then
+					local e1=Effect.CreateEffect(c)
+					e1:SetType(EFFECT_TYPE_FIELD)
+					e1:SetProperty(EFFECT_FLAG_SET_AVAILABLE)
+					e1:SetCode(EFFECT_FORBIDDEN)
+					e1:SetTargetRange(0x7f,0)
+					e1:SetTarget(function(e,c)
+						return c:GetOriginalCodeRule()==code
+					end)
+					Duel.RegisterEffect(e1,p1)
+				end
+			end
+		end
+	end)
+	Duel.RegisterEffect(e1,0)
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e1:SetCode(EVENT_CHAINING)
+	e1:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
+		local c=e:GetHandler()
+		local rc=re:GetHandler()
+		if rc:GetOriginalCodeRule()==code then
+			local e1=Effect.CreateEffect(c)
+			e1:SetType(EFFECT_TYPE_FIELD)
+			e1:SetProperty(EFFECT_FLAG_SET_AVAILABLE)
+			e1:SetCode(EFFECT_FORBIDDEN)
+			e1:SetTargetRange(0x7f,0)
+			e1:SetTarget(function(e,c)
+				return not c:IsSetCard("이상물질(아이딜 매터)")
+			end)
+			Duel.RegisterEffect(e1,rp)
+		elseif not rc:IsSetCard("이상물질(아이딜 매터)") then
+			local e1=Effect.CreateEffect(c)
+			e1:SetType(EFFECT_TYPE_FIELD)
+			e1:SetProperty(EFFECT_FLAG_SET_AVAILABLE)
+			e1:SetCode(EFFECT_FORBIDDEN)
+			e1:SetTargetRange(0x7f,0)
+			e1:SetTarget(function(e,c)
+				return c:GetOriginalCodeRule()==code
+			end)
+			Duel.RegisterEffect(e1,rp)
+		end
+	end)
+	Duel.RegisterEffect(e1,0)
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e1:SetCode(EVENT_ATTACK_ANNOUNCE)
+	e1:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
+		local c=e:GetHandler()
+		local ac=Duel.GetAttacker()
+		local turnp=Duel.GetTurnPlayer()
+		if ac:GetOriginalCodeRule()==code then
+			local e1=Effect.CreateEffect(c)
+			e1:SetType(EFFECT_TYPE_FIELD)
+			e1:SetProperty(EFFECT_FLAG_SET_AVAILABLE)
+			e1:SetCode(EFFECT_FORBIDDEN)
+			e1:SetTargetRange(0x7f,0)
+			e1:SetTarget(function(e,c)
+				return not c:IsSetCard("이상물질(아이딜 매터)")
+			end)
+			Duel.RegisterEffect(e1,turnp)
+		elseif not ac:IsSetCard("이상물질(아이딜 매터)") then
+			local e1=Effect.CreateEffect(c)
+			e1:SetType(EFFECT_TYPE_FIELD)
+			e1:SetProperty(EFFECT_FLAG_SET_AVAILABLE)
+			e1:SetCode(EFFECT_FORBIDDEN)
+			e1:SetTargetRange(0x7f,0)
+			e1:SetTarget(function(e,c)
+				return c:GetOriginalCodeRule()==code
+			end)
+			Duel.RegisterEffect(e1,turnp)
+		end
+	end)
+	Duel.RegisterEffect(e1,0)
+	local e1=Effect.CreateEffect(c)
+	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e1:SetCode(EVENT_BE_MATERIAL)
+	e1:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
+		local c=e:GetHandler()
+		for tc in aux.Next(eg) do
+			local p1=tc:GetControler()
+			local p2=tc:GetReasonPlayer()
+			if p1==p2 then
+				if tc:GetOriginalCodeRule()==code then
+					local e1=Effect.CreateEffect(c)
+					e1:SetType(EFFECT_TYPE_FIELD)
+					e1:SetProperty(EFFECT_FLAG_SET_AVAILABLE)
+					e1:SetCode(EFFECT_FORBIDDEN)
+					e1:SetTargetRange(0x7f,0)
+					e1:SetTarget(function(e,c)
+						return not c:IsSetCard("이상물질(아이딜 매터)")
+					end)
+					Duel.RegisterEffect(e1,p1)
+				elseif not tc:IsSetCard("이상물질(아이딜 매터)") then
+					local e1=Effect.CreateEffect(c)
+					e1:SetType(EFFECT_TYPE_FIELD)
+					e1:SetProperty(EFFECT_FLAG_SET_AVAILABLE)
+					e1:SetCode(EFFECT_FORBIDDEN)
+					e1:SetTargetRange(0x7f,0)
+					e1:SetTarget(function(e,c)
+						return c:GetOriginalCodeRule()==code
+					end)
+					Duel.RegisterEffect(e1,p1)
+				end
+			end
+		end
+	end)
+	Duel.RegisterEffect(e1,0)
+	local e2=e1:Clone()
+	e2:SetCode(EVENT_CHANGE_POS)
+	Duel.RegisterEffect(e2,0)
+end
+
+EVENT_IDOL=nil
+
+local cregeff=Card.RegisterEffect
+function Card.RegisterEffect(c,e,...)
+	cregeff(c,e,...)
+end
+local dregeff=Duel.RegisterEffect
+function Duel.RegisterEffect(e,...)
+	dregeff(e,...)
 end
 
 pcall(dofile,"expansions/script/proc_braveex.lua")

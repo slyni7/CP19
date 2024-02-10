@@ -76,6 +76,9 @@ function Auxiliary.AddBraveProcedure(c,f,min,max,gf)
 	return e1
 end
 
+if not Auxiliary.BraveRewrite then
+	Auxiliary.BraveRewrite=true
+
 local cregeff=Card.RegisterEffect
 
 function Card.RegisterEffect(c,e,...)
@@ -337,6 +340,8 @@ end
 
 function Card.GetBraveAttack(c,bc)
 	return c:GetAttack()
+end
+
 end
 
 function Auxiliary.BraveConditionFilter(c,bc,f)

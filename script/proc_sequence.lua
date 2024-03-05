@@ -21,114 +21,118 @@ e1:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
 	if ct==1 then
 		local scct=#aux.SequenceCurrentChain
 		local tempt={}
-		for ocode,seqproc in pairs(aux.GlobalSequenceProcedures) do
-			local spct=#seqproc
-			local chkctotal={}
-			local res=true
-			for i=1,spct do
-				chkctotal[i]=0
-			end
-			for i=1,scct do
-				local scc=aux.SequenceCurrentChain[i]
-				for j=1,spct do
-					local spr=seqproc[j]
-					if spr[1]==nil or spr[1](table.unpack(scc)) then
-						chkctotal[j]=chkctotal[j]+1
-					end
+		for p=0,1 do
+			for ocode,seqproc in pairs(aux.GlobalSequenceProcedures) do
+				local spct=#seqproc
+				local chkctotal={}
+				local res=true
+				for i=1,spct do
+					chkctotal[i]=0
 				end
-			end
-			for i=1,spct do
-				local spr=seqproc[i]
-				if chkctotal[i]<spr[2] or chkctotal[i]>spr[3] then
-					res=false
-					break
-				end
-			end
-			if res then
-				local sqc={}
 				for i=1,scct do
-					table.insert(sqc,i)
-				end
-				local res=false
-				while true do
-					local chkcpiece={}
-					for i=1,spct do
-						chkcpiece[i]=0
+					local scc=aux.SequenceCurrentChain[i]
+					for j=1,spct do
+						local spr=seqproc[j]
+						if spr[1]==nil or spr[1](p,table.unpack(scc)) then
+							chkctotal[j]=chkctotal[j]+1
+						end
 					end
-					local sres=true
+				end
+				for i=1,spct do
+					local spr=seqproc[i]
+					if chkctotal[i]<spr[2] or chkctotal[i]>spr[3] then
+						res=false
+						break
+					end
+				end
+				local mt=_G["c"..ocode]
+				if mt.sequence_procedure_gf then
+					res=mt.sequence_procedure_gf(p,aux.SequenceCurrentChain)
+				end
+				if res then
+					local sqc={}
 					for i=1,scct do
-						local scc=aux.SequenceCurrentChain[sqc[i]]
-						for j=1,spct do
-							local spr=seqproc[j]
-							if spr[1]==nil or spr[1](table.unpack(scc)) then
-								if chkcpiece[j]<spr[2] then
-									chkcpiece[j]=chkcpiece[j]+1
-									break
+						table.insert(sqc,i)
+					end
+					local res=false
+					while true do
+						local chkcpiece={}
+						for i=1,spct do
+							chkcpiece[i]=0
+						end
+						local sres=true
+						for i=1,scct do
+							local scc=aux.SequenceCurrentChain[sqc[i]]
+							for j=1,spct do
+								local spr=seqproc[j]
+								if spr[1]==nil or spr[1](p,table.unpack(scc)) then
+									if chkcpiece[j]<spr[2] then
+										chkcpiece[j]=chkcpiece[j]+1
+										break
+									end
 								end
 							end
 						end
-					end
-					for i=1,spct do
-						local spr=seqproc[i]
-						if chkcpiece[i]<spr[2] then
-							sres=false
-							break
-						end
-					end
-					if sres then
-						res=true
-						break
-					end
-					local final=true
-					for i=1,scct do
-						if sqc[i]~=scct+1-i then
-							final=false
-							break
-						end
-					end
-					if final then
-						break
-					end
-					local index=0
-					for i=scct,2,-1 do
-						if sqc[i]>sqc[i-1] then
-							index=i-1
-							break
-						end
-					end
-					local used={}
-					for i=1,index-1 do
-						used[sqc[i]]=true
-					end
-					local new
-					for i=1,scct do
-						if used[i] or i<=sqc[index] then
-						else
-							new=i
-							break
-						end
-					end
-					sqc[index]=new
-					used[new]=true
-					for i=index+1,scct do
-						local jnew=nil
-						for j=1,scct do
-							if used[j]==nil then
-								jnew=j
+						for i=1,spct do
+							local spr=seqproc[i]
+							if chkcpiece[i]<spr[2] then
+								sres=false
 								break
 							end
 						end
-						sqc[i]=jnew
-						used[jnew]=true
+						if sres then
+							res=true
+							break
+						end
+						local final=true
+						for i=1,scct do
+							if sqc[i]~=scct+1-i then
+								final=false
+								break
+							end
+						end
+						if final then
+							break
+						end
+						local index=0
+						for i=scct,2,-1 do
+							if sqc[i]>sqc[i-1] then
+								index=i-1
+								break
+							end
+						end
+						local used={}
+						for i=1,index-1 do
+							used[sqc[i]]=true
+						end
+						local new
+						for i=1,scct do
+							if used[i] or i<=sqc[index] then
+							else
+								new=i
+								break
+							end
+						end
+						sqc[index]=new
+						used[new]=true
+						for i=index+1,scct do
+							local jnew=nil
+							for j=1,scct do
+								if used[j]==nil then
+									jnew=j
+									break
+								end
+							end
+							sqc[i]=jnew
+							used[jnew]=true
+						end
+					end
+					if res then
+						table.insert(tempt,{ocode,scct})
 					end
 				end
-				if res then
-					table.insert(tempt,{ocode,scct})
-				end
 			end
-		end
-		if #tempt>0 then
-			for p=0,1 do
+			if #tempt>0 then
 				table.insert(aux.GlobalSavedSequences[p],tempt)
 			end
 		end
@@ -143,6 +147,7 @@ Auxiliary.GlobalCurrentSequences={}
 Auxiliary.GlobalCurrentSequences[0]={}
 Auxiliary.GlobalCurrentSequences[1]={}
 Auxiliary.GlobalCrazyArcade=false
+Auxiliary.GlobalChainInARow=0
 local e2=Effect.GlobalEffect()
 e2:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 e2:SetCode(EVENT_FREE_CHAIN)
@@ -151,23 +156,11 @@ e2:SetCondition(function(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetCurrentChain()>0 then
 		return false
 	end
-	--[[if Duel.GetTurnPlayer()~=tp then
-		return false
-	end]]--
-	--[[if EFFECT_KYRIE_ELEISON then
-		if e:GetLabel()==0 then
-			e:SetLabel(1)
-		else
-			e:SetLabel(0)
-			return false
-		end
-	end]]--
 	if aux.GlobalCrazyArcade then
 		aux.GlobalCrazyArcade=false
 		return false
 	end
 	for p=0,1 do
-	--[[for p=tp,tp do]]--
 		aux.GlobalCurrentSequences[p]={}
 		for i=1,#aux.GlobalSavedSequences[p] do
 			table.insert(aux.GlobalCurrentSequences[p],aux.GlobalSavedSequences[p][i])
@@ -179,6 +172,22 @@ end)
 Duel.RegisterEffect(e2,0)
 local e3=e2:Clone()
 Duel.RegisterEffect(e3,1)
+
+local e4=Effect.GlobalEffect()
+e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+e4:SetCode(EVENT_CHAINING)
+e4:SetCondition(function(e,tp,eg,ep,ev,re,r,rp)
+	if Duel.GetCurrentChain()==1 then
+		if Duel.CheckEvent(EVENT_CHAIN_END) then
+			aux.GlobalChainInARow=aux.GlobalChainInARow+1
+		else
+			aux.GlobalChainInARow=0
+		end
+		--Debug.Message((aux.GlobalChainInARow+1).." CHAIN IN A ROW")
+	end
+	return false
+end)
+Duel.RegisterEffect(e4,0)
 
 end
 
@@ -197,6 +206,7 @@ function Auxiliary.AddSequenceProcedure(c,gf,...)
 			table.insert(mt.sequence_procedure,sptt)
 		end
 		aux.GlobalSequenceProcedures[c:GetOriginalCode()]=mt.sequence_procedure
+		mt.sequence_procedure_gf=gf
 	end
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)

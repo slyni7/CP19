@@ -24,11 +24,11 @@ function s.initial_effect(c)
 	c:RegisterEffect(e4)
 end
 s.listed_names={id}
-function s.pfil1(re,rp)
+function s.pfil1(tp,re,rp)
 	local rc=re:GetHandler()
 	return rc:IsRace(RACE_FAIRY)
 end
-function s.pfil2(re,rp)
+function s.pfil2(tp,re,rp)
 	local rc=re:GetHandler()
 	return not rc:IsRace(RACE_FAIRY)
 end

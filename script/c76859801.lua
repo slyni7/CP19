@@ -60,7 +60,7 @@ function c76859801.cost2(e,tp,eg,ep,ev,re,r,rp,chk)
 
 end
 function c76859801.con2(e)
-	return Duel.GetFieldGroupCount(tp,LOCATION_HAND,0)<4
+	return Duel.GetFieldGroupCount(e:GetHandlerPlayer(),LOCATION_HAND,0)<4
 end
 function c76859801.tar21(e,c)
 	return not c:IsSetCard(0x2cb)

@@ -76,7 +76,7 @@ function c76859850.op2(e,tp,eg,ep,ev,re,r,rp)
 
 	local c=e:GetHandler()
 	if c:IsRelateToEffect(e) and Duel.SpecialSummon(c,0,tp,tp,false,false,POS_FACEUP)>0 then
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOHAND)
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
 		local g=Duel.SelectMatchingCard(tp,c76859850.tfil2,tp,LOCATION_REMOVED,0,1,1,nil)
 		if g:GetCount()>0 then
 			Duel.SendtoHand(g,nil,REASON_EFFECT)

@@ -323,6 +323,7 @@ if not IREDO_COMES_TRUE then
 	end
 	Card.IsCanOverlay=aux.TRUE
 	Card.IsDualState=Card.IsGeminiState
+	Card.IsLinkState=Card.IsLinked
 end
 
 function Auxiliary.linklimit(e,se,sp,st)

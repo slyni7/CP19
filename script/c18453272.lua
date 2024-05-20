@@ -113,7 +113,7 @@ function cm.op1(e,tp,eg,ep,ev,re,r,rp)
 		local g=Duel.GetFieldGroup(tp,0,LSTN("H"))
 		if g:GetCount()>0 then
 			Duel.ConfirmCards(tp,g)
-			Duel.Hint(HINT_SELECTMSG,p,HINTMSG_TODECK)
+			Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
 			local sg=g:FilterSelect(tp,Card.IsAbleToDeck,1,1,nil)
 			Duel.SendtoDeck(sg,nil,2,REASON_EFFECT)
 			Duel.ShuffleHand(1-tp)
